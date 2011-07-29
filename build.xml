@@ -151,10 +151,5 @@
 			<copy todir="${public.src.dir}/${product.version}">
 				<fileset dir="${project.home}/src/js/" />
 			</copy>
-		
-			<mkdir dir="${public.doc.dir}/${product.version}" />
-			<delete includeEmptyDirs="true">
-				<fileset dir="${public.doc.dir}/${product.version}" includes="**/*"/>
-			</delete>
 	</target>
 </project>
