@@ -1,7 +1,7 @@
 # Project info
 project.name 		= TDI
 project.home		= d:/WORK/projects/RAD/workspace/Twinstone TDI
-project.url			= http://store.etn/~centi/tdi/doc/1.3.3/
+project.url			= http://twinstone.etn.cz/confluence/display/TDI/Home
 
 # Build
 jar.dir				= d:/WORK/projects/RAD/build/Twinstone TDI
