@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<response>
+	<status>OK</status>
+	<update target="update-default">Update default</update>
+	<insert target="inserts">&lt;p&gt;Inserted before (default)&lt;/p&gt;</insert>
+	<script>
+		window._TDI_TEST_SCRIPT_INLINE_1 = true;
+	</script>
+	<style src="responses/style.css"></style>
+	<popup href="http://google.com"></popup>
+	<reload></reload>
+	<redirect href="http://google.com"></redirect>
+</response>

@@ -1,0 +1,160 @@
+<?xml version="1.0" ?>
+<project name="Twinstone TDI" default="init" basedir="">
+	<!-- load properties from file -->
+	<property file="build.settings.properties"/>
+	<property file="build.version.properties"/>
+	
+	<import file="${install.home}/ant/0.9/build-0.9.0-pre02.ant"/>
+	
+	<!-- Init build process -->
+	<target name="init">
+	</target>
+	
+	<target name="resources" depends="init">
+		<property name="jstemp.name" value="${bundle.prefix}-bundle-temp.js" />
+		<property name="jstemp.path" value="${temp.build}/${jstemp.name}"/>
+		<property name="js.name" value="${bundle.prefix}-bundle.js" />
+		<property name="js.path" value="${temp.build}/${js.name}"/>
+		<property name="jsmintemp.name" value="${bundle.prefix}-bundle-min-temp.js" />
+		<property name="jsmintemp.path" value="${temp.build}/${jsmintemp.name}"/>
+		<property name="jsmin.name" value="${bundle.prefix}-bundle-min.js" />
+		<property name="jsmin.path" value="${temp.build}/${jsmin.name}"/>
+		<property name="jslibs.dir" value="${project.home}/src/js/libs" />
+		<property name="jslibs.jquery.dir" value="${jslibs.dir}/jquery" />
+		<property name="jsminall.name" value="${bundle.prefix}-bundle-all-min.js" />
+		<property name="jsminall.path" value="${temp.build}/${jsminall.name}"/>
+		<loadfile property="js.list" srcfile="${project.home}/build.js.list">
+			<filterchain>
+				<tokenfilter>
+					<filetokenizer/>
+					<replaceregex pattern="\r?\n" replace="," flags="gi"/>
+				</tokenfilter>
+			</filterchain>
+		</loadfile>
+		<concat destfile="${jstemp.path}" encoding="UTF-8" fixlastline="yes">
+			<filelist dir="${project.home}" files="${js.list}"/>
+		</concat>
+		<concat destfile="${js.path}" encoding="UTF-8" fixlastline="yes">
+			<filelist dir="${project.home}" files="build.js.version.txt"/>
+			<filelist dir="${temp.build}" files="${jstemp.name}"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+			
+		<exec executable="java" failonerror="true">
+			<arg value="-jar"/>
+			<arg value="${install.home}/lib-yuicompressor/yuicompressor-2.3.4.jar"/>
+			<arg value="--nomunge"/>
+			<arg value="--preserve-semi"/>
+			<arg value="--type"/>
+			<arg value="js"/>
+			<arg value="--charset"/>
+			<arg value="utf8"/>
+			<arg value="-o"/>
+			<arg value="${jsmintemp.path}"/>
+			<arg value="${js.path}"/>
+		</exec>
+		<concat destfile="${jsmin.path}" encoding="UTF-8" fixlastline="yes">
+			<filelist dir="${project.home}" files="build.js.version.txt"/>
+			<filelist dir="${temp.build}" files="${jsmintemp.name}"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+		
+		<concat destfile="${jsminall.path}" encoding="UTF-8" fixlastline="yes">
+			<fileset dir="${jslibs.jquery.dir}">
+				<include name="**/*.min.js"/>
+			</fileset>
+			<filelist dir="${temp.build}" files="${jsmin.name}"/>
+		</concat>
+		
+		<copy todir="${project.home}/src/js">
+			<fileset dir="${temp.build}" includes="${js.name}" />
+			<fileset dir="${temp.build}" includes="${jsmin.name}" />
+			<fileset dir="${temp.build}" includes="${jsminall.name}" />
+		</copy>
+	</target>
+	
+	<target name="doc" depends="init">
+		<property name="apidoc.temp.path.in" value="${temp.apidoc}/in" />
+		<property name="apidoc.temp.path.out" value="${temp.apidoc}/out"/>
+		<property name="public.apidoc.versioned.dir" value="${public.apidoc.dir}/${product.version}"/>
+		<mkdir dir="${public.apidoc.versioned.dir}"/>
+		
+		<loadfile property="js.list" srcfile="${project.home}/build.js.list">
+			<filterchain>
+				<tokenfilter>
+					<filetokenizer/>
+					<replaceregex pattern="\r?\n" replace="," flags="gi"/>
+				</tokenfilter>
+			</filterchain>
+		</loadfile>
+		<copy todir="${apidoc.temp.path.in}">
+			<filelist dir="${project.home}" files="${js.list}" />
+		</copy>
+		
+		<delete includeEmptyDirs="true">
+			<fileset dir="${public.apidoc.versioned.dir}" includes="**/*"/>
+		</delete>
+		
+		<exec executable="${python.bin}" failonerror="true">
+			<arg value="${yuidoc.home}/bin/yuidoc.py"/>
+			<arg value="${apidoc.temp.path.in}"/>
+			<arg value="-s"/>
+			<arg value="-p"/>
+			<arg value="${apidoc.temp.path.out}"/>
+			<arg value="-o"/>
+			<arg value="${public.apidoc.versioned.dir}"/>
+			<arg value="-t"/>
+			<arg value="${yuidoc.template}"/>
+			<arg value="-v"/>
+			<arg value="${product.version}"/>
+			<arg value="-m"/>
+			<arg value="${project.name}"/>
+			<arg value="-u"/>
+			<arg value="${project.url}"/>
+		</exec>
+	</target>
+	
+	<target name="jars" depends="resources, init">
+		<jar destfile="${jar.dir}/${product.name}-${product.version}.jar">
+			<fileset dir="${project.home}/src">
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="deploy.local" depends="jars" description="build jars and deploy them to local repository">
+		<deployfiles builddir="${jar.dir}" loctarg="${local.deploy.dir}">
+			<fileset-spec>
+				<filename name="${product.name}-${product.version}*.jar"/>
+			</fileset-spec>
+		</deployfiles>
+	</target>
+	
+	<target name="deploy.public" depends="jars, doc" description="build jars and deploy them to shared repository">
+		<!-- Deploy jars -->
+			<deployfiles builddir="${jar.dir}" globtarg="${public.deploy.dir}">
+				<fileset-spec>
+					<filename name="${product.name}-${product.version}*.jar"/>
+				</fileset-spec>
+			</deployfiles>
+		
+		<!-- Update the public repository -->
+			<copy file="${jar.dir}/${product.name}-${product.version}.jar" tofile="${public.build.dir}/${product.name}-${product.version}.jar"/>
+			
+			<mkdir dir="${public.src.dir}/${product.version}" />
+			<delete includeEmptyDirs="true">
+				<fileset dir="${public.src.dir}/${product.version}" includes="**/*"/>
+			</delete>
+			<copy todir="${public.src.dir}/${product.version}">
+				<fileset dir="${project.home}/src/js/" />
+			</copy>
+		
+			<mkdir dir="${public.doc.dir}/${product.version}" />
+			<delete includeEmptyDirs="true">
+				<fileset dir="${public.doc.dir}/${product.version}" includes="**/*"/>
+			</delete>
+	</target>
+</project>

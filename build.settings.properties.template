@@ -1,0 +1,23 @@
+# Project info
+project.name 		= TDI
+project.home		= d:/WORK/projects/RAD/workspace/Twinstone TDI
+project.url			= http://store.etn/~centi/tdi/doc/1.3.3/
+
+# Build
+jar.dir				= d:/WORK/projects/RAD/build/Twinstone TDI
+install.home		= //store.etn/install/Java/tomcat/lib
+temp.build			= d:/WORK/projects/RAD/build/Twinstone TDI
+temp.apidoc			= d:/WORK/projects/RAD/build/Twinstone TDI/doc
+bundle.prefix		= tdi
+
+# YUIDoc paths
+python.bin			= d:/programy/python2.7/python.exe
+yuidoc.home			= d:/programy/yuidoc
+yuidoc.template		= d:/WORK/projects/RAD/yuidoc_template
+
+# Deploy
+local.deploy.dir	= d:/WORK/projects/RAD/jars/Twinstone TDI
+public.deploy.dir	= //store.etn/kos/temp/centi/builds/twinstone_tdi
+public.build.dir	= //store.etn/centi/public_html/twinstone_tdi/build
+public.src.dir		= //store.etn/centi/public_html/twinstone_tdi/src
+public.apidoc.dir	= //store.etn/centi/public_html/twinstone_tdi/api-doc
