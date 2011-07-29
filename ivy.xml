@@ -1,0 +1,15 @@
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="org.twinstone" module="tdi" status="${product.status}"/>
+	<configurations>
+		<conf name="compile" description="Compile time settings for this project"/>
+		<conf name="minimize" description="JS Minimization library"/>
+		<conf name="runtime" description="Runtime settings for this project"/>
+	</configurations>
+	<publications>
+		<artifact name="${product.name}" type="jar" ext="jar"/>
+	</publications>
+    <dependencies>
+    	<dependency org="com.yahoo.platform.yui" name="yuicompressor" rev="2.3.6" conf="minimize->master"/>
+    </dependencies>
+</ivy-module>
