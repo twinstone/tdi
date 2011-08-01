@@ -11,9 +11,11 @@
 	<target name="init" depends="ivy-configure">
 		<mkdir dir="distrib/bundles"/>
 		<mkdir dir="distrib/jars"/>
-		<resourcelist id="js-sources">
-			<file file="bundle-order.txt"/>
-		</resourcelist> 
+		<filelist dir="src/js" id="js-sources">
+			<file name="tdi.js"/>
+			<file name="tdi-ajax.js"/>
+			<file name="tdi-tools.js"/>
+		</filelist>
 	</target>
 	
 	<target name="ivy-configure" unless="is.ivy.configured">
@@ -37,7 +39,7 @@
 		</copy>
 		<concat destfile="distrib/bundles/tdi-bundle.js" encoding="UTF-8" fixlastline="yes">
 			<fileset dir="distrib/bundles" includes="banner.txt"/>
-			<resourcelist refid="js-sources"/>
+			<filelist refid="js-sources"/>
 		</concat>
 		<ivy:cachepath pathid="classpath.compile" conf="minimize" type="jar,bundle"/>
 		<java failonerror="true" classpathref="classpath.compile" classname="com.yahoo.platform.yui.compressor.YUICompressor">
