@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-public class TestNeutral extends BrowserPages {
+public class NeutralTest extends BrowserPages {
 	
 	@Before
 	public void initDriver() {

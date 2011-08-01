@@ -7,7 +7,7 @@ import org.junit.BeforeClass;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class TestCrome extends BrowserPages {
+public class CromeTest extends BrowserPages {
 	
 	@BeforeClass
 	public static void setProp() {

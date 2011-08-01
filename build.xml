@@ -143,5 +143,52 @@
 			<target name="publish-internal"/>
     	</antcall>
     </target>
-	
+
+	<target name="junit-integration" description="Execute unit tests, generate report and fail if tests are not passed">
+		<property name="product.status" value="integration"/>
+		<antcall>
+			<target name="junit-internal"/>
+		</antcall>
+	</target>
+
+	<target name="junit-release" description="Execute unit tests, generate report and fail if tests are not passed">
+		<property name="product.status" value="release"/>
+		<antcall>
+			<target name="junit-internal"/>
+		</antcall>
+	</target>
+
+	<target name="junit-internal" depends="junit-run">
+	    <junitreport todir="distrib/tests/report">
+	      <fileset dir="distrib/tests/out"/>
+	      <report todir="distrib/tests/report"/>
+	    </junitreport>
+	    <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
+	</target>
+
+	<target name="junit-run" description="Execute unit tests" depends="compile">
+		<ivy:cachepath pathid="classpath.junit" conf="junit" type="jar,bundle"/>
+		<property name="pathjunit" refid="classpath.junit"/>
+		<echo>${pathjunit}</echo>
+		<mkdir dir="distrib/tests/classes"/>
+		<mkdir dir="distrib/tests/out"/>
+		<mkdir dir="distrib/tests/report"/>
+		<delete dir="distrib/tests/classes" includes="**/*" includeemptydirs="yes"/>
+		<javac srcdir="test" destdir="distrib/tests/classes" debug="true" source="1.6" target="1.6" includeantruntime="no">
+			<classpath>
+				<path refid="classpath.junit"/>
+			</classpath>
+		</javac>
+		<junit printsummary="true" failureproperty="junit.failure">
+			<classpath>
+				<path refid="classpath.junit"/>
+				<path location="distrib/tests/classes"/>
+			</classpath>
+	      <batchtest todir="distrib/tests/out">
+	        <fileset dir="distrib/tests/classes" includes="**/*Test.class"/>
+	        <formatter type="xml"/>
+	      </batchtest>
+	    </junit>
+	  </target>
+
 </project>
