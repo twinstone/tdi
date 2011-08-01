@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ivysettings>
-	<property name="artifactory.url" value="http://twinstone.etn.cz/artifactory" override="false"/>
-	<include file="c:/Java/ivycache/ivysettings.xml"/>
-	<include file="${artifactory.url}/config/ivysettings.xml"/>
-  <settings defaultResolver="main" />
-</ivysettings>
