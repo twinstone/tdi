@@ -7,3 +7,5 @@ syntax: regexp
 
 syntax: regexp
 ^distrib$
+syntax: regexp
+^ivysettings\.xml$
