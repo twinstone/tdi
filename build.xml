@@ -1,19 +1,19 @@
 <?xml version="1.0" ?>
-<project name="Twinstone TDI" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="Twinstone TDI" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:dav="antlib:org.apache.webdav.ant">
 	<!-- load properties from file -->
 	<property file="build.properties"/>
 	<property name="product.version" value="${product.version.revision}.${product.version.build}"/>
 	<property name="ivy.settings.path" value="ivysettings.xml"/>
 	<property name="artifact.pattern" value="distrib/[type]s/[artifact].[ext]"/>
+	<property name="twinstone.url" value="http://twinstone.etn.cz/javadoc"/>
 	
 	<!-- Init build process -->
 	<target name="init" depends="ivy-configure">
 		<mkdir dir="distrib/bundles"/>
 		<mkdir dir="distrib/jars"/>
-		<fileset dir="src/js" id="js-sources">
-    		<include name="*.js"/>
-    		<exclude name="*bundle*"/>
-		</fileset>
+		<resourcelist id="js-sources">
+			<file file="bundle-order.txt"/>
+		</resourcelist> 
 	</target>
 	
 	<target name="ivy-configure" unless="is.ivy.configured">
@@ -29,7 +29,7 @@
 	</target>
 
 	<target name="compile" depends="resolve">
-		<delete dir="distrib/bundles" includes="*"/>
+		<delete dir="distrib/bundles" includes="**/*"/>
 		<copy tofile="distrib/bundles/banner.txt" file="banner.txt">
 			<filterchain>
 				<expandproperties/>
@@ -37,7 +37,7 @@
 		</copy>
 		<concat destfile="distrib/bundles/tdi-bundle.js" encoding="UTF-8" fixlastline="yes">
 			<fileset dir="distrib/bundles" includes="banner.txt"/>
-			<fileset refid="js-sources"/>
+			<resourcelist refid="js-sources"/>
 		</concat>
 		<ivy:cachepath pathid="classpath.compile" conf="minimize" type="jar,bundle"/>
 		<java failonerror="true" classpathref="classpath.compile" classname="com.yahoo.platform.yui.compressor.YUICompressor">
@@ -55,28 +55,16 @@
 			<fileset dir="distrib/bundles" includes="banner.txt"/>
 			<fileset dir="distrib/bundles" includes="tdi-bundle-min-temp.js"/>
 		</concat>
-		
+		<delete dir="distrib/bundles" includes="tdi-bundle-min-temp.js"/>
 		<concat destfile="distrib/bundles/tdi-bundle-all-min.js" encoding="UTF-8" fixlastline="yes">
-			<fileset dir="src/js/libs" includes="**/*.min.js"/>
+			<fileset dir="src/js/jquery" includes="jquery-1.5.2.min.js"/>
 			<filelist dir="distrib/bundles" files="tdi-bundle-min.js"/>
 		</concat>
-		
-		<copy todir="src/js">
-			<fileset dir="distrib/bundles" includes="tdi-bundle.js" />
-			<fileset dir="distrib/bundles" includes="tdi-bundle-min.js" />
-			<fileset dir="distrib/bundles" includes="tdi-bundle-all-min.js" />
+		<copy todir="distrib/bundles">
+			<fileset dir="src/js/jquery" includes="*.js"/>
 		</copy>
 	</target>
 	
-	<target name="webdavtasks">
-		<taskdef name="davput" classname="org.apache.webdav.ant.taskdefs.Put"/> 
-		<taskdef name="davget" classname="org.apache.webdav.ant.taskdefs.Get"/>
-		<taskdef name="lock"   classname="org.apache.webdav.ant.taskdefs.Lock"/>
-		<taskdef name="unlock" classname="org.apache.webdav.ant.taskdefs.Unlock"/>
-		<taskdef name="mkcol"  classname="org.apache.webdav.ant.taskdefs.Mkcol"/>
-		<taskdef name="davdelete" classname="org.apache.webdav.ant.taskdefs.Delete"/>
-		<taskdef name="proppatch" classname="org.apache.webdav.ant.taskdefs.Proppatch"/>
-	</target>
 
 	<!-- Generates documentation from actual JavaScript sources
 	The generator requires Python installed and following four Python libraries
@@ -85,7 +73,7 @@
       * SimpleJSON: JSON toolkit for Python
       * Cheetah: Python templating engine
     -->
-	<target name="doc" depends="init,webdavtasks">
+	<target name="doc" depends="init">
 		<mkdir dir="distrib/javadoc"/>
 		<mkdir dir="distrib/in"/>
 		<delete dir="distrib/in" includes="**/*" includeEmptyDirs="true"/>
@@ -110,19 +98,25 @@
 			<arg value="-u"/>
 			<arg value="${project.url}"/>
 		</exec>
-		<target name="javadoc-publish" depends="webdavtasks">
-			<mkcol url="http://twinstone.etn.cz/javadoc/tdi/${product.version}/"/>
-			<davput url="http://twinstone.etn.cz/javadoc/tdi/${product.version}/">
-				<fileset dir="distrib/javadoc">
-					<include name="**/*"/>
-				</fileset>
-			</davput>
-		</target>
+		<dav:mkcol url="${twinstone.url}/tdi/${product.version}/"/>
+		<dav:put url="${twinstone.url}/tdi/${product.version}/">
+			<fileset dir="distrib/javadoc">
+				<include name="**/*"/>
+			</fileset>
+		</dav:put>
 	</target>
 	
 	<target name="jars" depends="compile">
+		<mkdir dir="distrib/out"/>
+		<delete dir="distrib/out" includeemptydirs="yes" includes="**/*"/>
+		<mkdir dir="distrib/out/META-INF/resources/tdi/js"/>
+		<copy todir="distrib/out/META-INF/resources/tdi/js">
+			<fileset dir="distrib/bundles" includes="*.js"/>
+		</copy>
+		<mkdir dir="distrib/jars"/>
+		<delete dir="distrib/jars" includeemptydirs="yes" includes="**/*"/>
 		<jar destfile="distrib/jars/${product.name}.jar">
-			<fileset dir="src/js" includes="*.js"/>
+			<fileset dir="distrib/out" includes="**/*"/>
 		</jar>
 	</target>
 
