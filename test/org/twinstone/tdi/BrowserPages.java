@@ -25,7 +25,6 @@ public class BrowserPages {
 	
 	@Test
 	public void index() {
-		System.out.println("test");
 		driver.get(new File(base,"index.html").toURI().toString());
 		WebElement element = driver.findElement(By.tagName("h1"));
 		assertEquals("Title",element.getText());
