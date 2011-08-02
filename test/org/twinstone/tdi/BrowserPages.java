@@ -1,6 +1,8 @@
 package org.twinstone.tdi;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -25,8 +27,12 @@ public class BrowserPages {
 		assertNotNull(base);
 	}
 	
-	protected void testPage(String name) {
-		String url = new File(base,name).toURI().toString();
+	protected URI makeUri(String name) throws URISyntaxException {
+		return new File(base,name).toURI();
+	}
+	
+	protected void testPage(String name) throws URISyntaxException {
+		String url = makeUri(name).toString();
 		driver.get(url);
 		WebDriverWait waitForResult = new WebDriverWait(driver, 60);
         WebElement resultElm = waitForResult.until(new Function<WebDriver, WebElement>() {
@@ -43,45 +49,44 @@ public class BrowserPages {
 	}
 	
 	@Test
-	public void ajax() {
+	public void ajax() throws URISyntaxException {
 		testPage("tdi-ajax.html");
 	}
 
 	@Test
-	public void tools() {
+	public void tools() throws URISyntaxException {
 		testPage("tdi-tools.html");
 	}
 
 	@Test
-	public void ajaxUi() {
+	public void ajaxUi() throws URISyntaxException {
 		testPage("tdi-ajax-ui.html");
 	}
 
 	@Test
-	public void ajaxRequest() {
+	public void ajaxRequest() throws URISyntaxException {
 		testPage("tdi-ajax-request.html");
 	}
 
 	@Test
-	public void ajaxResponseError() {
+	public void ajaxResponseError() throws URISyntaxException {
 		testPage("tdi-ajax-response-error.html");
 	}
 
 	@Test
-	public void ajaxResponseEventsPrevent() {
+	public void ajaxResponseEventsPrevent() throws URISyntaxException {
 		testPage("tdi-ajax-response-events-prevent.html");
 	}
 
 	@Test
-	public void ajaxResponseEvents() {
+	public void ajaxResponseEvents() throws URISyntaxException {
 		testPage("tdi-ajax-response-events.html");
 	}
 
 	@Test
-	public void ajaxResponseResponses() {
+	public void ajaxResponseResponses() throws URISyntaxException {
 		testPage("tdi-ajax-response-responses.html");
 	}
-
 	
 	@After
 	public void quitDriver() {
