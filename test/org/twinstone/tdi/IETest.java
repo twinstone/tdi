@@ -1,7 +1,6 @@
 package org.twinstone.tdi;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URI;
@@ -22,20 +21,11 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class IETest extends BrowserPages {
-	/*
-	 * ChromeDriverServer must be either in the PATH or should be
-	 * set via the System.setProperty method.
-	 */
-	/*
-	@BeforeClass
-	public static void setProp() {
-		System.setProperty("webdriver.chrome.driver", "d:\\WORK\\libs\\chromedriver.exe");
-	}
-	*/
-	
-	private static int port;
+
+		private static int port;
 	private static Server server;
 	
 	@BeforeClass
@@ -75,7 +65,9 @@ public class IETest extends BrowserPages {
 	public void initDriver() {
 		String os = (String) System.getProperties().get("os.name");
 		Assume.assumeTrue(os.toLowerCase().indexOf("windows")>=0);
-		driver = new InternetExplorerDriver();
+		DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+		capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+		driver = new InternetExplorerDriver(capabilities);
 	}
 	
 	

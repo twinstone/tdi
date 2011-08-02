@@ -1,4 +1,4 @@
 /*
-* Twinstone TDI (http://twinstone.etn.cz/confluence/TDI/Home)
+* Twinstone TDI (${project.url})
 * Version: ${product.version}
 */
