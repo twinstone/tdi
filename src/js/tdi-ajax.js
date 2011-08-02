@@ -501,6 +501,19 @@
 				 */
 				_start : function( xhr, settings, options ) {
 					// xhr.setRequestHeader( 'X-Requested-Format', 'xml' );
+					/**
+					 * <p>Fires when the TDI request starts.</p>
+					 * @event tdi:ajax:start
+					 * @param {Event} evt The event object
+					 * @param {Object} data The event data:
+					 *   <dl>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
+					 *   </dl>
+					 */
+					$(document).trigger( 'tdi:ajax:start', [{
+						options : options
+					}] );
 				},
 				
 				/**
@@ -677,6 +690,19 @@
 				 * @private
 				 */
 				_end : function( xhr, textStatus, options ) {
+					/**
+					 * <p>Fires when the TDI request ends.</p>
+					 * @event tdi:ajax:end
+					 * @param {Event} evt The event object
+					 * @param {Object} data The event data:
+					 *   <dl>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
+					 *   </dl>
+					 */
+					$(document).trigger( 'tdi:ajax:end', [{
+						options : options
+					}] );
 				},
 				
 			// RESPONSES -----------------------------------------------------------------
