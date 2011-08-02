@@ -52,37 +52,37 @@ public class BrowserPages {
 	public void ajax() throws URISyntaxException {
 		testPage("tdi-ajax.html");
 	}
-
+	
 	@Test
 	public void tools() throws URISyntaxException {
 		testPage("tdi-tools.html");
 	}
-
+	
 	@Test
 	public void ajaxUi() throws URISyntaxException {
 		testPage("tdi-ajax-ui.html");
 	}
-
+	
 	@Test
 	public void ajaxRequest() throws URISyntaxException {
 		testPage("tdi-ajax-request.html");
 	}
-
+	
 	@Test
 	public void ajaxResponseError() throws URISyntaxException {
 		testPage("tdi-ajax-response-error.html");
 	}
-
+	
 	@Test
 	public void ajaxResponseEventsPrevent() throws URISyntaxException {
 		testPage("tdi-ajax-response-events-prevent.html");
 	}
-
+	
 	@Test
 	public void ajaxResponseEvents() throws URISyntaxException {
 		testPage("tdi-ajax-response-events.html");
 	}
-
+	
 	@Test
 	public void ajaxResponseResponses() throws URISyntaxException {
 		testPage("tdi-ajax-response-responses.html");

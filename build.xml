@@ -83,6 +83,24 @@
 			<filelist refid="js-sources"/>
 		</copy>
 		
+		<exec executable="${python.bin}" failonerror="true">
+			<arg value="${yuidoc.home}/bin/yuidoc.py"/>
+			<arg value="distrib/in"/>
+			<arg value="-s"/>
+			<arg value="-p"/>
+			<arg value="distrib/in"/>
+			<arg value="-o"/>
+			<arg value="distrib/javadoc"/>
+			<arg value="-t"/>
+			<arg value="${yuidoc.template}"/>
+			<arg value="-v"/>
+			<arg value="${product.version}"/>
+			<arg value="-m"/>
+			<arg value="Twinstone TDI"/>
+			<arg value="-u"/>
+			<arg value="${project.url}"/>
+		</exec>
+
 		<dav:mkcol url="${twinstone.url}/tdi/${product.version}/" />
 		<dav:put url="${twinstone.url}/tdi/${product.version}/" lock="false">
 			<fileset dir="distrib/javadoc">

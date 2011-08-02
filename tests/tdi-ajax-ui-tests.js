@@ -112,8 +112,6 @@ module( 'TDI.Ajax UI' );
 				
 			TDI.Ajax.send( elm, {
 				beforeStart : function( xhr, settings, options ) {
-					console.info( settings.url );
-					console.info( url );
 					equals( settings.url, url, 'The name and value of ' + tag + '.' + cls + ' is appended to the AJAX url.' );
 					var next = elms.shift();
 					if ( next ) {

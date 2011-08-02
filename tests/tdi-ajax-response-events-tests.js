@@ -1,9 +1,12 @@
 module( 'TDI.Ajax.Response' );
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(19);
+		expect(21);
 		
 		// bind the events
 			$(document)
+				.bind( 'tdi:ajax:start', function() {
+					ok( true, 'tdi:ajax:start triggered.' );
+				} )
 				.bind( 'tdi:ajax:beforeFormSubmit', function() {
 					ok( true, 'tdi:ajax:beforeFormSubmit triggered.' );
 				} )
@@ -65,6 +68,9 @@ module( 'TDI.Ajax.Response' );
 				} )
 				.bind( 'tdi:ajax:done', function() {
 					ok( true, 'tdi:ajax:done triggered.' );
+				} )
+				.bind( 'tdi:ajax:end', function() {
+					ok( true, 'tdi:ajax:end triggered.' );
 					
 					start();
 				} );

@@ -7,7 +7,7 @@ module( 'TDI.Ajax.Response' );
 				.bind( 'tdi:ajax:error', function() {
 					ok( true, 'tdi:ajax:error triggered.' );
 				} )
-				.bind( 'tdi:ajax:done', function() {
+				.bind( 'tdi:ajax:end', function() {
 					start();
 				} );
 				

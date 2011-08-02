@@ -391,6 +391,7 @@
 						return false;
 					}
 					options.start && options.start( $form, options );
+					Response._start( $form, null, options );
 					if ( $submitButton ) {
 						$submitButton.addClass( 'loading' );
 					}
@@ -411,6 +412,7 @@
 								}
 								
 								Response._success( xml, '', null, options );
+								Response._end( $form, null, null, options );
 								options.end && options.end( $form, options, xml );
 								if ( $submitButton ) {
 									$submitButton.removeClass( 'loading' );
@@ -501,6 +503,19 @@
 				 */
 				_start : function( xhr, settings, options ) {
 					// xhr.setRequestHeader( 'X-Requested-Format', 'xml' );
+					/**
+					 * <p>Fires when the TDI request has started.</p>
+					 * @event tdi:ajax:start
+					 * @param {Event} evt The event object
+					 * @param {Object} data The event data:
+					 *   <dl>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
+					 *   </dl>
+					 */
+					$(document).trigger( 'tdi:ajax:start', [{
+						options : options
+					}] );
 				},
 				
 				/**
@@ -677,6 +692,19 @@
 				 * @private
 				 */
 				_end : function( xhr, textStatus, options ) {
+					/**
+					 * <p>Fires when the TDI request has ended.</p>
+					 * @event tdi:ajax:end
+					 * @param {Event} evt The event object
+					 * @param {Object} data The event data:
+					 *   <dl>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
+					 *   </dl>
+					 */
+					$(document).trigger( 'tdi:ajax:end', [{
+						options : options
+					}] );
 				},
 				
 			// RESPONSES -----------------------------------------------------------------
