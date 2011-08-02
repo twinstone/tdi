@@ -10,7 +10,6 @@ public class FirefoxTest extends BrowserPages {
 	@Before
 	public void initDriver() {
 		String os = (String) System.getProperties().get("os.name");
-		System.out.println(os);
 		Assume.assumeTrue(os.toLowerCase().indexOf("windows")>=0);
 		driver = new FirefoxDriver();
 	}
