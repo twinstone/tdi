@@ -7,6 +7,11 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -39,7 +44,15 @@ public class IETest extends BrowserPages {
 		port = localmachine.getLocalPort();
 		localmachine.close();
 		server = new Server(port);
-		ResourceHandler res = new ResourceHandler();
+		ResourceHandler res = new ResourceHandler() {
+
+			@Override
+			public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+				if (baseRequest.getMethod().toLowerCase().equals("POST")) baseRequest.setMethod("GET");
+				super.handle(target, baseRequest, request, response);
+			}
+			
+		};
 		res.setDirectoriesListed(true);
 		res.setResourceBase(".");
 		HandlerList hl = new HandlerList();
