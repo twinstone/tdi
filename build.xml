@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="Twinstone TDI" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:dav="antlib:org.apache.webdav.ant">
+<project name="Twinstone TDI1" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:dav="antlib:org.apache.webdav.ant">
 	<!-- load properties from file -->
 	<property file="build.properties"/>
 	<property name="product.version" value="${product.version.revision}.${product.version.build}"/>
