@@ -1,3 +1,0 @@
-src/js/tdi.js
-src/js/tdi-ajax.js
-src/js/tdi-tools.js
