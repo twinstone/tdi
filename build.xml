@@ -100,7 +100,7 @@
 			<arg value="-u"/>
 			<arg value="${project.url}"/>
 		</exec>
-
+		
 		<dav:mkcol url="${twinstone.url}/tdi/${product.version}/" />
 		<dav:put url="${twinstone.url}/tdi/${product.version}/" lock="false" overwrite="true">
 			<fileset dir="distrib/javadoc">
