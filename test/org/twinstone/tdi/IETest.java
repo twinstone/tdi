@@ -25,7 +25,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class IETest extends BrowserPages {
 
-		private static int port;
+	private static int port;
 	private static Server server;
 	
 	@BeforeClass
@@ -38,7 +38,7 @@ public class IETest extends BrowserPages {
 
 			@Override
 			public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-				if (baseRequest.getMethod().toLowerCase().equals("POST")) baseRequest.setMethod("GET");
+				if (baseRequest.getMethod().toUpperCase().equals("POST")) baseRequest.setMethod("GET");
 				super.handle(target, baseRequest, request, response);
 			}
 			
