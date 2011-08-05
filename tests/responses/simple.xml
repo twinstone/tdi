@@ -10,4 +10,5 @@
 	<popup href="http://google.com"></popup>
 	<reload></reload>
 	<redirect href="http://google.com"></redirect>
+	<message severity="INFO" title="Info message 1 title">Info message 1</message>
 </response>

@@ -489,7 +489,8 @@
 					inserts : [],
 					scripts : [],
 					styles : [],
-					popups : []
+					popups : [],
+					messages : []
 				},
 				
 			// CALLBACKS -----------------------------------------------------------------
@@ -567,6 +568,9 @@
 								case 'popup':
 									Response._onBeforePopup( this );
 									break;
+								case 'message':
+									Response._onBeforeMessage( this );
+									break;
 							}
 						} );
 						
@@ -638,6 +642,19 @@
 							 */
 							$(document).trigger( 'tdi:ajax:popupsDone', [{
 								popups : Response._responses.popups
+							}] );
+							/**
+							 * <p>Fires when all TDI &lt;message&gt;s are done.</p>
+							 * @event tdi:ajax:messagesDone
+							 * @param {Event} evt The event object
+							 * @param {Object} data The event data:
+							 *   <dl>
+							 *     <dd><code><span>messages</span> <span>&lt;Array&gt;</span></code>
+							 *       <span>The list of all messages</span></dd>
+							 *   </dl>
+							 */
+							$(document).trigger( 'tdi:ajax:messagesDone', [{
+								messages : Response._responses.messages
 							}] );
 							/**
 							 * <p>Fires when all TDI actions are done.</p>
@@ -1001,6 +1018,47 @@
 					}
 				},
 				
+				/**
+				 * <p>The beforeMessage callback. It takes the &lt;popup&gt; xml node, gets its data and triggers a custom event which
+				 * can stop the default message action.</p>
+				 * 
+				 * @method _onBeforeMessage
+				 * @private
+				 * @param {XMLNode} tag The &lt;popup&gt; xml tag
+				 */
+				_onBeforeMessage : function( tag ) {
+					if ( !tag ) { return false; }
+					
+					var $tag = $(tag),
+						severity = $tag.attr( 'severity' ) || 'INFO',
+						title = $tag.attr( 'title' ),
+						contents = $.trim( $tag.text() ),
+						event_data = {
+							severity : severity,
+							title : title,
+							contents : contents
+						};
+						
+					// fire custom events
+						/**
+						 * <p>Fires before the TDI <em>message</em> takes place.</p>
+						 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onMessageDefault</code>).</p>
+						 * @event tdi:ajax:beforeMessage
+						 * @param {Event} evt The event object
+						 * @param {Object} data The event data:
+						 *   <dl>
+						 *     <dd><code><span>severity</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Severity of the message (defaults to INFO)</span></dd>
+						 *     <dd><code><span>title</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Optional title of the message</span></dd>
+						 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Message text</dd>
+						 *   </dl>
+						 */
+						$(document).trigger( 'tdi:ajax:beforeMessage', event_data );
+						Response._responses.messages.push( event_data );
+				},
+				
 			// RESPONSES DEFAULTS
 				/**
 				 * <p>The update default response handler. Updates the specified target with new contents.</p>
@@ -1097,7 +1155,7 @@
 				_onInsertDefault : function( evt, data ) {
 					data.inserted_node = $( data.content )[ (data.position === 'before') ? 'insertBefore' : 'insertAfter' ]( data.target );
 						
-					// trigger the update event
+					// trigger the insert event
 						/**
 						 * <p>Fires after the TDI <em>insert</em> takes place.</p>
 						 * @event tdi:ajax:insert
@@ -1150,7 +1208,7 @@
 								document.getElementsByTagName('head')[0].appendChild(s);
 							}
 							
-							// trigger the update event
+							// trigger the script event
 								data.script_node = node;
 								/**
 								 * <p>Fires after the TDI <em>script</em> takes place.</p>
@@ -1213,7 +1271,7 @@
 						TDI.Tools.getStyle( data.style_src, {
 							id : data.style_id,
 							complete : function( node ) {
-								// trigger the update event
+								// trigger the style event
 									data.style_node = node;
 									/**
 									 * <p>Fires after the TDI <em>style</em> takes place.</p>
@@ -1287,7 +1345,7 @@
 					
 					data.popup = window.open( data.href, '_blank', params );
 					
-					// trigger the update event
+					// trigger the popup event
 						/**
 						 * <p>Fires after the TDI <em>popup</em> takes place.</p>
 						 * @event tdi:ajax:popup
@@ -1307,6 +1365,49 @@
 						 *   </dl>
 						 */
 						$(document).trigger( 'tdi:ajax:popup', data );
+				},
+				
+				/**
+				 * <p>The message default response handler.</p>
+				 * @method _onMessageDefault
+				 * @private
+				 * @param {Object} evt The event object
+				 * @param {Object} data The popup data object:
+				 *   <dl>
+				 *     <dd><code><span>severity</span> <span>&lt;String&gt;</span></code>
+				 *       <span>Severity of the message (defaults to INFO)</span></dd>
+				 *     <dd><code><span>title</span> <span>&lt;String&gt;</span></code>
+				 *       <span>Optional title of the message</span></dd>
+				 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
+				 *       <span>Message text</span></dd>
+				 *   </dl>
+				 */
+				_onMessageDefault : function( evt, data ) {
+					var message = data.severity;
+					if ( data.title ) {
+						message += ': ' + data.title;
+					}
+					if ( data.contents ) {
+						message += '\n\n' + data.contents;
+					}
+					alert( message );
+					
+					// trigger the message event
+						/**
+						 * <p>Fires after the TDI <em>message</em> takes place.</p>
+						 * @event tdi:ajax:message
+						 * @param {Event} evt The event object
+						 * @param {Object} data The event data:
+						 *   <dl>
+						 *     <dd><code><span>severity</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Severity of the message (defaults to INFO)</span></dd>
+						 *     <dd><code><span>title</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Optional title of the message</span></dd>
+						 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Message text</dd>
+						 *   </dl>
+						 */
+						$(document).trigger( 'tdi:ajax:message', data );
 				}
 				
 		};
@@ -1317,10 +1418,11 @@
 				'tdi:ajax:beforeUpdate'		: '_onUpdateDefault',
 				'tdi:ajax:beforeInsert'		: '_onInsertDefault',
 				'tdi:ajax:beforeScript'		: '_onScriptDefault',
-				'tdi:ajax:beforeStyle'			: '_onStyleDefault',
+				'tdi:ajax:beforeStyle'		: '_onStyleDefault',
 				'tdi:ajax:beforeReload'		: '_onReloadDefault',
-				'tdi:ajax:beforeRedirect'		: '_onRedirectDefault',
-				'tdi:ajax:beforePopup'			: '_onPopupDefault'
+				'tdi:ajax:beforeRedirect'	: '_onRedirectDefault',
+				'tdi:ajax:beforePopup'		: '_onPopupDefault',
+				'tdi:ajax:beforeMessage'	: '_onMessageDefault'
 			},
 			customDefault = function( evt, data ) {
 				Response[ customHandlers[ evt.type ] ]( evt, data[1] );

@@ -1,6 +1,6 @@
 module( 'TDI.Ajax.Response' );
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(65);
+		expect(72);
 		
 		// bind the events
 			$(document)
@@ -115,6 +115,18 @@ module( 'TDI.Ajax.Response' );
 						p3.popup.close();
 						
 				} )
+				.bind( 'tdi:ajax:messagesDone', function( evt, data ) {
+					// 2 messages are expected
+						var m1 = data.messages[0],
+							m2 = data.messages[1];
+							
+						equals( m1.severity.toUpperCase(), 'INFO', 'Message: correct severity' );
+						equals( m1.contents, 'Info message 1', 'Message: correct text' );
+						equals( m1.title, 'Info message 1 title', 'Message: correct title' );
+						equals( m2.severity.toUpperCase(), 'ERROR', 'Message: correct severity' );
+						equals( m2.contents, 'Info message 2', 'Message: correct text' );
+						equals( m2.title, undefined, 'Message: correct title' );
+				} )
 				.bind( 'tdi:ajax:done', function( evt, data ) {
 					var r = data.responses;
 					setTimeout( function() {
@@ -123,6 +135,7 @@ module( 'TDI.Ajax.Response' );
 						equals( r.scripts && r.scripts.length, 3, 'Ajax done: scripts' );
 						equals( r.styles && r.styles.length, 1, 'Ajax done: styles' );
 						equals( r.popups && r.popups.length, 3, 'Ajax done: popups' );
+						equals( r.messages && r.messages.length, 2, 'Ajax done: messages' );
 						
 						start();
 					}, 1000 );

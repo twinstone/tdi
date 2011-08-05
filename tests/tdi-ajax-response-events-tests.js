@@ -1,6 +1,6 @@
 module( 'TDI.Ajax.Response' );
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(19);
+		expect(22);
 		
 		// bind the events
 			$(document)
@@ -30,6 +30,9 @@ module( 'TDI.Ajax.Response' );
 					ok( true, 'tdi:ajax:beforeRedirect triggered.' );
 					return false;
 				} )
+				.bind( 'tdi:ajax:beforeMessage', function() {
+					ok( true, 'tdi:ajax:beforeMessage triggered.' );
+				} )
 				.bind( 'tdi:ajax:update', function() {
 					ok( true, 'tdi:ajax:update triggered.' );
 				} )
@@ -48,6 +51,9 @@ module( 'TDI.Ajax.Response' );
 						data.popup.close();
 					}
 				} )
+				.bind( 'tdi:ajax:message', function() {
+					ok( true, 'tdi:ajax:message triggered.' );
+				} )
 				.bind( 'tdi:ajax:updatesDone', function() {
 					ok( true, 'tdi:ajax:updatesDone triggered.' );
 				} )
@@ -62,6 +68,9 @@ module( 'TDI.Ajax.Response' );
 				} )
 				.bind( 'tdi:ajax:popupsDone', function() {
 					ok( true, 'tdi:ajax:popupsDone triggered.' );
+				} )
+				.bind( 'tdi:ajax:messagesDone', function() {
+					ok( true, 'tdi:ajax:messagesDone triggered.' );
 				} )
 				.bind( 'tdi:ajax:done', function() {
 					ok( true, 'tdi:ajax:done triggered.' );
