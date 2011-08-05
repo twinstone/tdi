@@ -7,8 +7,10 @@ import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -42,7 +44,14 @@ public class BrowserPages {
                 if (elm != null && !elm.getText().contains("Running")) {
                     return elm;
                 }
-                return null;
+                
+				try {
+					Alert alert = driver.switchTo().alert();
+					alert.accept();
+				}
+				catch (final WebDriverException e) {}
+				
+				return null;
             }
         });
         assertTrue("There are failed qunit tests", resultElm.getText().contains("0 failed"));
