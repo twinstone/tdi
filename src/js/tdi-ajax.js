@@ -397,7 +397,7 @@
 					}
 					
 				// prepare the form and its iframe
-					var iframe = $( '<iframe></iframe>' );
+					var iframe = $( '<iframe name="form_iframe_'+(new Date()).getTime()+'"/>' );
 						iframe.attr( 'name', 'form_iframe_'+(new Date()).getTime() );
 						iframe.css( 'display', 'none' );
 						iframe.appendTo( document.body );
