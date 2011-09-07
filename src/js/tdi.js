@@ -18,7 +18,7 @@ if ( typeof jQuery == 'undefined' ) {
 		 * @private
 		 * @final
 		 */
-		_jQueryMinVersion : '1.5',
+		_jQueryMinVersion : '1.6.3',
 		
 		/**
 		 * <p>The initialization method for TDI.</p>

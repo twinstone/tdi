@@ -1,6 +1,6 @@
 module( 'TDI.Ajax.Response' );
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(22);
+		expect(25);
 		
 		// bind the events
 			$(document)
@@ -30,8 +30,11 @@ module( 'TDI.Ajax.Response' );
 					ok( true, 'tdi:ajax:beforeRedirect triggered.' );
 					return false;
 				} )
-				.bind( 'tdi:ajax:beforeMessage', function() {
+				.bind( 'tdi:ajax:beforeMessage', function( evt ) {
 					ok( true, 'tdi:ajax:beforeMessage triggered.' );
+				} )
+				.bind( 'tdi:ajax:beforeDialog', function( evt ) {
+					ok( true, 'tdi:ajax:beforeDialog triggered.' );
 				} )
 				.bind( 'tdi:ajax:update', function() {
 					ok( true, 'tdi:ajax:update triggered.' );
@@ -54,6 +57,9 @@ module( 'TDI.Ajax.Response' );
 				.bind( 'tdi:ajax:message', function() {
 					ok( true, 'tdi:ajax:message triggered.' );
 				} )
+				.bind( 'tdi:ajax:dialog', function() {
+					ok( true, 'tdi:ajax:dialog triggered.' );
+				} )
 				.bind( 'tdi:ajax:updatesDone', function() {
 					ok( true, 'tdi:ajax:updatesDone triggered.' );
 				} )
@@ -71,6 +77,9 @@ module( 'TDI.Ajax.Response' );
 				} )
 				.bind( 'tdi:ajax:messagesDone', function() {
 					ok( true, 'tdi:ajax:messagesDone triggered.' );
+				} )
+				.bind( 'tdi:ajax:dialogsDone', function() {
+					ok( true, 'tdi:ajax:dialogsDone triggered.' );
 				} )
 				.bind( 'tdi:ajax:done', function() {
 					ok( true, 'tdi:ajax:done triggered.' );

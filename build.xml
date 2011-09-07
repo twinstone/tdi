@@ -19,7 +19,7 @@
 	</target>
 	
 	<target name="ivy-configure" unless="is.ivy.configured">
-		<ivy:configure file="${ivy.settings.path}" host="twinstone.etn.cz" realm="Artifactory Realm" username="${twinstone.user}" passwd="${twinstone.password}"/>
+		<ivy:configure file="${ivy.settings.path}" realm="Artifactory Realm" username="${twinstone.user}" passwd="${twinstone.password}"/>
 		<property name="is.ivy.configured" value="yes"/>
 	</target>
 
@@ -59,7 +59,7 @@
 		</concat>
 		<delete dir="distrib/bundles" includes="tdi-bundle-min-temp.js"/>
 		<concat destfile="distrib/bundles/tdi-bundle-all-min.js" encoding="UTF-8" fixlastline="yes">
-			<fileset dir="src/js/jquery" includes="jquery-1.5.2.min.js"/>
+			<fileset dir="src/js/jquery" includes="jquery-1.6.3-patched.min.js"/>
 			<filelist dir="distrib/bundles" files="tdi-bundle-min.js"/>
 		</concat>
 		<copy todir="distrib/bundles">

@@ -23,7 +23,7 @@
 			_delegateSelectors : {
 				linkClick : 'a.ajaxlink, a.tdi',
 				formSubmit : 'form.ajaxform, form.tdi',
-				formButtonActivate : 'form.ajaxform input[type=submit], form.tdi input[type=submit], form.ajaxform button, form.tdi button',
+				formButtonActivate : 'form.ajaxform [type=submit], form.tdi [type=submit]',
 				fieldChange : 'select.ajaxselect, select.tdi, input.tdi'
 			},
 			
@@ -114,6 +114,8 @@
 					$(this).trigger( 'tdi:ajax:beforeFormSubmit', {
 						form : $(this)
 					} );
+					
+					return false;
 				},
 				
 				/**
@@ -134,22 +136,29 @@
 				 * @param {Event} evt The event object
 				 */
 				_onFormButtonActivate : function( evt ) {
-					var button = $(this),
-						form = $(this.form);
+					var $button = $(this),
+						$form = $(this.form);
 						
-					// save the used submit button
-						form.data( '_submitButton', button );
-						
-					// remove the old field
-						form.find( 'input.submit-action' ).remove();
-						
-					// create a new field with the buttons name and value
-						$( '<input>' )
-							.attr( 'type', 'hidden' )
-							.attr( 'name', button.attr( 'name' ) )
-							.attr( 'value', button.attr( 'value' ) )
-							.addClass( 'submit-action' )
-							.appendTo( form );
+					if ( $button.attr( 'name' ) ) {
+						// save the used submit button
+							$form.data( '_submitButton', $button );
+							
+						// remove the old field
+							$form.find( 'input.submit-action' ).remove();
+							
+						// create a new field with the buttons name and value
+							$( '<input>' )
+								.attr( 'type', 'hidden' )
+								.attr( 'name', $button.attr( 'name' ) )
+								.attr( 'value', $button.attr( 'value' ) )
+								.addClass( 'submit-action' )
+								.appendTo( $form );
+								
+						// IE7/8 does not fire submit event on the form, if using the <button> element
+							if ( $button.is( 'button' ) && $.browser.msie && $.browser.version.slice( 0, 1 ) <= 8 ) {
+								$form.trigger( 'submit' );
+							}
+					}
 				},
 				
 				/**
@@ -397,13 +406,23 @@
 					}
 					
 				// prepare the form and its iframe
-					var iframe = $( '<iframe name="form_iframe_'+(new Date()).getTime()+'"/>' );
-						iframe.attr( 'name', 'form_iframe_'+(new Date()).getTime() );
-						iframe.css( 'display', 'none' );
-						iframe.appendTo( document.body );
+					var iframeName = 'form_iframe_'+(new Date()).getTime(),
+						iframe;
+						
+						// IE8- has a problem assigning the `name` attribute to a dynamicaly created Iframe. It needs to be created as a string.
+						if ( $.browser.msie && $.browser.version.slice( 0, 1 ) <= 8 ) {
+							iframe = document.createElement( '<iframe name="' + iframeName + '">' );
+						}
+						else {
+							iframe = document.createElement( 'iframe' );
+							iframe.name = iframeName;
+						}
+						
+						iframe.style.display = 'none';
+						document.body.appendChild( iframe );
 						
 						// onComplete/onEnd
-							iframe.load( function() {
+							$(iframe).load( function() {
 								var xml = this.contentWindow.document.XMLDocument || this.contentWindow.document;
 								
 								var res = options.beforeEnd && options.beforeEnd( $form, options, xml );
@@ -419,7 +438,8 @@
 								}
 								
 								setTimeout( function() {
-									iframe.unbind().remove();
+									$(iframe).unbind().remove();
+									$form.removeAttr( 'target' );
 								}, 100 );
 							} );
 							
@@ -431,8 +451,7 @@
 						else {
 							$form.attr( 'enctype', 'application/x-www-form-urlencoded' );
 						}
-						$form.attr( 'target', iframe.attr( 'name' ) );
-						$form.data( 'isAjaxReady', true );
+						$form.attr( 'target', iframeName );
 					
 				/*
 					Send the $form manualy.
@@ -480,6 +499,9 @@
 		 */
 		var Response = {
 			
+			// Supported Infusion instructions
+				_infusionInstructions : [ 'update', 'insert', 'script', 'style', 'reload', 'redirect', 'popup', 'message', 'dialog' ],
+				
 			// a collection of new script tags which will be added after the response is done to preserve the execution order
 				_scriptTags : [],
 				
@@ -490,7 +512,8 @@
 					scripts : [],
 					styles : [],
 					popups : [],
-					messages : []
+					messages : [],
+					dialogs : []
 				},
 				
 			// CALLBACKS -----------------------------------------------------------------
@@ -543,33 +566,17 @@
 						}
 						
 					// handle tags
-						$xml.find( '*' ).each( function() {
-							var tagName = this.tagName.toLowerCase();
-							switch( this.tagName.toLowerCase() ) {
-								case 'update':
-									Response._onBeforeUpdate( this );
+						$xml.find( Response._infusionInstructions.join( ',' ) ).each( function() {
+							var tagName = this.tagName.toLowerCase(),
+								instruction = tagName.slice(0,1).toUpperCase() + tagName.slice(1);
+								
+							switch( instruction ) {
+								case 'Script':
+										// collect all script tags to a list, so they can be downloaded and executed in the preserved order
+										Response._scriptTags.push( this );
 									break;
-								case 'insert':
-									Response._onBeforeInsert( this );
-									break;
-								case 'script':
-									// collect all script tags to a list, so they can be downloaded and executed in the preserved order
-									Response._scriptTags.push( this );
-									break;
-								case 'style':
-									Response._onBeforeStyle( this );
-									break;
-								case 'reload':
-									Response._onBeforeReload( this );
-									break;
-								case 'redirect':
-									Response._onBeforeRedirect( this );
-									break;
-								case 'popup':
-									Response._onBeforePopup( this );
-									break;
-								case 'message':
-									Response._onBeforeMessage( this );
+								default:
+										Response[ '_onBefore' + instruction ]( this );
 									break;
 							}
 						} );
@@ -655,6 +662,19 @@
 							 */
 							$(document).trigger( 'tdi:ajax:messagesDone', [{
 								messages : Response._responses.messages
+							}] );
+							/**
+							 * <p>Fires when all TDI &lt;dialog&gt;s are done.</p>
+							 * @event tdi:ajax:dialogsDone
+							 * @param {Event} evt The event object
+							 * @param {Object} data The event data:
+							 *   <dl>
+							 *     <dd><code><span>dialogs</span> <span>&lt;Array&gt;</span></code>
+							 *       <span>The list of all dialogs</span></dd>
+							 *   </dl>
+							 */
+							$(document).trigger( 'tdi:ajax:dialogsDone', [{
+								dialogs : Response._responses.dialogs
 							}] );
 							/**
 							 * <p>Fires when all TDI actions are done.</p>
@@ -1019,12 +1039,12 @@
 				},
 				
 				/**
-				 * <p>The beforeMessage callback. It takes the &lt;popup&gt; xml node, gets its data and triggers a custom event which
+				 * <p>The beforeMessage callback. It takes the &lt;message&gt; xml node, gets its data and triggers a custom event which
 				 * can stop the default message action.</p>
 				 * 
 				 * @method _onBeforeMessage
 				 * @private
-				 * @param {XMLNode} tag The &lt;popup&gt; xml tag
+				 * @param {XMLNode} tag The &lt;message&gt; xml tag
 				 */
 				_onBeforeMessage : function( tag ) {
 					if ( !tag ) { return false; }
@@ -1057,6 +1077,39 @@
 						 */
 						$(document).trigger( 'tdi:ajax:beforeMessage', event_data );
 						Response._responses.messages.push( event_data );
+				},
+				
+				/**
+				 * <p>The beforeDialog callback. It takes the &lt;dialog&gt; xml node, gets its data and triggers a custom event which
+				 * can stop the default dialog action.</p>
+				 * 
+				 * @method _onBeforeDialog
+				 * @private
+				 * @param {XMLNode} tag The &lt;dialog&gt; xml tag
+				 */
+				_onBeforeDialog : function( tag ) {
+					if ( !tag ) { return false; }
+					
+					var $tag = $(tag),
+						contents = $.trim( $tag.text() ),
+						event_data = {
+							contents : contents
+						};
+						
+					// fire custom events
+						/**
+						 * <p>Fires before the TDI <em>dialog</em> takes place.</p>
+						 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onDialogDefault</code>).</p>
+						 * @event tdi:ajax:beforeDialog
+						 * @param {Event} evt The event object
+						 * @param {Object} data The event data:
+						 *   <dl>
+						 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Dialog contents</dd>
+						 *   </dl>
+						 */
+						$(document).trigger( 'tdi:ajax:beforeDialog', event_data );
+						Response._responses.dialogs.push( event_data );
 				},
 				
 			// RESPONSES DEFAULTS
@@ -1390,7 +1443,6 @@
 					if ( data.contents ) {
 						message += '\n\n' + data.contents;
 					}
-					alert( message );
 					
 					// trigger the message event
 						/**
@@ -1408,6 +1460,32 @@
 						 *   </dl>
 						 */
 						$(document).trigger( 'tdi:ajax:message', data );
+				},
+				
+				/**
+				 * <p>The dialog default response handler.</p>
+				 * @method _onDialogDefault
+				 * @private
+				 * @param {Object} evt The event object
+				 * @param {Object} data The dialog data object:
+				 *   <dl>
+				 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
+				 *       <span>Dialog contents</span></dd>
+				 *   </dl>
+				 */
+				_onDialogDefault : function( evt, data ) {
+					// trigger the dialog event
+						/**
+						 * <p>Fires after the TDI <em>dialog</em> takes place.</p>
+						 * @event tdi:ajax:dialog
+						 * @param {Event} evt The event object
+						 * @param {Object} data The event data:
+						 *   <dl>
+						 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Dialog contents</dd>
+						 *   </dl>
+						 */
+						$(document).trigger( 'tdi:ajax:dialog', data );
 				}
 				
 		};
@@ -1422,7 +1500,8 @@
 				'tdi:ajax:beforeReload'		: '_onReloadDefault',
 				'tdi:ajax:beforeRedirect'	: '_onRedirectDefault',
 				'tdi:ajax:beforePopup'		: '_onPopupDefault',
-				'tdi:ajax:beforeMessage'	: '_onMessageDefault'
+				'tdi:ajax:beforeMessage'	: '_onMessageDefault',
+				'tdi:ajax:beforeDialog'		: '_onDialogDefault'
 			},
 			customDefault = function( evt, data ) {
 				Response[ customHandlers[ evt.type ] ]( evt, data[1] );

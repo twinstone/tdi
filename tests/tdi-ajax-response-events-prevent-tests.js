@@ -31,6 +31,9 @@ module( 'TDI.Ajax.Response' );
 				.bind( 'tdi:ajax:beforeMessage', function() {
 					return false;
 				} )
+				.bind( 'tdi:ajax:beforeDialog', function() {
+					return false;
+				} )
 				.bind( 'tdi:ajax:update', function() {
 					ok( false, 'tdi:ajax:update should not be triggered.' );
 				} )
@@ -48,6 +51,9 @@ module( 'TDI.Ajax.Response' );
 				} )
 				.bind( 'tdi:ajax:message', function( evt, data ) {
 					ok( false, 'tdi:ajax:message should not be triggered.' );
+				} )
+				.bind( 'tdi:ajax:dialog', function( evt, data ) {
+					ok( false, 'tdi:ajax:dialog should not be triggered.' );
 				} )
 				.bind( 'tdi:ajax:done', function() {
 					ok( true, 'Form was not submitted.' );

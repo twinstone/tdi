@@ -1,4 +1,5 @@
 module( 'TDI.Ajax.Request' );
+	
 	test( 'TDI.Ajax.Request.ajaxifyUrl', function() {
 		expect(7);
 		
@@ -75,7 +76,6 @@ module( 'TDI.Ajax.Request' );
 			start();
 		}, 1000 );
 	} );
-	
 	asyncTest( 'TDI.Ajax.Request.send: default options', function() {
 		expect(3);
 		
@@ -90,7 +90,6 @@ module( 'TDI.Ajax.Request' );
 			}
 		} );
 	} );
-	
 	asyncTest( 'TDI.Ajax.Request.send: options set', function() {
 		expect(3);
 		
@@ -171,6 +170,7 @@ module( 'TDI.Ajax.Request' );
 			start();
 		}, 1000 );
 	} );
+	
 	asyncTest( 'TDI.Ajax.Request.sendForm', function() {
 		expect(1);
 		

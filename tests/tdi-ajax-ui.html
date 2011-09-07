@@ -6,7 +6,7 @@
 	<script src="qunit/qunit.js"></script>
 	
 	<!--
-	<script src="../src/js/jquery/jquery-1.5.2.min.js"></script>
+	<script src="../src/js/jquery/jquery-1.6.3-patched.min.js"></script>
 	<script src="../src/js/tdi.js"></script>
 	<script src="../src/js/tdi-tools.js"></script>
 	<script src="../src/js/tdi-ajax.js"></script>
@@ -28,27 +28,33 @@
 		<a href="responses/empty.xml" class="tdi" id="tdi-link">a</a>
 		<a href="#" data-ajax-url="responses/empty.xml" class="tdi" id="tdi-link-data-ajax-url">a</a>
 		<form action="responses/empty.xml" class="ajaxform" id="ajaxform">
+			<input type="text" name="test" value="test">
 		</form>
 		<form action="#" data-ajax-url="responses/empty.xml" class="ajaxform" id="ajaxform-data-ajax-url">
+			<input type="text" name="test" value="test">
 		</form>
 		<form action="responses/empty.xml" class="tdi" id="tdi-form">
+			<input type="text" name="test" value="test">
+		</form>
+		<form action="#" data-ajax-url="responses/empty.xml" class="tdi" id="tdi-form-data-ajax-url">
+			<input type="text" name="test" value="test">
+		</form>
+		<form action="responses/empty.xml" class="tdi">
 			<select class="ajaxselect" id="ajaxselect"><option selected>1</option><option>2</option></select>
 			<select class="tdi" id="tdi-select"><option selected>1</option><option>2</option></select>
 			<input type="checkbox" class="tdi" id="tdi-checkbox">
 			<input type="radio" class="tdi" id="tdi-radio">
-		</form>
-		<form action="#" data-ajax-url="responses/empty.xml" class="tdi" id="tdi-form-data-ajax-url">
 		</form>
 		<select data-ajax-url="responses/empty.xml" class="ajaxselect" id="ajaxselect-data-ajax-url" name="select1"><option selected>1</option><option>2</option></select>
 		<select data-ajax-url="responses/empty.xml" class="tdi" id="tdi-select-data-ajax-url" name="select2"><option selected>1</option><option>2</option></select>
 		<input data-ajax-url="responses/empty.xml" type="checkbox" class="tdi" id="tdi-checkbox-data-ajax-url" name="checkbox" value="checkbox-value">
 		<input data-ajax-url="responses/empty.xml" type="radio" class="tdi" id="tdi-radio-data-ajax-url" name="radio" value="radio-value">
 		
-		<form action="responses/empty.xml" class="ajaxform disabled" id="button-form1">
+		<form action="responses/empty.xml" class="ajaxform" id="button-form1">
 			<input type="submit" name="submit1" value="submit1-value" id="submit1">
 			<button type="submit" name="submit2" value="submit2-value" id="submit2">b</button>
 		</form>
-		<form action="responses/empty.xml" class="tdi disabled" id="button-form2">
+		<form action="responses/empty.xml" class="tdi" id="button-form2">
 			<input type="submit" name="submit3" value="submit3-value" id="submit3">
 			<button type="submit" name="submit4" value="submit4-value" id="submit4">b</button>
 		</form>

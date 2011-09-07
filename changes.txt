@@ -1,3 +1,13 @@
+CHANGES AFTER VERSION 1.4.1
+=============================
+
+==== Overview ====
+  * Added support for <dialog> XML protocol tag
+  * Fixed problems with <iframe> in IE8/7
+  * Recreated and fixed the NeutralTest with HtmlUnit
+  * All tests run through Jetty now
+  * jQuery upgraded to 1.6.3
+
 CHANGES AFTER VERSION 1.3.4
 =============================
 

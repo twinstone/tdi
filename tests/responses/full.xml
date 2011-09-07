@@ -43,4 +43,6 @@
 	
 	<message severity="INFO" title="Info message 1 title">Info message 1</message>
 	<message severity="ERROR">Info message 2</message>
+	
+	<dialog>This is a dialog!</dialog>
 </response>

@@ -9,3 +9,5 @@ syntax: regexp
 ^distrib$
 syntax: regexp
 ^ivysettings\.xml$
+syntax: regexp
+^\.settings$
