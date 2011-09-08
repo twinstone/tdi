@@ -1,7 +1,7 @@
 module( 'TDI.Ajax.Response' );
 	
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(77);
+		expect(79);
 		
 		// bind the events
 			$(document)
@@ -136,6 +136,8 @@ module( 'TDI.Ajax.Response' );
 							
 						equals( d1.contents, 'This is a dialog!', 'Dialog: correct contents' );
 						equals( d1.action, 'open', 'Dialog: default action is `open`' );
+						equals( d1.width, 500, 'Dialog: correct width' );
+						equals( d1.height, 400, 'Dialog: correct height' );
 						equals( d2.action, 'open', 'Dialog: correct action' );
 						equals( d3.action, 'close', 'Dialog: correct action' );
 				} )

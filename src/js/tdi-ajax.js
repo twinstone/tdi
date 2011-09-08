@@ -24,7 +24,8 @@
 				linkClick : 'a.ajaxlink, a.tdi',
 				formSubmit : 'form.ajaxform, form.tdi',
 				formButtonActivate : 'form.ajaxform [type=submit], form.tdi [type=submit]',
-				fieldChange : 'select.ajaxselect, select.tdi, input.tdi'
+				fieldChange : 'select.ajaxselect, select.tdi, input[type=checkbox].tdi, input[type=radio].tdi',
+				fieldSubmit : 'input[type=text].tdi'
 			},
 			
 			/**
@@ -52,7 +53,8 @@
 					.delegate( _AJAX._delegateSelectors.linkClick, 'click', _AJAX._onLinkClick )
 					.delegate( _AJAX._delegateSelectors.formSubmit, 'submit', _AJAX._onBeforeFormSubmit )
 					.delegate( _AJAX._delegateSelectors.formButtonActivate, 'click', _AJAX._onFormButtonActivate )
-					.delegate( _AJAX._delegateSelectors.fieldChange, 'change', _AJAX._onFieldChange );
+					.delegate( _AJAX._delegateSelectors.fieldChange, 'change', _AJAX._onFieldChange )
+					.delegate( _AJAX._delegateSelectors.fieldSubmit, 'keydown', _AJAX._onFieldSubmit );
 					
 				$(window).unload( _AJAX._unbindUI );
 				
@@ -77,7 +79,8 @@
 					.undelegate( _AJAX._delegateSelectors.linkClick, 'click', _AJAX._onLinkClick )
 					.undelegate( _AJAX._delegateSelectors.formSubmit, 'submit', _AJAX._onBeforeFormSubmit )
 					.undelegate( _AJAX._delegateSelectors.formButtonActivate, 'click', _AJAX._onFormButtonActivate )
-					.undelegate( _AJAX._delegateSelectors.fieldChange, 'change', _AJAX._onFieldChange );
+					.undelegate( _AJAX._delegateSelectors.fieldChange, 'change', _AJAX._onFieldChange )
+					.undelegate( _AJAX._delegateSelectors.fieldSubmit, 'keydown', _AJAX._onFieldSubmit );
 			},
 			
 			// EVENT HANDLERS ------------------------------------------------------------
@@ -171,6 +174,20 @@
 				 */
 				_onFieldChange : function( evt ) {
 					TDI.Ajax.send( $(this).data( 'ajax-url' ) ? this : this.form );
+				},
+				
+				/**
+				 * <p>The field onkeydown event handler. If the field has the <code>data-ajax-url</code> attribute,
+				 * a TDI ajax request is sent when Enter is pressed.</p>
+				 * @method _onFieldSubmit
+				 * @private
+				 * @param {Event} evt The event object
+				 */
+				_onFieldSubmit : function( evt ) {
+					if ( evt.keyCode === 13 && $(this).data( 'ajax-url' ) ) {
+						evt.preventDefault();
+						TDI.Ajax.send( this );
+					}
 				},
 				
 			// PUBLIC STUFF ------------------------------------------------------------
@@ -1102,8 +1119,8 @@
 						event_data = {
 							contents : contents,
 							action : action,
-							width : width,
-							height : height
+							width : parseInt(width),
+							height : parseInt(height)
 						};
 						
 					// fire custom events

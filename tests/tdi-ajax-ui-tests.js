@@ -109,6 +109,10 @@ module( 'TDI.Ajax UI' );
 			[
 				function() { $( '#tdi-radio-data-ajax-url' ).change(); },
 				'input[type=radio].tdi with data-ajax-url'
+			],
+			[
+				function() { $( '#tdi-text-data-ajax-url' ).trigger({type:'keydown',keyCode:13}); },
+				'input[type=text].tdi with data-ajax-url'
 			]
 		];
 		
