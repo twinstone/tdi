@@ -740,7 +740,10 @@
 					 */
 					$(document).trigger( 'tdi:ajax:error', [{
 						status : xhr ? xhr.status : 'N/A',
-						message : error || 'Invalid Ajax response. The response must be a valid XML.'
+						message : error || 'Invalid Ajax response. The response must be a valid XML.',
+						xhr : xhr,
+						textStatus : textStatus,
+						options : options
 					}] );
 				},
 				
