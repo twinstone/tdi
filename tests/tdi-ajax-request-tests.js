@@ -198,3 +198,18 @@ module( 'TDI.Ajax.Request' );
 		} );
 	} );
 	
+	asyncTest( 'TDI.Ajax.Request.sendForm: file field; form with enctype', function() {
+		expect(1);
+		
+		var $form = $( '#tdi-ajax-send-form-with-file-enctype' ),
+			enctype = $form.attr( 'enctype' );
+		
+		TDI.Ajax.Request.sendForm( $form, {
+			end : function() {
+				equals( $form.attr( 'enctype' ), enctype, 'The form enctype should be preserved.' );
+				
+				start();
+			}
+		} );
+	} );
+	

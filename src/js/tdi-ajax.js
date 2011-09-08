@@ -445,13 +445,17 @@
 							
 						$form.attr( 'action', options.url );
 						$form.attr( 'method', 'post' );
-						if ( $form.find( 'input[type=file]' ).length > 0 ) {
-							$form.attr( 'enctype', 'multipart/form-data' );
-						}
-						else {
-							$form.attr( 'enctype', 'application/x-www-form-urlencoded' );
-						}
 						$form.attr( 'target', iframeName );
+						
+						// set the enctype to multipart if there are any files for upload, but only if there is no enctype attribute present
+						if ( !$form.attr( 'enctype' ) ) {
+							if ( $form.find( 'input[type=file]' ).length > 0 ) {
+								$form.attr( 'enctype', 'multipart/form-data' );
+							}
+							else {
+								$form.attr( 'enctype', 'application/x-www-form-urlencoded' );
+							}
+						}
 					
 				/*
 					Send the $form manualy.
@@ -1093,9 +1097,13 @@
 					var $tag = $(tag),
 						contents = $.trim( $tag.text() ),
 						action = $tag.attr( 'action' ) || 'open',
+						width = $tag.attr( 'width' ) || 'auto',
+						height = $tag.attr( 'height' ) || 'auto',
 						event_data = {
 							contents : contents,
-							action : action
+							action : action,
+							width : width,
+							height : height
 						};
 						
 					// fire custom events
