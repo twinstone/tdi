@@ -1092,8 +1092,10 @@
 					
 					var $tag = $(tag),
 						contents = $.trim( $tag.text() ),
+						action = $tag.attr( 'action' ) || 'open',
 						event_data = {
-							contents : contents
+							contents : contents,
+							action : action
 						};
 						
 					// fire custom events
@@ -1106,6 +1108,8 @@
 						 *   <dl>
 						 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
 						 *       <span>Dialog contents</dd>
+						 *     <dd><code><span>action</span> <span>&lt;String&gt;</span></code>
+						 *       <span>What to do with the dialog (defaults to `open`)</dd>
 						 *   </dl>
 						 */
 						$(document).trigger( 'tdi:ajax:beforeDialog', event_data );
@@ -1483,6 +1487,8 @@
 						 *   <dl>
 						 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
 						 *       <span>Dialog contents</dd>
+						 *     <dd><code><span>action</span> <span>&lt;String&gt;</span></code>
+						 *       <span>What to do with the dialog (defaults to `open`)</dd>
 						 *   </dl>
 						 */
 						$(document).trigger( 'tdi:ajax:dialog', data );

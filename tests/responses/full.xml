@@ -45,4 +45,6 @@
 	<message severity="ERROR">Info message 2</message>
 	
 	<dialog>This is a dialog!</dialog>
+	<dialog action="open">This is a dialog!</dialog>
+	<dialog action="close">This is a dialog!</dialog>
 </response>
