@@ -12,7 +12,7 @@
 	</publications>
     <dependencies>
     	<dependency org="com.yahoo.platform.yui" name="yuicompressor" rev="2.3.6" conf="minimize->master"/>
-    	<dependency org="org.seleniumhq.selenium" name="selenium-java" rev="2.5.0" conf="junit->master,runtime"/>
+    	<dependency org="org.seleniumhq.selenium" name="selenium-java" rev="2.5.0"  conf="junit->master,runtime"/>
     	<dependency org="junit" name="junit" rev="4.8.+" conf="junit->master"/>
     	<dependency org="org.eclipse.jetty" name="jetty-server" rev="7.2.+" conf="junit->master,runtime"/>
     	<dependency org="org.eclipse.jetty" name="jetty-util" rev="7.2.+" conf="junit->master"/>

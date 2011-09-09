@@ -11,3 +11,8 @@ syntax: regexp
 ^ivysettings\.xml$
 syntax: regexp
 ^\.settings$
+
+syntax: regexp
+^gradle/\.gradle$
+syntax: regexp
+^\.classpath$
