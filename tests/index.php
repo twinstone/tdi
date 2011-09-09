@@ -11,7 +11,7 @@
 		#tests li a.failed { background-image: url("data:image/gif;base64,R0lGODlhEAAQAJEAAMwAAP///////wAAACH5BAUUAAIALAAAAAAQABAAAAIXlI+py+0PowPA0Enzy3VrzGFWJ5XmmRQAOw=="); }
 	</style>
 	<script src="qunit/qunit.js"></script>
-	<script src="../src/js/jquery/jquery-1.6.3-patched.min.js"></script>
+	<script src="../src/js/jquery/jquery-1.6.4rc1-patched.min.js"></script>
 </head>
 <body>
 	<h1>TDI Tests</h1>

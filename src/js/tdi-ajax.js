@@ -156,11 +156,6 @@
 								.attr( 'value', $button.attr( 'value' ) )
 								.addClass( 'submit-action' )
 								.appendTo( $form );
-								
-						// IE7/8 does not fire submit event on the form, if using the <button> element
-							if ( $button.is( 'button' ) && $.browser.msie && $.browser.version.slice( 0, 1 ) <= 8 ) {
-								$form.trigger( 'submit' );
-							}
 					}
 				},
 				
@@ -464,15 +459,10 @@
 						$form.attr( 'method', 'post' );
 						$form.attr( 'target', iframeName );
 						
-						// set the enctype to multipart if there are any files for upload, but only if there is no enctype attribute present
-						if ( !$form.attr( 'enctype' ) ) {
+						// set the enctype to multipart if there are any files for upload
 							if ( $form.find( 'input[type=file]' ).length > 0 ) {
 								$form.attr( 'enctype', 'multipart/form-data' );
 							}
-							else {
-								$form.attr( 'enctype', 'application/x-www-form-urlencoded' );
-							}
-						}
 					
 				/*
 					Send the $form manualy.

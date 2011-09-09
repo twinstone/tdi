@@ -59,7 +59,7 @@
 		</concat>
 		<delete dir="distrib/bundles" includes="tdi-bundle-min-temp.js"/>
 		<concat destfile="distrib/bundles/tdi-bundle-all-min.js" encoding="UTF-8" fixlastline="yes">
-			<fileset dir="src/js/jquery" includes="jquery-1.6.3-patched.min.js"/>
+			<fileset dir="src/js/jquery" includes="jquery-1.6.4rc1-patched.min.js"/>
 			<filelist dir="distrib/bundles" files="tdi-bundle-min.js"/>
 		</concat>
 		<copy todir="distrib/bundles">
