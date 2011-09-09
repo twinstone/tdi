@@ -45,6 +45,6 @@
 	<message severity="ERROR">Info message 2</message>
 	
 	<dialog width="500" height="400">This is a dialog!</dialog>
-	<dialog action="open">This is a dialog!</dialog>
+	<dialog action="open" cancel-url="cancel/url">This is a dialog!</dialog>
 	<dialog action="close">This is a dialog!</dialog>
 </response>

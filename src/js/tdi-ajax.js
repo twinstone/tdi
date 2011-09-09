@@ -1117,11 +1117,13 @@
 					var $tag = $(tag),
 						contents = $.trim( $tag.text() ),
 						action = $tag.attr( 'action' ) || 'open',
+						cancelUrl = $tag.attr( 'cancel-url' ),
 						width = $tag.attr( 'width' ) || 'auto',
 						height = $tag.attr( 'height' ) || 'auto',
 						event_data = {
 							contents : contents,
 							action : action,
+							cancelUrl : cancelUrl,
 							width : parseInt(width),
 							height : parseInt(height)
 						};
@@ -1138,6 +1140,12 @@
 						 *       <span>Dialog contents</dd>
 						 *     <dd><code><span>action</span> <span>&lt;String&gt;</span></code>
 						 *       <span>What to do with the dialog (defaults to `open`)</dd>
+						 *     <dd><code><span>cancel-url</span> <span>&lt;String&gt;</span></code>
+						 *       <span>An optional cancel URL. Can be used to close the Dialog with ESC and other UI options.</dd>
+						 *     <dd><code><span>width</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Optional width of the Dialog.</dd>
+						 *     <dd><code><span>height</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Optional height of the Dialog.</dd>
 						 *   </dl>
 						 */
 						$(document).trigger( 'tdi:ajax:beforeDialog', event_data );
@@ -1517,6 +1525,12 @@
 						 *       <span>Dialog contents</dd>
 						 *     <dd><code><span>action</span> <span>&lt;String&gt;</span></code>
 						 *       <span>What to do with the dialog (defaults to `open`)</dd>
+						 *     <dd><code><span>cancel-url</span> <span>&lt;String&gt;</span></code>
+						 *       <span>An optional cancel URL. Can be used to close the Dialog with ESC and other UI options.</dd>
+						 *     <dd><code><span>width</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Optional width of the Dialog.</dd>
+						 *     <dd><code><span>height</span> <span>&lt;String&gt;</span></code>
+						 *       <span>Optional height of the Dialog.</dd>
 						 *   </dl>
 						 */
 						$(document).trigger( 'tdi:ajax:dialog', data );
