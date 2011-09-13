@@ -4,27 +4,9 @@ apply plugin: 'eclipse'
 
 archivesBaseName = project.hasProperty('archivePrefix') ? archivePrefix + name : 'twinstone_' + name
 
-releaseResolver = new org.apache.ivy.plugins.resolver.URLResolver()
-releaseResolver.name = 'Artifactory (twinstone releases)'
-releaseResolver.m2compatible = true
-releaseResolver.addArtifactPattern artifactoryUrl + '/libs-release-local/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
-releaseResolver.addIvyPattern artifactoryUrl + '/libs-release-local/[organisation]/[module]/[revision]/ivy.xml'
+inc = new java.io.File(projectDir,'../../Twinstone Common/repositories.gradle')
+apply from: inc.exists() ? inc : '${artifactoryUrl}/config/repositories-0.8.0.gradle'
 
-genericResolver = new org.apache.ivy.plugins.resolver.IBiblioResolver()
-genericResolver.name = 'Artifactory (general releases)'
-genericResolver.m2compatible = true
-genericResolver.root = artifactoryUrl+'/libs-release'
-
-snapshotResolver = new org.apache.ivy.plugins.resolver.URLResolver()
-snapshotResolver.name = 'Artifactory (twinstone snapshots)'
-snapshotResolver.m2compatible = true
-snapshotResolver.addArtifactPattern artifactoryUrl + '/libs-snapshot-local/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
-snapshotResolver.addIvyPattern artifactoryUrl + '/libs-snapshot-local/[organisation]/[module]/[revision]/ivy.xml'
-snapshotResolver.changingPattern = '.*-SNAPSHOT'
-snapshotResolver.checkmodified = true
-
-uploadResolver = snapshotResolver
-org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Realm", "twinstone.etn.cz", artifactoryUser, artifactoryPass)
 buildDir = new java.io.File(projectDir, '../build-main')
 
 repositories {
@@ -36,18 +18,10 @@ repositories {
 	}
 }
 
-if (version.endsWith('-SNAPSHOT')) {
-   version = version - '-SNAPSHOT' + '-' + String.format("%tY%<tm%<td-%<tH%<tM", new Date()) + '-SNAPSHOT'
-   latestStatus = 'latest.integration'
-   releasing = false
-} else {
-   releasing = true
-   latestStatus = 'latest.release'
-}
 
 configurations {
 	compression
-	testCompile {transitive=true}
+	testCompile
 }
 
 sourceSets {
@@ -100,7 +74,7 @@ task makeJs(dependsOn: compress) << {
 	}
 	ant.concat(destfile: "../build-main/js/tdi-bundle-all-min.js", encoding: "UTF-8", fixlastline: "yes") {
 		fileset(dir: "../build-main/js", includes: "banner.txt")
-		fileset(dir: "../src/js/jquery", includes: "jquery-1.6.3-patched.min.js")
+		fileset(dir: "../src/js/jquery", includes: "jquery-1.6.4rc1-patched.min.js")
 		fileset(dir: "../build-main/js", includes: "tdi-bundle-min-temp.js")
 	}
 	delete("../build-main/js/tdi-bundle-min-temp.js")
@@ -111,9 +85,20 @@ task makeJs(dependsOn: compress) << {
       	}
 	}
 }
+//disable creation of default jar, only jsJar should be published
+classes.enabled = false
+jar.enabled = false
+configurations.archives.artifacts.each {if (it.type=='jar') configurations.archives.removeArtifact(it)}
+
+test.dependsOn makeJs
+
+test {
+	includes += "**/*Test.class"
+	ignoreFailures = !releasing
+}
 
 task jsJar(type: Jar, dependsOn: makeJs) {
-	into 'META-INF/resources/twinstone_tdi/js'
+	into 'META-INF/resources/tdi/js'
 	from('../build-main/js') {
 		include '*.js'
 	}
@@ -128,7 +113,36 @@ artifacts {
 uploadArchives {
 	uploadDescriptor = true
 	repositories {
-		add(releasing ? releaseResolver : uploadResolver)
+		add(releasing ? releaseResolver : snapshotResolver)
 	}
 }
 
+task javadoc(overwrite: true) << {
+	copy {
+		into '../build-main/in'
+	   	from('../src') {include '*.js'}
+	}
+	exec {
+		executable pythonBin
+		args += yuidocHome+"/bin/yuidoc.py"
+		args += '../build-main/in'
+		args += "-s"
+		args += "-p"
+		args += '../build-main/in'
+		args += "-o"
+		args += '../build-main/javadoc'
+		args += "-t"
+		args += yuidocTemplate
+		args += "-v"
+		args += baseVersion
+		args += "-m"
+		args += "Twinstone TDI"
+		args += "-u"
+		args += projectUrl
+	}
+	inc = new java.io.File(projectDir,'../../Twinstone Common/webdav.gradle')
+	webdav = new GroovyClassLoader(getClass().classLoader).parseClass(new GroovyCodeSource(inc.exists() ? inc.toURI().toURL() : new java.net.URL('${artifactoryUrl}/config/webdav-0.8.0.gradle'))).newInstance()
+	webdav.delete('/javadoc/tdi/'+baseVersion+'/', true)
+	webdav.mkcol('/javadoc/tdi/'+baseVersion+'/')
+	webdav.putTree('/javadoc/tdi/'+baseVersion+'/', new java.io.File('../build-main/javadoc'))
+}

@@ -1,5 +1,6 @@
 package org.twinstone.tdi;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URI;
@@ -38,6 +39,13 @@ public class BrowserPages {
 
 	@BeforeClass
 	public static void runJetty() throws Exception {
+		String path = ".";
+		File f = new File("tests");
+		if (!f.exists()) {
+			path = "..";
+			f = new File("../tests");
+			if (!f.exists()) throw new Exception("Test path not found"); 
+		}
 		ServerSocket localmachine = new ServerSocket(0);
 		port = localmachine.getLocalPort();
 		localmachine.close();
@@ -52,7 +60,7 @@ public class BrowserPages {
 			
 		};
 		res.setDirectoriesListed(true);
-		res.setResourceBase(".");
+		res.setResourceBase(path);
 		HandlerList hl = new HandlerList();
 		hl.setHandlers(new Handler[]{res,new DefaultHandler()});
 		server.setHandler(hl);

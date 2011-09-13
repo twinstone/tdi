@@ -16,3 +16,5 @@ syntax: regexp
 ^gradle/\.gradle$
 syntax: regexp
 ^\.classpath$
+syntax: regexp
+^build-main$
