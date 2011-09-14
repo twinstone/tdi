@@ -5,7 +5,7 @@ apply plugin: 'eclipse'
 archivesBaseName = project.hasProperty('archivePrefix') ? archivePrefix + name : 'twinstone_' + name
 
 inc = new java.io.File(projectDir,'../../Twinstone Common/repositories.gradle')
-apply from: inc.exists() ? inc : '${artifactoryUrl}/config/repositories-0.8.0.gradle'
+apply from: inc.exists() ? inc : artifactoryUrl+'/config/repositories-0.8.0.gradle'
 
 buildDir = new java.io.File(projectDir, '../build-main')
 
@@ -141,7 +141,7 @@ task javadoc(overwrite: true) << {
 		args += projectUrl
 	}
 	inc = new java.io.File(projectDir,'../../Twinstone Common/webdav.gradle')
-	webdav = new GroovyClassLoader(getClass().classLoader).parseClass(new GroovyCodeSource(inc.exists() ? inc.toURI().toURL() : new java.net.URL('${artifactoryUrl}/config/webdav-0.8.0.gradle'))).newInstance()
+	webdav = new GroovyClassLoader(getClass().classLoader).parseClass(new GroovyCodeSource(inc.exists() ? inc.toURI().toURL() : new java.net.URL(artifactoryUrl+'/config/webdav-0.8.0.gradle'))).newInstance()
 	webdav.delete('/javadoc/tdi/'+baseVersion+'/', true)
 	webdav.mkcol('/javadoc/tdi/'+baseVersion+'/')
 	webdav.putTree('/javadoc/tdi/'+baseVersion+'/', new java.io.File('../build-main/javadoc'))
