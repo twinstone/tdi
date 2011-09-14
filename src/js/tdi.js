@@ -5,8 +5,8 @@ if ( typeof jQuery == 'undefined' ) {
 (function($) {
 	
 	/**
-	 * <p>Javascript library which enables the communication between the UI and the application, using
-	 * the <a href="http://wbase.etn/doku.php?id=ice:eris:infusion_js:ajax:protokol">Infusion AJAX protocol</a>.</p>
+	 * <p><a href="http://twinstone.etn.cz/confluence/display/TDI">TDI</a> is a Javascript library which enables the communication between the UI and the application, using
+	 * the <a href="http://twinstone.etn.cz/confluence/display/TDI/Infusion+Protocol">Infusion AJAX protocol</a>.</p>
 	 * @module TDI
 	 */
 	var _TDI = {
