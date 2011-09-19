@@ -56,11 +56,11 @@ module( 'TDI.Ajax UI' );
 			],
 			[
 				function() { $( '#tdi-link' ).click(); },
-				'a.tdi'
+				'a.infuse'
 			],
 			[
 				function() { $( '#tdi-link-data-ajax-url' ).click(); },
-				'a.tdi with data-ajax-url'
+				'a.infuse with data-ajax-url'
 			],
 			[
 				function() { $( '#ajaxform' ).submit(); },
@@ -72,11 +72,11 @@ module( 'TDI.Ajax UI' );
 			],
 			[
 				function() { $( '#tdi-form' ).submit(); },
-				'form.tdi'
+				'form.infuse'
 			],
 			[
 				function() { $( '#tdi-form-data-ajax-url' ).submit(); },
-				'form.tdi width data-ajax-url'
+				'form.infuse width data-ajax-url'
 			],
 			[
 				function() { $( '#ajaxselect' ).change(); },
@@ -88,31 +88,31 @@ module( 'TDI.Ajax UI' );
 			],
 			[
 				function() { $( '#tdi-select' ).change(); },
-				'select.tdi'
+				'select.infuse'
 			],
 			[
 				function() { $( '#tdi-select-data-ajax-url' ).change(); },
-				'select.tdi with data-ajax-url'
+				'select.infuse with data-ajax-url'
 			],
 			[
 				function() { $( '#tdi-checkbox' ).change(); },
-				'input[type=checkbox].tdi'
+				'input[type=checkbox].infuse'
 			],
 			[
 				function() { $( '#tdi-checkbox-data-ajax-url' ).change(); },
-				'input[type=checkbox].tdi with data-ajax-url'
+				'input[type=checkbox].infuse with data-ajax-url'
 			],
 			[
 				function() { $( '#tdi-radio' ).change(); },
-				'input[type=radio].tdi'
+				'input[type=radio].infuse'
 			],
 			[
 				function() { $( '#tdi-radio-data-ajax-url' ).change(); },
-				'input[type=radio].tdi with data-ajax-url'
+				'input[type=radio].infuse with data-ajax-url'
 			],
 			[
 				function() { $( '#tdi-text-data-ajax-url' ).trigger({type:'keydown',keyCode:13}); },
-				'input[type=text].tdi with data-ajax-url'
+				'input[type=text].infuse with data-ajax-url'
 			]
 		];
 		

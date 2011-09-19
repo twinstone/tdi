@@ -11,21 +11,22 @@
 			/**
 			 * <p>Selectors for ajax enabled elements:</p>
 			 * <ul>
-			 *   <li><code>a.tdi</code></li>
-			 *   <li><code>form.tdi</code></li>
-			 *   <li><code>form.tdi input[type=submit], form.tdi button</code></li>
-			 *   <li><code>select.tdi, input.tdi</code></li>
+			 *   <li><code>a.infuse</code></li>
+			 *   <li><code>form.infuse</code></li>
+			 *   <li><code>form.infuse input[type=submit], form.infuse button</code></li>
+			 *   <li><code>select.infuse, input[type=checkbox].infuse, input[type=radio].infuse</code></li>
+			 *   <li><code>input[type=text].infuse</code></li>
 			 * </ul>
 			 * @property _delegateSelectors
 			 * @private
 			 * @final
 			 */
 			_delegateSelectors : {
-				linkClick : 'a.ajaxlink, a.tdi',
-				formSubmit : 'form.ajaxform, form.tdi',
-				formButtonActivate : 'form.ajaxform [type=submit], form.tdi [type=submit]',
-				fieldChange : 'select.ajaxselect, select.tdi, input[type=checkbox].tdi, input[type=radio].tdi',
-				fieldSubmit : 'input[type=text].tdi'
+				linkClick : 'a.ajaxlink, a.infuse',
+				formSubmit : 'form.ajaxform, form.infuse',
+				formButtonActivate : 'form.ajaxform [type=submit], form.infuse [type=submit]',
+				fieldChange : 'select.ajaxselect, select.infuse, input[type=checkbox].infuse, input[type=radio].infuse',
+				fieldSubmit : 'input[type=text].infuse'
 			},
 			
 			/**
