@@ -120,24 +120,24 @@ uploadArchives {
 task javadoc(overwrite: true) << {
 	copy {
 		into '../build-main/in'
-	   	from('../src') {include '*.js'}
+	   	from('../src/js') {include '*.js'}
 	}
 	exec {
 		executable pythonBin
-		args += yuidocHome+"/bin/yuidoc.py"
+		args += yuidocBin
 		args += '../build-main/in'
-		args += "-s"
-		args += "-p"
-		args += '../build-main/in'
-		args += "-o"
+		args += "--showprivate"
+		args += "--parseroutdir"
+		args += '../build-main/out'
+		args += "--outputdir"
 		args += '../build-main/javadoc'
-		args += "-t"
+		args += "--template"
 		args += yuidocTemplate
-		args += "-v"
+		args += "--version"
 		args += baseVersion
-		args += "-m"
+		args += "--project"
 		args += "Twinstone TDI"
-		args += "-u"
+		args += "--projecturl"
 		args += projectUrl
 	}
 	inc = new java.io.File(projectDir,'../../Twinstone Common/webdav.gradle')
