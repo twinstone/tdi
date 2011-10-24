@@ -2,7 +2,7 @@ CHANGES AFTER VERSION 1.5.0
 =============================
 
 ==== Overview ====
-  * Changed the **tdi** CSS class back to **infuse**
+  * Added support for dialog ID attribute
 
 CHANGES AFTER VERSION 1.4.1
 =============================
@@ -31,50 +31,50 @@ ZMENY OPROTI VERZI 1.3.3
 ZMENY OPROTI VERZI 1.3.2
 =============================
 
-==== Pøehled ====
-  * zmìna a sjednocení CSS tøídy **loading-related** na **loading-target**
-  * podpora infuze pro všechny elementy &lt;input&gt;
+==== Pï¿½ehled ====
+  * zmï¿½na a sjednocenï¿½ CSS tï¿½ï¿½dy **loading-related** na **loading-target**
+  * podpora infuze pro vï¿½echny elementy &lt;input&gt;
 
 ZMENY OPROTI VERZI 1.3.1
 =============================
 
-==== Pøehled ====
-  * oznaèení submit buttonù jako "loading" pøi bìžícím infuzním requestu
+==== Pï¿½ehled ====
+  * oznaï¿½enï¿½ submit buttonï¿½ jako "loading" pï¿½i bï¿½ï¿½cï¿½m infuznï¿½m requestu
 
 ZMENY OPROTI VERZI 1.3.0
 =============================
 
-==== Pøehled ====
-  * oprava chyby pøi odstraòování CSS tøídy **loading-related**
+==== Pï¿½ehled ====
+  * oprava chyby pï¿½i odstraï¿½ovï¿½nï¿½ CSS tï¿½ï¿½dy **loading-related**
   
 ZMENY OPROTI VERZI 1.2.1
 =============================
 
-==== Pøehled ====
-  * infuse form fieldy v requestu posílají i svùj name=value
+==== Pï¿½ehled ====
+  * infuse form fieldy v requestu posï¿½lajï¿½ i svï¿½j name=value
   
 ZMENY OPROTI VERZI 1.1.0
 =============================
 
-==== Pøehled ====
-  * pøidané unit testy (ICe)
-  * oprava chyb plynoucích z unit testù (ICe)
+==== Pï¿½ehled ====
+  * pï¿½idanï¿½ unit testy (ICe)
+  * oprava chyb plynoucï¿½ch z unit testï¿½ (ICe)
 
 ZMENY OPROTI VERZI 1.0.2
 =============================
 
-==== Pøehled ====
-  * zamezení dvojího stažení stejného script/style v pøípadì nastaveného id atributu (ICe)
-  * zmìna naèítání externích stylù (ajax->node) (ICe)
+==== Pï¿½ehled ====
+  * zamezenï¿½ dvojï¿½ho staï¿½enï¿½ stejnï¿½ho script/style v pï¿½ï¿½padï¿½ nastavenï¿½ho id atributu (ICe)
+  * zmï¿½na naï¿½ï¿½tï¿½nï¿½ externï¿½ch stylï¿½ (ajax->node) (ICe)
 
 ZMENY OPROTI VERZI 1.0.1
 =============================
 
-==== Pøehled ====
-  * odstranìné automatické naètení "modulù", javascripty se bundlují (ICe)
+==== Pï¿½ehled ====
+  * odstranï¿½nï¿½ automatickï¿½ naï¿½tenï¿½ "modulï¿½", javascripty se bundlujï¿½ (ICe)
 
 ZMENY OPROTI VERZI 1.0
 =============================
 
-==== Pøehled ====
-  * nastavení enctype="multipart/form-data" jen na formuláøe, které obsahují input[type=file] (ICe)
+==== Pï¿½ehled ====
+  * nastavenï¿½ enctype="multipart/form-data" jen na formulï¿½ï¿½e, kterï¿½ obsahujï¿½ input[type=file] (ICe)
