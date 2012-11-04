@@ -1,0 +1,120 @@
+
+apply plugin: 'base'
+
+repositories {
+	ivy { url = "$artifactory/etn-all" }
+	ivy { url = "$artifactory/twinstone" }
+}
+
+uploadArchives {
+	repositories {
+		ivy {
+			url = "$artifactory/twinstone"
+			credentials { username = "$login" ; password = "$pwd" }
+		}
+	}
+}
+
+def bundleDir = "$buildDir/minify"
+
+configurations['default'].extendsFrom configurations.archives
+
+task hello << {
+	project.configurations.minify.files.each { f->
+		println f
+	}
+}
+
+configurations {
+	minify
+}
+
+task prepare << {
+	file("$bundleDir/js").mkdirs()
+}
+
+task compress(type: JavaExec, dependsOn: prepare) {
+   main = 'com.yahoo.platform.yui.compressor.YUICompressor'
+   classpath(project.configurations.minify)
+   args += "--nomunge"
+   args += "--preserve-semi"
+   args += "--type"
+   args += "js"
+   args +="--charset"
+   args += "utf8"
+   args += "-o"
+   args += "$bundleDir/js/tdi-bundle-min-temp.js"
+   args += file('src/js/tdi-bundle.js')
+}
+
+task compressJquery(type: JavaExec, dependsOn: prepare) {
+   main = 'com.yahoo.platform.yui.compressor.YUICompressor'
+   classpath(project.configurations.minify)
+   args += "--nomunge"
+   args += "--preserve-semi"
+   args += "--type"
+   args += "js"
+   args +="--charset"
+   args += "utf8"
+   args += "-o"
+   args += "$bundleDir/js/jquery-min-temp.js"
+   args += file('src/js/jquery/jquery-1.7b2.js')
+}
+
+task makeJs(dependsOn: [compress, compressJquery]) << {
+	ant.concat(destfile: "$bundleDir/js/tdi-bundle-min.js", encoding: "UTF-8", fixlastline: "yes") {
+		fileset(dir: "$projectDir", includes: "banner.txt")
+		fileset(dir: "$bundleDir/js", includes: "tdi-bundle-min-temp.js")
+	}
+	ant.concat(destfile: "$bundleDir/js/tdi-bundle-all-min.js", encoding: "UTF-8", fixlastline: "yes") {
+		fileset(dir: "$projectDir", includes: "banner.txt")
+		fileset(dir: "$bundleDir/js", includes: "jquery-min-temp.js")
+		fileset(dir: "$bundleDir/js", includes: "tdi-bundle-min-temp.js")
+	}
+}
+
+task jsJar(type: Jar, dependsOn: makeJs) {
+	into 'META-INF/resources/tdi/js'
+	from("$bundleDir/js") {
+		include '*.js'
+		exclude '*-temp.js'
+	}
+}
+
+artifacts {
+	archives (jsJar) {
+		type = 'bundle'
+	}
+}
+
+task javadoc(overwrite: true) << {
+	copy {
+		into '$bundleDir/in'
+	   	from('../src/js') {include '*.js'}
+	}
+	exec {
+		executable pythonBin
+		args += yuidocBin
+		args += '$bundleDir/in'
+		args += "--showprivate"
+		args += "--parseroutdir"
+		args += '$bundleDir/out'
+		args += "--outputdir"
+		args += '$bundleDir/javadoc'
+		args += "--template"
+		args += yuidocTemplate
+		args += "--version"
+		args += baseVersion
+		args += "--project"
+		args += "Twinstone TDI"
+		args += "--projecturl"
+		args += projectUrl
+	}
+	inc = new java.io.File(projectDir,'../../Twinstone Common/webdav.gradle')
+	webdav = new GroovyClassLoader(getClass().classLoader).parseClass(new GroovyCodeSource(inc.exists() ? inc.toURI().toURL() : new java.net.URL(artifactoryUrl+'/config/webdav-0.8.0.gradle'))).newInstance()
+	webdav.delete('/javadoc/tdi/'+baseVersion+'/', true)
+	webdav.mkcol('/javadoc/tdi/'+baseVersion+'/')
+	webdav.putTree('/javadoc/tdi/'+baseVersion+'/', new java.io.File('$bundleDir/javadoc'))
+}
+
+apply from: 'dependencies.gradle'
