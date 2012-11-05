@@ -68,11 +68,11 @@ task makeJs(dependsOn: [compress, compressJquery]) << {
 }
 
 artifacts {
-	archives (file("$bundleDir/js/jquery-min-temp.js")) {
-		name = 'jquery-min'
-	}
-	archives (file("$bundleDir/js/tdi-bundle-min-temp.js")) {
+	archives (file("$bundleDir/js/tdi-bundle-min.js")) {
 		name = 'tdi-bundle-min'
+	}
+	archives (file("$bundleDir/js/tdi-bundle-all-min.js")) {
+		name = 'tdi-bundle-all-min'
 	}
 }
 
