@@ -19,12 +19,6 @@ def bundleDir = "$buildDir/minify"
 
 configurations['default'].extendsFrom configurations.archives
 
-task hello << {
-	project.configurations.minify.files.each { f->
-		println f
-	}
-}
-
 configurations {
 	minify
 }
@@ -70,6 +64,15 @@ task makeJs(dependsOn: [compress, compressJquery]) << {
 		fileset(dir: "$projectDir", includes: "banner.txt")
 		fileset(dir: "$bundleDir/js", includes: "jquery-min-temp.js")
 		fileset(dir: "$bundleDir/js", includes: "tdi-bundle-min-temp.js")
+	}
+}
+
+artifacts {
+	archives (file("$bundleDir/js/jquery-min-temp.js")) {
+		name = 'jquery-min'
+	}
+	archives (file("$bundleDir/js/tdi-bundle-min-temp.js")) {
+		name = 'tdi-bundle-min'
 	}
 }
 
