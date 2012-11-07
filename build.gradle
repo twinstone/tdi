@@ -24,10 +24,20 @@ configurations {
 }
 
 task prepare << {
+	file("$bundleDir/temp").mkdirs()
 	file("$bundleDir/js").mkdirs()
 }
 
-task compress(type: JavaExec, dependsOn: prepare) {
+task bundle(dependsOn: prepare) {
+	ant.concat(destfile: "$bundleDir/js/tdi-bundle.js", encoding: "UTF-8", fixlastline: "yes") {
+		fileset(dir: "$projectDir", includes: "banner.txt")
+		fileset(dir: "$projectDir/src/js/", includes: "tdi.js")
+		fileset(dir: "$projectDir/src/js/", includes: "tdi-ajax.js")
+		fileset(dir: "$projectDir/src/js/", includes: "tdi-tools.js")
+	}
+}
+
+task compress(type: JavaExec, dependsOn: bundle) {
    main = 'com.yahoo.platform.yui.compressor.YUICompressor'
    classpath(project.configurations.minify)
    args += "--nomunge"
@@ -37,37 +47,25 @@ task compress(type: JavaExec, dependsOn: prepare) {
    args +="--charset"
    args += "utf8"
    args += "-o"
-   args += "$bundleDir/js/tdi-bundle-min-temp.js"
-   args += file('src/js/tdi-bundle.js')
+   args += "$bundleDir/temp/tdi-bundle-min-temp.js"
+   args += file("$bundleDir/js/tdi-bundle.js")
 }
 
-task compressJquery(type: JavaExec, dependsOn: prepare) {
-   main = 'com.yahoo.platform.yui.compressor.YUICompressor'
-   classpath(project.configurations.minify)
-   args += "--nomunge"
-   args += "--preserve-semi"
-   args += "--type"
-   args += "js"
-   args +="--charset"
-   args += "utf8"
-   args += "-o"
-   args += "$bundleDir/js/jquery-min-temp.js"
-   args += file('src/js/jquery/jquery-1.7b2.js')
-}
-
-task makeJs(dependsOn: [compress, compressJquery]) << {
+task makeJs(dependsOn: [compress]) << {
 	ant.concat(destfile: "$bundleDir/js/tdi-bundle-min.js", encoding: "UTF-8", fixlastline: "yes") {
 		fileset(dir: "$projectDir", includes: "banner.txt")
-		fileset(dir: "$bundleDir/js", includes: "tdi-bundle-min-temp.js")
+		fileset(dir: "$bundleDir/temp", includes: "tdi-bundle-min-temp.js")
 	}
 	ant.concat(destfile: "$bundleDir/js/tdi-bundle-all-min.js", encoding: "UTF-8", fixlastline: "yes") {
-		fileset(dir: "$projectDir", includes: "banner.txt")
-		fileset(dir: "$bundleDir/js", includes: "jquery-min-temp.js")
-		fileset(dir: "$bundleDir/js", includes: "tdi-bundle-min-temp.js")
+		fileset(dir: "$projectDir/src/js/jquery", includes: "jquery-1.8.2.min.js")
+		fileset(dir: "$bundleDir/js", includes: "tdi-bundle-min.js")
 	}
 }
 
 artifacts {
+	archives (file("$bundleDir/js/tdi-bundle.js")) {
+		name = 'tdi-bundle'
+	}
 	archives (file("$bundleDir/js/tdi-bundle-min.js")) {
 		name = 'tdi-bundle-min'
 	}
@@ -80,7 +78,6 @@ task jsJar(type: Jar, dependsOn: makeJs) {
 	into 'META-INF/resources/tdi/js'
 	from("$bundleDir/js") {
 		include '*.js'
-		exclude '*-temp.js'
 	}
 }
 
@@ -91,33 +88,35 @@ artifacts {
 }
 
 task javadoc(overwrite: true) << {
+	file("$bundleDir/temp/doc-in").mkdirs()
+
 	copy {
-		into '$bundleDir/in'
-	   	from('../src/js') {include '*.js'}
+		into "$bundleDir/temp/doc-in"
+	   	from("$projectDir/src/js") {include "*.js"}
 	}
 	exec {
 		executable pythonBin
 		args += yuidocBin
-		args += '$bundleDir/in'
+		args += "$bundleDir/temp/doc-in"
 		args += "--showprivate"
 		args += "--parseroutdir"
-		args += '$bundleDir/out'
+		args += "$bundleDir/temp/doc-out"
 		args += "--outputdir"
-		args += '$bundleDir/javadoc'
+		args += "$bundleDir/doc"
 		args += "--template"
 		args += yuidocTemplate
 		args += "--version"
-		args += baseVersion
+		args += "$version"
 		args += "--project"
 		args += "Twinstone TDI"
 		args += "--projecturl"
 		args += projectUrl
 	}
-	inc = new java.io.File(projectDir,'../../Twinstone Common/webdav.gradle')
-	webdav = new GroovyClassLoader(getClass().classLoader).parseClass(new GroovyCodeSource(inc.exists() ? inc.toURI().toURL() : new java.net.URL(artifactoryUrl+'/config/webdav-0.8.0.gradle'))).newInstance()
-	webdav.delete('/javadoc/tdi/'+baseVersion+'/', true)
-	webdav.mkcol('/javadoc/tdi/'+baseVersion+'/')
-	webdav.putTree('/javadoc/tdi/'+baseVersion+'/', new java.io.File('$bundleDir/javadoc'))
+	inc = new java.io.File(projectDir,'../Twinstone Common/webdav.gradle')
+	webdav = new GroovyClassLoader(getClass().classLoader).parseClass(new GroovyCodeSource(inc.exists() ? inc.toURI().toURL() : new java.net.URL(artifactory+'/config/webdav-0.8.0.gradle'))).newInstance()
+	webdav.delete('/javadoc/tdi/'+version+'/', true)
+	webdav.mkcol('/javadoc/tdi/'+version+'/')
+	webdav.putTree('/javadoc/tdi/'+version+'/', new java.io.File("$bundleDir/doc"))
 }
 
 apply from: 'dependencies.gradle'
