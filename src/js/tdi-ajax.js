@@ -187,7 +187,7 @@ TDI.Ajax = function($) {
 		 * @param {Event} evt The event object
 		 */
 		function _onFieldChange( evt ) {
-			TDI.Ajax.send( $(this).data( 'ajax-url' ) === undefined ? this.form : this );
+			TDI.Ajax.send( $(this).data( 'ajax-url' ) ? this : this.form );
 		}
 
 		/**
@@ -245,7 +245,7 @@ TDI.Ajax = function($) {
 					confirm = $elm.data( 'confirm' ),
 					related = $elm.closest( $elm.data( 'related-ancestor' ) || '' ).add( $( $elm.data( 'related-element' ) || '' ) ).add( $( $elm.attr( 'rel' ) || '' ) ).add( $( $elm.data( '_submitButton' ) || '' ) ),
 					triggerGroup = $( $elm.data( 'trigger-group' ) || '' ),
-					url = $elm.data( 'ajax-url' ) || $elm.attr( 'href' ),
+					url = $elm.data( 'ajax-url' ) || $elm.attr( 'href' ) || $elm.attr( 'action' ),
 					data = {};
 
 				// if the URL is empty, try to use $elm.value
@@ -313,7 +313,19 @@ TDI.Ajax = function($) {
 				};
 
 				if ( $elm.is( 'form' ) ) {
-					TDI.Ajax.Request.sendForm( $elm[0], _options );
+					if ($elm.find("input[type=file]").length > 0) {
+						TDI.Ajax.Request.sendForm( $elm[0], _options );
+					}
+					else {
+						$.extend(_options.data, $elm.serialize());
+						_options.method = $elm.attr('method');
+						_options.end = function() {
+							$elm.data( '_submitButton', null );
+							$elm.find( 'input.submit-action' ).remove();
+						};
+
+						TDI.Ajax.Request.send( url, _options );
+					}
 				}
 				else {
 					TDI.Ajax.Request.send( url, _options );
@@ -526,11 +538,7 @@ TDI.Ajax.Request = function($) {
 					$form.attr( 'action', options.url );
 					$form.attr( 'method', 'post' );
 					$form.attr( 'target', iframeName );
-
-					// set the enctype to multipart if there are any files for upload
-						if ( $form.find( 'input[type=file]' ).length > 0 ) {
-							$form.attr( 'enctype', 'multipart/form-data' );
-						}
+					$form.attr( 'enctype', 'multipart/form-data' );
 
 			/*
 				Send the $form manualy.
@@ -1694,7 +1702,7 @@ TDI.Ajax.Response = function($) {
 				'tdi:ajax:beforeDialog'		: _onDialogDefault
 			},
 			customDefault = function( evt, data ) {
-				customHandlers[ evt.type ].call( this, evt, data[1] );
+				customHandlers[ evt.type ].call( this, evt, ($.isArray(data) ? data[1] : data) );
 			};
 
 		for ( i in customHandlers ) {
