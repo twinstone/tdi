@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<response>
+	<status>OK</status>
+	<update target="update-default">Update default</update>
+	<update target="update-replace" replace="true">&lt;div id="update-replaced"&gt;Update replace&lt;/div&gt;</update>
+	<update target="update-append" append="true">Update append</update>
+	<update target="update-prepend" prepend="true">Update prepend</update>
+	<update target="update-add-class" class-add="cls-add"></update>
+	<update target="update-remove-class" class-remove="cls-remove"></update>
+	
+	<insert target="inserts">&lt;div id="inserted-after-default"&gt;Inserted after (default)&lt;/div&gt;</insert>
+	<insert target="inserts" position="after">&lt;div id="inserted-after"&gt;Inserted after&lt;/div&gt;</insert>
+	<insert target="inserts" position="before">&lt;div id="inserted-before"&gt;Inserted before&lt;/div&gt;</insert>
+	
+	<script>
+		test( 'TDI.Ajax.Response: inline script', function() {
+			expect(1);
+			
+			ok( true, 'Inline script executed.' );
+		} );
+	</script>
+	<script src="responses/script1.js"></script>
+	<script src="responses/script2.js" id="script2">
+		if ( window._TDI_TEST_SCRIPT_EXTERNAL_2 = true ) {
+			test( 'TDI.Ajax.Response: external script with inline script', function() {
+				expect(3);
+				
+				ok( true, 'External script loaded and inline script executed.' );
+				equals( $( '#script2' ).length, 1, 'External script with ID.' );
+				equals( $( '#script2_inline' ).length, 1, 'Inline script with ID.' );
+			} );
+		}
+	</script>
+	
+	<style src="responses/style.css" id="style1"></style>
+	
+	<popup href="responses/popup1.html"><!-- default popup --></popup>
+	<popup href="responses/popup2.html" mode="dialog"><!-- default dialog --></popup>
+	<popup href="responses/popup3.html" mode="dialog" width="300" height="300"><!-- dialog with dimensions --></popup>
+	
+	<reload></reload>
+	<redirect href="http://google.com"></redirect>
+	
+	<message severity="INFO" title="Info message 1 title">Info message 1</message>
+	<message severity="ERROR">Info message 2</message>
+	
+	<dialog width="500" height="400" id="dialog1">This is a dialog!</dialog>
+	<dialog action="open" cancel-url="cancel/url" id="dialog2">This is a dialog!</dialog>
+	<dialog action="close" id="dialog3">This is a dialog!</dialog>
+</response>
