@@ -1,56 +1,3 @@
-/*
-* Twinstone TDI (http://twinstone.etn.cz/confluence/display/TDI)
-* Version: 1.5.1-20111109-1539-SNAPSHOT
-*/
-
-if ( typeof jQuery == 'undefined' ) {
-	throw( 'Missing dependency: jQuery!' );
-}
-
-/**
- * <p>Javascript library which enables the communication between the UI and the application, using
- * the <a href="http://wbase.etn/doku.php?id=ice:eris:infusion_js:ajax:protokol">Infusion AJAX protocol</a>.</p>
- * @module TDI
- */
-var TDI = function($) {
-	
-	/**
-	 * <p>Minimum jQuery version required for TDI.</p>
-	 * @type {String}
-	 * @property _jQueryMinVersion
-	 * @private
-	 * @final
-	 */
-	var _jQueryMinVersion = '1.6.3';
-	
-	/**
-	 * <p>Checks whether the minimum requirements are satisfied.</p>
-	 * @method _checkDependencies
-	 * @private
-	 */
-	function _checkDependencies() {
-		var versions = {
-			min : _jQueryMinVersion.replace( /\./g, '' ),
-			orig : jQuery.fn.jquery.replace( /\./g, '' )
-		}, i;
-		for ( i = 0, l = Math.max( versions.min.length, versions.orig.length ); i < l; i++ ) {
-			versions.min += ( versions.min.charAt(i) )?'':'0';
-			versions.orig += ( versions.orig.charAt(i) )?'':'0';
-		}
-		
-		if ( versions.orig < versions.min ) {
-			throw( 'TDI requires jQuery version '+_jQueryMinVersion+' or higher!' );
-		}
-	}
-	
-	// initialization
-		_checkDependencies();
-		
-	// PUBLIC STUFF ------------------------------------------------------------
-		return {};
-		
-}(jQuery);
-
 /**
  * <p>Basic Ajax functionality for the TDI library. Used to bind DOM events to desired HTML elements
  * and send the TDI request when the events fire.</p>
@@ -59,7 +6,7 @@ var TDI = function($) {
  * @namespace TDI
  */
 TDI.Ajax = function($) {
-	
+
 	/**
 	 * <p>Selectors for ajax enabled elements:</p>
 	 * <ul>
@@ -80,7 +27,7 @@ TDI.Ajax = function($) {
 		fieldChange			: 'select.ajaxselect, select.tdi, select.infuse, input[type=checkbox].tdi, input[type=checkbox].infuse, input[type=radio].tdi, input[type=radio].infuse',
 		fieldSubmit			: 'input[type=text].tdi, input[type=text].infuse'
 	};
-	
+
 	/**
 	 * <p>Bind all the needed DOM events for Ajax enabled elements:</p>
 	 * <ul>
@@ -99,9 +46,9 @@ TDI.Ajax = function($) {
 			.delegate( _delegateSelectors.formButtonActivate, 'click', _onFormButtonActivate )
 			.delegate( _delegateSelectors.fieldChange, 'change', _onFieldChange )
 			.delegate( _delegateSelectors.fieldSubmit, 'keydown', _onFieldSubmit );
-			
+
 		$(window).unload( _unbindUI );
-		
+
 		$.event.special[ 'tdi:ajax:beforeLinkClick' ] = {
 			_default : _onLinkClick
 		};
@@ -109,7 +56,7 @@ TDI.Ajax = function($) {
 			_default : _onFormSubmit
 		};
 	}
-	
+
 	/**
 	 * <p>Unbind all previously attached DOM event handlers:</p>
 	 * <ul>
@@ -129,7 +76,7 @@ TDI.Ajax = function($) {
 			.undelegate( _delegateSelectors.fieldChange, 'change', _onFieldChange )
 			.undelegate( _delegateSelectors.fieldSubmit, 'keydown', _onFieldSubmit );
 	}
-	
+
 	// EVENT HANDLERS ------------------------------------------------------------
 		/**
 		 * <p>The link onclick event handler. Used to trigger the preventable <code>tdi:ajax:beforeLinkClick</code> event.</p>
@@ -139,7 +86,7 @@ TDI.Ajax = function($) {
 		 */
 		function _onBeforeLinkClick( evt ) {
 			evt.preventDefault();
-			
+
 			/**
 			 * <p>Fires before the link is clicked (before the link action is executed).</p>
 			 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>_onLinkClick</code>).</p>
@@ -153,10 +100,10 @@ TDI.Ajax = function($) {
 			$(this).trigger( 'tdi:ajax:beforeLinkClick', {
 				link : $(this)
 			} );
-			
+
 			return false;
 		}
-		
+
 		/**
 		 * <p>The link onclick event handler.</p>
 		 * @method _onLinkClick
@@ -166,7 +113,7 @@ TDI.Ajax = function($) {
 		function _onLinkClick( evt ) {
 			TDI.Ajax.send( evt.target );
 		}
-		
+
 		/**
 		 * <p>The form onsubmit event handler. Used to trigger the preventable <code>tdi:ajax:beforeFormSubmit</code> event.</p>
 		 * @method _onBeforeFormSubmit
@@ -175,7 +122,7 @@ TDI.Ajax = function($) {
 		 */
 		function _onBeforeFormSubmit( evt ) {
 			evt.preventDefault();
-			
+
 			/**
 			 * <p>Fires before the form is submited.</p>
 			 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>_onFormSubmit</code>).</p>
@@ -189,10 +136,10 @@ TDI.Ajax = function($) {
 			$(this).trigger( 'tdi:ajax:beforeFormSubmit', {
 				form : $(this)
 			} );
-			
+
 			return false;
 		}
-		
+
 		/**
 		 * <p>The form onsubmit event default method.</p>
 		 * @method _onFormSubmit
@@ -202,7 +149,7 @@ TDI.Ajax = function($) {
 		function _onFormSubmit( evt ) {
 			TDI.Ajax.send( evt.target );
 		}
-		
+
 		/**
 		 * <p>Saves the <code>name</code> and <code>value</code> of the submit button which the user used to
 		 * submit the form.</p>
@@ -213,14 +160,14 @@ TDI.Ajax = function($) {
 		function _onFormButtonActivate( evt ) {
 			var $button = $(this),
 				$form = $(this.form);
-				
+
 			// save the used submit button
 				$form.data( '_submitButton', $button );
-				
+
 			if ( $button.attr( 'name' ) ) {
 				// remove the old field
 					$form.find( 'input.submit-action' ).remove();
-					
+
 				// create a new field with the buttons name and value
 					$( '<input>' )
 						.attr( 'type', 'hidden' )
@@ -230,7 +177,7 @@ TDI.Ajax = function($) {
 						.appendTo( $form );
 			}
 		}
-		
+
 		/**
 		 * <p>The field onchange event handler. If the field has the <code>data-ajax-url</code> attribute
 		 * it is used as the trigger element. Otherwise, the fields form is considered to be the trigger
@@ -242,7 +189,7 @@ TDI.Ajax = function($) {
 		function _onFieldChange( evt ) {
 			TDI.Ajax.send( $(this).data( 'ajax-url' ) === undefined ? this.form : this );
 		}
-		
+
 		/**
 		 * <p>The field onkeydown event handler. If the field has the <code>data-ajax-url</code> attribute,
 		 * a TDI ajax request is sent when Enter is pressed.</p>
@@ -256,16 +203,16 @@ TDI.Ajax = function($) {
 				TDI.Ajax.send( this );
 			}
 		}
-		
+
 	// initialization
 		_bindUI();
-		
+
 	// PUBLIC STUFF ------------------------------------------------------------
 		return {
 			/**
 			 * <p>Universal method for sending a TDI.Ajax call. It is called internaly for all Ajax enabled
 			 * elements (like Links, Forms, Selects, Inputs). This method may be used in other scripts as <code>TDI.Ajax.send( elm );</code> where the <code>elm</code> parameter points to the element, which would trigger the Ajax call if it was Ajax enabled.</p>
-			 * 
+			 *
 			 * <dl>
 			 *   <dt>There are some HTML attributes of the element, which are used to configure the call:</dt>
 			 *   <dd><code><span>href</span></code> <span>The target URL of the Ajax call</span></dd>
@@ -291,7 +238,7 @@ TDI.Ajax = function($) {
 			 */
 			send : function( elm, callbacks ) {
 				callbacks = callbacks || {};
-				
+
 				var $elm = $(elm),
 					name = $elm.attr( 'name' ),
 					value = $elm.val(),
@@ -300,12 +247,12 @@ TDI.Ajax = function($) {
 					triggerGroup = $( $elm.data( 'trigger-group' ) || '' ),
 					url = $elm.data( 'ajax-url' ) || $elm.attr( 'href' ),
 					data = {};
-					
+
 				// if the URL is empty, try to use $elm.value
 					if ( (url === "" || url === undefined) && value ) {
 						url = value;
 					}
-					
+
 				// if the element has a name and value, append it to the GET URL
 					if ( name && value ) {
 						if ( $elm.is( 'input[type=checkbox]' ) && $elm.prop( 'checked' ) === false ) {
@@ -315,7 +262,7 @@ TDI.Ajax = function($) {
 							data[ name ] = value;
 						}
 					}
-					
+
 				// check for obstacles
 					if ( $elm.is( '[disabled], .disabled' ) ) {
 						return false;
@@ -323,7 +270,7 @@ TDI.Ajax = function($) {
 					if ( confirm && !window.confirm( confirm ) ) {
 						return false;
 					}
-					
+
 				var _options = {
 					beforeStart : function() {
 						var res = callbacks.beforeStart && callbacks.beforeStart.apply( this, arguments );
@@ -338,7 +285,7 @@ TDI.Ajax = function($) {
 							} );
 							/* deprecated */
 								related.get(0) && related.addClass( 'loading-target' );
-								
+
 							callbacks.start && callbacks.start.apply( this, arguments );
 							return true;
 						}
@@ -357,14 +304,14 @@ TDI.Ajax = function($) {
 							} );
 							/* deprecated */
 								related.get(0) && related.removeClass( 'loading-target' );
-								
+
 							callbacks.end && callbacks.end.apply( this, arguments );
 						}
 					},
 					data : data,
 					trigger : $elm
 				};
-				
+
 				if ( $elm.is( 'form' ) ) {
 					TDI.Ajax.Request.sendForm( $elm[0], _options );
 				}
@@ -373,7 +320,7 @@ TDI.Ajax = function($) {
 				}
 			}
 		};
-		
+
 }(jQuery);
 
 /**
@@ -384,7 +331,7 @@ TDI.Ajax = function($) {
 TDI.Ajax.Request = function($) {
 
 	return {
-		
+
 		/**
 		 * <p>Sends the Ajax request and calls the needed callback methods.</p>
 		 * @method send
@@ -433,7 +380,7 @@ TDI.Ajax.Request = function($) {
 		send : function( url, options ) {
 			options = options || {};
 			options.url = TDI.Ajax.Request.ajaxifyUrl( url );
-			
+
 			$.ajax( {
 				url			: options.url,
 				type		: options.method || 'GET',
@@ -469,7 +416,7 @@ TDI.Ajax.Request = function($) {
 				}
 			} );
 		},
-		
+
 		/**
 		 * <p>Submits a form using an Iframe (fake Ajax call).</p>
 		 * @method sendForm
@@ -511,29 +458,29 @@ TDI.Ajax.Request = function($) {
 		 */
 		sendForm : function( form, options ) {
 			options = options || {};
-			
+
 			var $form = $(form),
 				$submitButton = $form.data( '_submitButton' ),
 				url = $form.data( 'ajax-url' ) || $form.attr( 'action' );
-				
+
 			// onStart
 				options.url = TDI.Ajax.Request.ajaxifyUrl( url );
 				var res = options.beforeStart && options.beforeStart( $form, options );
 				if ( res === false ) {
 					return false;
 				}
-				
+
 				$(document).trigger( 'tdi:ajax:_start', { xhr : $form, settings : null, options : options } );
 				// TDI.Ajax.Response._start( $form, null, options );
 				options.start && options.start( $form, options );
 				if ( $submitButton ) {
 					$submitButton.addClass( 'loading' );
 				}
-				
+
 			// prepare the form and its iframe
 				var iframeName = 'form_iframe_'+(new Date()).getTime(),
 					iframe;
-					
+
 					// IE8- has a problem assigning the `name` attribute to a dynamicaly created Iframe. It needs to be created as a string.
 					if ( $.browser.msie && $.browser.version.slice( 0, 1 ) <= 8 ) {
 						iframe = document.createElement( '<iframe name="' + iframeName + '">' );
@@ -542,10 +489,10 @@ TDI.Ajax.Request = function($) {
 						iframe = document.createElement( 'iframe' );
 						iframe.name = iframeName;
 					}
-					
+
 					iframe.style.display = 'none';
 					document.body.appendChild( iframe );
-					
+
 					// onComplete/onEnd
 						$(iframe).load( function() {
 							var xml = this.contentWindow.document.XMLDocument || this.contentWindow.document,
@@ -553,45 +500,45 @@ TDI.Ajax.Request = function($) {
 									responseXML : xml,
 									responseText : (xml.body) ? xml.getElementsByTagName('html')[0].innerHTML : null
 								};
-								
+
 							var res = options.beforeEnd && options.beforeEnd( $form, options, xml );
 							if ( res === false ) {
 								return false;
 							}
-							
+
 							if ( $submitButton ) {
 								$submitButton.removeClass( 'loading' );
 							}
-							
+
 							$(document).trigger( 'tdi:ajax:_success', { data : xml, textStatus : '', xhr : xhr, options : options } );
 							$(document).trigger( 'tdi:ajax:_end', { xhr : $form, textStatus : null, options : options } );
 							$form.trigger( 'tdi:ajax:_formSubmit', { form : $form, options : options, xhr : xhr, data : xml } );
 							// TDI.Ajax.Response._success( xml, '', null, options );
 							// TDI.Ajax.Response._end( $form, null, options );
 							options.end && options.end( $form, options, xml );
-							
+
 							setTimeout( function() {
 								$(iframe).unbind().remove();
 								$form.removeAttr( 'target' );
 							}, 100 );
 						} );
-						
+
 					$form.attr( 'action', options.url );
 					$form.attr( 'method', 'post' );
 					$form.attr( 'target', iframeName );
-					
+
 					// set the enctype to multipart if there are any files for upload
 						if ( $form.find( 'input[type=file]' ).length > 0 ) {
 							$form.attr( 'enctype', 'multipart/form-data' );
 						}
-				
+
 			/*
 				Send the $form manualy.
 				Needs to be the normal DOM method, jQuery submit() causes endless recursion of submit handlers.
 			*/
 				$form[0].submit();
 		},
-		
+
 		/**
 		 * <p>Modifies the URL and adds an Ajax (tdi) flag.</p>
 		 * @method ajaxifyUrl
@@ -617,9 +564,9 @@ TDI.Ajax.Request = function($) {
 				return url + '?'+p;
 			}
 		}
-		
+
 	};
-	
+
 }(jQuery);
 
 /**
@@ -641,7 +588,7 @@ TDI.Ajax.Response = function($) {
 		$(document).bind( 'tdi:ajax:_end', function( evt, data ) {
 			_end( data.xhr, data.textStatus, data.options );
 		} );
-	
+
 	// Supported Infusion instructions
 		var _infusionInstructions = {
 				'update'	: _onBeforeUpdate,
@@ -654,10 +601,10 @@ TDI.Ajax.Response = function($) {
 				'message'	: _onBeforeMessage,
 				'dialog'	: _onBeforeDialog
 			};
-			
+
 	// a collection of new script tags which will be added after the response is done to preserve the execution order
 		var _scriptTags = [];
-		
+
 	// a collection of responses used for the 'tdi:ajax:done' event
 		var _responses = {
 			updates : [],
@@ -668,7 +615,7 @@ TDI.Ajax.Response = function($) {
 			messages : [],
 			dialogs : []
 		};
-		
+
 	// CALLBACKS -----------------------------------------------------------------
 		/**
 		 * <p>The default <em>start</em> callback.</p>
@@ -694,7 +641,7 @@ TDI.Ajax.Response = function($) {
 				options : options
 			}] );
 		}
-		
+
 		/**
 		 * <p>The default <em>success</em> callback.</p>
 		 * @method _success
@@ -709,23 +656,23 @@ TDI.Ajax.Response = function($) {
 				_error( xhr, textStatus, null, options );
 				return false;
 			}
-			
+
 			var $xml = $(xml),
 				status = $xml.find( 'status' ),
 				infusionInstructionsNames = [];
-				
+
 			// check for status
 				if ( status.text().toLowerCase() != 'ok' ) {
 					_error( xhr, textStatus, status.text(), options );
 				}
-				
+
 			// handle tags
 				$.each( _infusionInstructions, function( key, value ) {
 					infusionInstructionsNames.push( key );
 				} );
 				$xml.find( infusionInstructionsNames.join( ',' ) ).each( function() {
 					var instruction = this.tagName.toLowerCase();
-						
+
 					switch( instruction ) {
 						case 'Script':
 								// collect all script tags to a list, so they can be downloaded and executed in the preserved order
@@ -736,10 +683,10 @@ TDI.Ajax.Response = function($) {
 							break;
 					}
 				} );
-				
+
 				// download and execute the list of script tags
 					_onBeforeScript( _scriptTags.shift(), options );
-					
+
 				// fire the custom ajax:done events
 					/**
 					 * <p>Fires when all TDI &lt;update&gt;s are done.</p>
@@ -856,7 +803,7 @@ TDI.Ajax.Response = function($) {
 						responses : _responses
 					}] );
 		}
-		
+
 		/**
 		 * <p>The default <em>error</em> callback.</p>
 		 * @method _error
@@ -887,7 +834,7 @@ TDI.Ajax.Response = function($) {
 				options : options
 			}] );
 		}
-		
+
 		/**
 		 * <p>The default <em>end</em> callback.</p>
 		 * @method _end
@@ -908,12 +855,12 @@ TDI.Ajax.Response = function($) {
 				options : options
 			}] );
 		}
-		
+
 	// RESPONSES -----------------------------------------------------------------
 		/**
 		 * <p>The beforeUpdate callback. It takes the &lt;update&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default update action.</p>
-		 * 
+		 *
 		 * @method _onBeforeUpdate
 		 * @private
 		 * @param {XMLNode} tag The &lt;update&gt; xml tag
@@ -921,7 +868,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onBeforeUpdate( tag, options ) {
 			if ( !tag ) { return false; }
-			
+
 			var $tag = $(tag),
 				target_id = $tag.attr( 'target' ),
 				target = $( '#' + $tag.attr( 'target' ) ),
@@ -943,7 +890,7 @@ TDI.Ajax.Response = function($) {
 					class_remove	: class_remove,
 					options			: options
 				};
-				
+
 			if ( target.get(0) ) {
 				// fire custom events
 					/**
@@ -974,15 +921,15 @@ TDI.Ajax.Response = function($) {
 					 *   </dl>
 					 */
 					target.trigger( 'tdi:ajax:beforeUpdate', event_data );
-					
+
 					_responses.updates.push( event_data );
 			}
 		}
-		
+
 		/**
 		 * <p>The beforeInsert callback. It takes the &lt;insert&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default insert action.</p>
-		 * 
+		 *
 		 * @method _onBeforeInsert
 		 * @private
 		 * @param {XMLNode} tag The &lt;insert&gt; xml tag
@@ -990,7 +937,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onBeforeInsert( tag, options ) {
 			if ( !tag ) { return false; }
-			
+
 			var $tag = $(tag),
 				target_id = $tag.attr( 'target' ),
 				target = $( '#' + target_id ),
@@ -1005,7 +952,7 @@ TDI.Ajax.Response = function($) {
 					inserted_node	: inserted_node,
 					options			: options
 				};
-				
+
 			if ( target.get(0) ) {
 				// fire custom events
 					/**
@@ -1026,15 +973,15 @@ TDI.Ajax.Response = function($) {
 					 *   </dl>
 					 */
 					target.trigger( 'tdi:ajax:beforeInsert', event_data );
-					
+
 					_responses.inserts.push( event_data );
 			}
 		}
-		
+
 		/**
 		 * <p>The beforeScript callback. It takes the &lt;script&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default script action.</p>
-		 * 
+		 *
 		 * @method _onBeforeScript
 		 * @private
 		 * @param {XMLNode} tag The &lt;script&gt; xml tag
@@ -1042,7 +989,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onBeforeScript( tag, options ) {
 			if ( !tag ) { return false; }
-			
+
 			var $tag = $(tag),
 				contents = $.trim( $tag.text() ),
 				src = $tag.attr( 'src' ),
@@ -1053,7 +1000,7 @@ TDI.Ajax.Response = function($) {
 					script_id	: id,
 					options		: options
 				};
-				
+
 			// fire custom events
 				/**
 				 * <p>Fires before the TDI <em>script</em> takes place.</p>
@@ -1071,14 +1018,14 @@ TDI.Ajax.Response = function($) {
 				 *   </dl>
 				 */
 				$(document).trigger( 'tdi:ajax:beforeScript', event_data );
-				
+
 				_responses.scripts.push( event_data );
 		}
-		
+
 		/**
 		 * <p>The beforeStyle callback. It takes the &lt;style&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default style action.</p>
-		 * 
+		 *
 		 * @method _onBeforeStyle
 		 * @private
 		 * @param {XMLNode} tag The &lt;style&gt; xml tag
@@ -1086,7 +1033,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onBeforeStyle( tag, options ) {
 			if ( !tag ) { return false; }
-			
+
 			var $tag = $(tag),
 				src = $tag.attr( 'src' ),
 				id = $tag.attr( 'id' ),
@@ -1095,7 +1042,7 @@ TDI.Ajax.Response = function($) {
 					style_id	: id,
 					options		: options
 				};
-				
+
 			// fire custom events
 				/**
 				 * <p>Fires before the TDI <em>style</em> takes place.</p>
@@ -1111,13 +1058,13 @@ TDI.Ajax.Response = function($) {
 				 *   </dl>
 				 */
 				$(document).trigger( 'tdi:ajax:beforeStyle', event_data );
-				
+
 				_responses.styles.push( event_data );
 		}
-		
+
 		/**
 		 * <p>The beforeReload callback. It just reloads the page.</p>
-		 * 
+		 *
 		 * @method _onBeforeReload
 		 * @private
 		 * @param {XMLNode} tag The &lt;reload&gt; xml tag
@@ -1133,11 +1080,11 @@ TDI.Ajax.Response = function($) {
 				 */
 				$(document).trigger( 'tdi:ajax:beforeReload', {options : options} );
 		}
-		
+
 		/**
 		 * <p>The before redirect callback. It takes the &lt;redirect&gt; xml node, gets its data and redirects
 		 * the page to the given URL.</p>
-		 * 
+		 *
 		 * @method _onBeforeRedirect
 		 * @private
 		 * @param {XMLNode} tag The &lt;redirect&gt; xml tag
@@ -1145,10 +1092,10 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onBeforeRedirect( tag, options ) {
 			if ( !tag ) { return false; }
-			
+
 			var $tag = $(tag),
 				href = $tag.attr( 'href' );
-				
+
 			if ( href ) {
 				// fire custom events
 					/**
@@ -1165,11 +1112,11 @@ TDI.Ajax.Response = function($) {
 					$(document).trigger( 'tdi:ajax:beforeRedirect', { href : href, options : options } );
 			}
 		}
-		
+
 		/**
 		 * <p>The beforePopup callback. It takes the &lt;popup&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default popup action.</p>
-		 * 
+		 *
 		 * @method _onBeforePopup
 		 * @private
 		 * @param {XMLNode} tag The &lt;popup&gt; xml tag
@@ -1177,7 +1124,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onBeforePopup( tag, options ) {
 			if ( !tag ) { return false; }
-			
+
 			var $tag = $(tag),
 				mode = $tag.attr( 'mode' ) || 'popup',
 				href = $tag.attr( 'href' ),
@@ -1190,7 +1137,7 @@ TDI.Ajax.Response = function($) {
 					height	: parseInt(height),
 					options	: options
 				};
-				
+
 			if ( href ) {
 				// fire custom events
 					/**
@@ -1214,11 +1161,11 @@ TDI.Ajax.Response = function($) {
 					_responses.popups.push( event_data );
 			}
 		}
-		
+
 		/**
 		 * <p>The beforeMessage callback. It takes the &lt;message&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default message action.</p>
-		 * 
+		 *
 		 * @method _onBeforeMessage
 		 * @private
 		 * @param {XMLNode} tag The &lt;message&gt; xml tag
@@ -1226,7 +1173,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onBeforeMessage( tag, options ) {
 			if ( !tag ) { return false; }
-			
+
 			var $tag = $(tag),
 				severity = $tag.attr( 'severity' ) || 'INFO',
 				title = $tag.attr( 'title' ),
@@ -1237,7 +1184,7 @@ TDI.Ajax.Response = function($) {
 					contents	: contents,
 					options		: options
 				};
-				
+
 			// fire custom events
 				/**
 				 * <p>Fires before the TDI <em>message</em> takes place.</p>
@@ -1257,11 +1204,11 @@ TDI.Ajax.Response = function($) {
 				$(document).trigger( 'tdi:ajax:beforeMessage', event_data );
 				_responses.messages.push( event_data );
 		}
-		
+
 		/**
 		 * <p>The beforeDialog callback. It takes the &lt;dialog&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default dialog action.</p>
-		 * 
+		 *
 		 * @method _onBeforeDialog
 		 * @private
 		 * @param {XMLNode} tag The &lt;dialog&gt; xml tag
@@ -1269,7 +1216,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onBeforeDialog( tag, options ) {
 			if ( !tag ) { return false; }
-			
+
 			var $tag = $(tag),
 				contents = $.trim( $tag.text() ),
 				action = $tag.attr( 'action' ) || 'open',
@@ -1286,7 +1233,7 @@ TDI.Ajax.Response = function($) {
 					height		: parseInt(height),
 					options		: options
 				};
-				
+
 			// fire custom events
 				/**
 				 * <p>Fires before the TDI <em>dialog</em> takes place.</p>
@@ -1312,7 +1259,7 @@ TDI.Ajax.Response = function($) {
 				$(document).trigger( 'tdi:ajax:beforeDialog', event_data );
 				_responses.dialogs.push( event_data );
 		}
-		
+
 	// RESPONSES DEFAULTS
 		/**
 		 * <p>The update default response handler. Updates the specified target with new contents.</p>
@@ -1344,7 +1291,7 @@ TDI.Ajax.Response = function($) {
 		function _onUpdateDefault( evt, data ) {
 			// classes
 				data.target.removeClass( data.class_remove ).addClass( data.class_add );
-				
+
 			// update the target element
 				if ( data.replace === 'true' ) {
 					data.target.find( '*' ).andSelf().unbind(); // detach all event handlers from the target and its child nodes
@@ -1360,7 +1307,7 @@ TDI.Ajax.Response = function($) {
 					data.target.find( '*' ).unbind(); // detach all event handlers from the targets child nodes
 					data.target.html( data.content );
 				}
-				
+
 			// trigger the update event
 				/**
 				 * <p>Fires after the TDI <em>update</em> takes place.</p>
@@ -1392,7 +1339,7 @@ TDI.Ajax.Response = function($) {
 				 */
 				data.target.trigger( 'tdi:ajax:update', data );
 		}
-		
+
 		/**
 		 * <p>The insert default response handler. Inserts the contents before/after the target.</p>
 		 * @method _onInsertDefault
@@ -1414,7 +1361,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onInsertDefault( evt, data ) {
 			data.inserted_node = $( data.content )[ (data.position === 'before') ? 'insertBefore' : 'insertAfter' ]( data.target );
-				
+
 			// trigger the insert event
 				/**
 				 * <p>Fires after the TDI <em>insert</em> takes place.</p>
@@ -1437,7 +1384,7 @@ TDI.Ajax.Response = function($) {
 				 */
 				data.target.trigger( 'tdi:ajax:insert', data );
 		}
-		
+
 		/**
 		 * <p>The script default response handler. Loads and executes new scripts.</p>
 		 * @method _onScriptDefault
@@ -1460,7 +1407,7 @@ TDI.Ajax.Response = function($) {
 				download = true,
 				onComplete = function( node ) {
 					var s;
-					
+
 					// execute inline script
 					if ( data.script_data ) {
 						s = document.createElement( 'script' );
@@ -1471,7 +1418,7 @@ TDI.Ajax.Response = function($) {
 						}
 						document.getElementsByTagName('head')[0].appendChild(s);
 					}
-					
+
 					// trigger the script event
 						data.script_node = node;
 						/**
@@ -1493,11 +1440,11 @@ TDI.Ajax.Response = function($) {
 						 *   </dl>
 						 */
 						$(document).trigger( 'tdi:ajax:script', data );
-						
+
 					// process next script
 						_onBeforeScript( scripts.shift() );
 				};
-				
+
 			// if there is an 'src' attribute, load the script first and when fully loaded, execute the script contents
 				if ( data.script_src ) {
 					if ( data.script_id && $( '#'+data.script_id ).length > 0 ) {
@@ -1514,7 +1461,7 @@ TDI.Ajax.Response = function($) {
 					onComplete();
 				}
 		}
-		
+
 		/**
 		 * <p>The style default response handler. Loads external stylesheets.</p>
 		 * @method _onStyleDefault
@@ -1562,7 +1509,7 @@ TDI.Ajax.Response = function($) {
 				} );
 			}
 		}
-		
+
 		/**
 		 * <p>The reload default response handler. Reloads the page.</p>
 		 * @method _onReloadDefault
@@ -1576,7 +1523,7 @@ TDI.Ajax.Response = function($) {
 		function _onReloadDefault( evt, data ) {
 			window.location.reload( true );
 		}
-		
+
 		/**
 		 * <p>The redirect default response handler. Redirects the page to a given URL.</p>
 		 * @method _onRedirectDefault
@@ -1593,7 +1540,7 @@ TDI.Ajax.Response = function($) {
 		function _onRedirectDefault( evt, data ) {
 			window.location.assign( data.href );
 		}
-		
+
 		/**
 		 * <p>The popup default response handler.</p>
 		 * @method _onPopupDefault
@@ -1616,13 +1563,13 @@ TDI.Ajax.Response = function($) {
 		function _onPopupDefault( evt, data ) {
 			var params = '',
 				popup;
-				
+
 			if ( data.mode === 'dialog' ) {
 				params += 'width='+data.width+', height='+data.height;
 			}
-			
+
 			data.popup = window.open( data.href, '_blank', params );
-			
+
 			// trigger the popup event
 				/**
 				 * <p>Fires after the TDI <em>popup</em> takes place.</p>
@@ -1646,7 +1593,7 @@ TDI.Ajax.Response = function($) {
 				 */
 				$(document).trigger( 'tdi:ajax:popup', data );
 		}
-		
+
 		/**
 		 * <p>The message default response handler.</p>
 		 * @method _onMessageDefault
@@ -1672,7 +1619,7 @@ TDI.Ajax.Response = function($) {
 			if ( data.contents ) {
 				message += '\n\n' + data.contents;
 			}
-			
+
 			// trigger the message event
 				/**
 				 * <p>Fires after the TDI <em>message</em> takes place.</p>
@@ -1692,7 +1639,7 @@ TDI.Ajax.Response = function($) {
 				 */
 				$(document).trigger( 'tdi:ajax:message', data );
 		}
-		
+
 		/**
 		 * <p>The dialog default response handler.</p>
 		 * @method _onDialogDefault
@@ -1732,7 +1679,7 @@ TDI.Ajax.Response = function($) {
 				 */
 				$(document).trigger( 'tdi:ajax:dialog', data );
 		}
-		
+
 	// TDI Ajax custom events -------------------------------------------------
 		var i,
 			customHandlers = {
@@ -1749,113 +1696,14 @@ TDI.Ajax.Response = function($) {
 			customDefault = function( evt, data ) {
 				customHandlers[ evt.type ].call( this, evt, data[1] );
 			};
-			
+
 		for ( i in customHandlers ) {
 			$.event.special[ i ] = {
 				_default : customDefault
 			};
 		}
-		
+
 	// PUBLIC STUFF
 		return {};
-		
-}(jQuery);
 
-/**
- * <p>A set of tools for the TDI library.</p>
- * <p>Requires TDI global object.</p>
- * @class Tools
- * @namespace TDI
- */
-TDI.Tools = function($) {
-	
-	// PUBLIC STUFF ------------------------------------------------------------
-		return {
-			/**
-			 * <p>Loads an external javascript file. It uses a 'script tag' technique instead of AJAX,
-			 * so the loaded javascript file is debugable in tools like Firebug.</p>
-			 * @method getScript
-			 * @param {String} url URL of the external javascript file
-			 * @param {Object} options Additional options
-			 *   <dl>
-			 *     <dd><code><span>complete</span> <span>&lt;Function&gt;</span></code>
-			 *       <span>It is called when the javascript is fully loaded.</span></dd>
-			 *     <dd><code><span>id</span> <span>&lt;String&gt;</span></code>
-			 *       <span>An optional <em>id</em> attribute of the script tag.</span></dd>
-			 *   </dl>
-			 */
-			getScript : function( url, options ) {
-				var loaded = false,
-					node;
-					
-				if ( url ) {
-					options = options || {};
-					
-					node = document.createElement( 'script' );
-					node.type = 'text/javascript';
-					node.src = url;
-					if ( options.id ) {
-						node.id = options.id;
-					}
-					
-					if ( options.complete ) {
-						/*
-							IE supports only the `onreadystatechange` event.
-							Other browsers (Chrome, Firefox, Opera, Safari) support the `onload` event.
-							IE9 supports both. But we make sure, that only one callback is fired.
-						*/
-							node.onreadystatechange = function() {
-								var rs = this.readyState;
-								if ( !loaded && ( rs === 'loaded' || rs === 'complete' ) ) {
-									loaded = true;
-									node.onreadystatechange = null;
-									options.complete( node );
-								}
-							};
-							node.onload = function() {
-								if ( !loaded ) {
-									loaded = true;
-									options.complete( node );
-								}
-							};
-					}
-					
-					document.getElementsByTagName( 'head' )[0].appendChild( node );
-				}
-			},
-			
-			/**
-			 * <p>Loads an external CSS file. It uses AJAX to load the CSS data to provide the <em>complete</em> event.</p>
-			 * @method getStyle
-			 * @param {String} url URL of the external CSS file
-			 * @param {Object} options Additional options
-			 *   <dl>
-			 *     <dd><code><span>complete</span> <span>&lt;Function&gt;</span></code>
-			 *       <span>It is called when the CSS file is fully loaded.</span></dd>
-			 *     <dd><code><span>id</span> <span>&lt;String&gt;</span></code>
-			 *       <span>An optional <em>id</em> attribute of the style tag.</span></dd>
-			 *   </dl>
-			 */
-			getStyle : function( url, options ) {
-				var node;
-				if ( url ) {
-					options = options || {};
-					
-					node = document.createElement( 'link' );
-					node.rel = 'stylesheet';
-					node.type = 'text/css';
-					node.media = options.media || 'screen';
-					node.href = url;
-					if ( options.id ) {
-						node.id = options.id;
-					}
-					
-					document.getElementsByTagName( 'head' )[0].appendChild( node );
-					
-					options.complete && options.complete( node );
-				}
-			}
-		}
-			
 }(jQuery);
-
