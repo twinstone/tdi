@@ -66,8 +66,8 @@ module( 'TDI.Ajax' );
 		expect(1);
 		
 		TDI.Ajax.send( $( '#tdi-ajax-send-form-action' ), {
-			beforeStart : function( $form, options ) {
-				equals( options.url, TDI.Ajax.Request.ajaxifyUrl($( '#tdi-ajax-send-form-action' ).attr( 'action' )), 'The AJAX url is the same as the `action` attribute.' );
+			beforeStart : function( xhr, textStatus, options ) {
+				equals( options.url.replace(/&_ts=\d+/, ""), TDI.Ajax.Request.ajaxifyUrl($( '#tdi-ajax-send-form-action' ).attr( 'action' )).replace(/&_ts=\d+/, ""), 'The AJAX url is the same as the `action` attribute.' );
 				
 				start();
 				return false;
@@ -79,8 +79,8 @@ module( 'TDI.Ajax' );
 		expect(1);
 		
 		TDI.Ajax.send( $( '#tdi-ajax-send-form-ajax-url' ), {
-			beforeStart : function( $form, options ) {
-				equals( options.url, TDI.Ajax.Request.ajaxifyUrl($( '#tdi-ajax-send-form-ajax-url' ).data( 'ajax-url' )), 'The AJAX url is the same as the `data-ajax-url` attribute.' );
+			beforeStart : function( xhr, textStatus, options ) {
+				equals( options.url.replace(/&_ts=\d+/, ""), TDI.Ajax.Request.ajaxifyUrl($( '#tdi-ajax-send-form-ajax-url' ).data( 'ajax-url' )).replace(/&_ts=\d+/, ""), 'The AJAX url is the same as the `data-ajax-url` attribute.' );
 				
 				start();
 				return false;
@@ -88,13 +88,15 @@ module( 'TDI.Ajax' );
 		} );
 	} );
 	
-	asyncTest( 'TDI.Ajax.send: Form/Disabled', function() {
+	asyncTest( 'TDI.Ajax.send: Form/Files', function() {
 		expect(0);
 		
-		TDI.Ajax.send( $( '#tdi-ajax-send-form-disabled' ), {
-			end : function( $form, options, xml ) {
-				ok( false, '#tdi-ajax-send-form-disabled: Disabled form should not send the AJAX call.' );
+		TDI.Ajax.send( $( '#tdi-ajax-send-form-action-file' ), {
+			beforeStart : function( $form, options, xml ) {
+				equals( options.url.replace(/&_ts=\d+/, ""), TDI.Ajax.Request.ajaxifyUrl($( '#tdi-ajax-send-form-ajax-url' ).data( 'ajax-url' )).replace(/&_ts=\d+/, ""), 'The AJAX url is the same as the `action` attribute.' );
+
 				start();
+				return false;
 			}
 		} );
 		
@@ -102,7 +104,22 @@ module( 'TDI.Ajax' );
 			start();
 		}, 1000 );
 	} );
-	
+
+	asyncTest( 'TDI.Ajax.send: Form/Disabled', function() {
+		expect(0);
+
+		TDI.Ajax.send( $( '#tdi-ajax-send-form-disabled' ), {
+			end : function( xhr, textStatus, options ) {
+				ok( false, '#tdi-ajax-send-form-disabled: Disabled form should not send the AJAX call.' );
+				start();
+			}
+		} );
+
+		setTimeout( function() {
+			start();
+		}, 1000 );
+	} );
+
 	asyncTest( 'TDI.Ajax.send: setting/unsetting of the class names', function() {
 		expect(8);
 		

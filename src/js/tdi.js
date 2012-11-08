@@ -16,7 +16,7 @@ var TDI = function($) {
 	 * @private
 	 * @final
 	 */
-	var _jQueryMinVersion = '1.6.3';
+	var _jQueryMinVersion = '1.7.0';
 
 	/**
 	 * <p>Checks whether the minimum requirements are satisfied.</p>

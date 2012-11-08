@@ -23,9 +23,13 @@
 		<form id="tdi-ajax-send-form-action" action="responses/empty.xml" class="infuse">
 			<input type="hidden" name="name" value="value">
 		</form>
-		<form id="tdi-ajax-send-form-ajax-url" action="http://google.com" data-ajax-url="responses/empty.xml" class="infuse">
+		<form id="tdi-ajax-send-form-ajax-url" method="post" action="http://google.com" data-ajax-url="responses/empty.xml" class="infuse">
 			<input type="hidden" name="name" value="value">
 		</form>
+        <form id="tdi-ajax-send-form-action-file" action="responses/empty.xml" class="infuse">
+      			<input type="hidden" name="name" value="value">
+      			<input type="file" name="file" value="">
+      		</form>
 		<form id="tdi-ajax-send-form-disabled" action="responses/empty.xml" class="infuse disabled">
 			<input type="hidden" name="name" value="value">
 		</form>

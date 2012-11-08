@@ -246,7 +246,7 @@ TDI.Ajax = function($) {
 					related = $elm.closest( $elm.data( 'related-ancestor' ) || '' ).add( $( $elm.data( 'related-element' ) || '' ) ).add( $( $elm.attr( 'rel' ) || '' ) ).add( $( $elm.data( '_submitButton' ) || '' ) ),
 					triggerGroup = $( $elm.data( 'trigger-group' ) || '' ),
 					url = $elm.data( 'ajax-url' ) || $elm.attr( 'href' ) || $elm.attr( 'action' ),
-					data = {};
+					data = {}, formData = [];
 
 				// if the URL is empty, try to use $elm.value
 					if ( (url === "" || url === undefined) && value ) {
@@ -317,7 +317,10 @@ TDI.Ajax = function($) {
 						TDI.Ajax.Request.sendForm( $elm[0], _options );
 					}
 					else {
-						$.extend(_options.data, $elm.serialize());
+						formData = $elm.serializeArray();
+						for (var i = 0, l = formData.length; i < l; i++) {
+							_options.data[formData[i].name] = formData[i].value;
+						}
 						_options.method = $elm.attr('method');
 						_options.end = function() {
 							$elm.data( '_submitButton', null );
