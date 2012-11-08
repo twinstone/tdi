@@ -1,3 +1,11 @@
+buildscript {
+	repositories {
+		ivy { url = "$artifactory/etn-all" }
+	}
+	dependencies {
+		classpath(group: 'org.apache.jackrabbit', name: 'jackrabbit-webdav', version: '2.5.2')
+	}
+}
 
 apply plugin: 'base'
 
@@ -87,36 +95,5 @@ artifacts {
 	}
 }
 
-task javadoc(overwrite: true) << {
-	file("$bundleDir/temp/doc-in").mkdirs()
-
-	copy {
-		into "$bundleDir/temp/doc-in"
-	   	from("$projectDir/src/js") {include "*.js"}
-	}
-	exec {
-		executable pythonBin
-		args += yuidocBin
-		args += "$bundleDir/temp/doc-in"
-		args += "--showprivate"
-		args += "--parseroutdir"
-		args += "$bundleDir/temp/doc-out"
-		args += "--outputdir"
-		args += "$bundleDir/doc"
-		args += "--template"
-		args += yuidocTemplate
-		args += "--version"
-		args += "$version"
-		args += "--project"
-		args += "Twinstone TDI"
-		args += "--projecturl"
-		args += projectUrl
-	}
-	inc = new java.io.File(projectDir,'../Twinstone Common/webdav.gradle')
-	webdav = new GroovyClassLoader(getClass().classLoader).parseClass(new GroovyCodeSource(inc.exists() ? inc.toURI().toURL() : new java.net.URL(artifactory+'/config/webdav-0.8.0.gradle'))).newInstance()
-	webdav.delete('/javadoc/tdi/'+version+'/', true)
-	webdav.mkcol('/javadoc/tdi/'+version+'/')
-	webdav.putTree('/javadoc/tdi/'+version+'/', new java.io.File("$bundleDir/doc"))
-}
 
 apply from: 'dependencies.gradle'

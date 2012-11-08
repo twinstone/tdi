@@ -5,6 +5,6 @@
 	<projects>
 	</projects>
 	<natures>
-		<nature>com.springsource.sts.gradle.core.nature</nature>
+		<nature>org.springsource.ide.eclipse.gradle.core.nature</nature>
 	</natures>
 </projectDescription>
