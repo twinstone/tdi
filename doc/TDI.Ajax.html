@@ -1,0 +1,842 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:yui="http://yuilibrary.com/rdf/1.0/yui.rdf#">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>API: TDI  TDI.Ajax   (YUI Library)</title>
+
+	<link rel="stylesheet" type="text/css" href="assets/reset-fonts-grids-min.css?stamp=1352381307.73" />
+	<link rel="stylesheet" type="text/css" href="assets/api.css?stamp=1352381307.73" />
+
+    <script type="text/javascript" src="assets/api-js?stamp=1352381307.73"></script>
+    <script type="text/javascript" src="assets/ac-js?stamp=1352381307.73"></script>
+</head>
+
+<body id="yahoo-com">
+
+<div id="doc3" class="yui-t2">
+	<div id="hd">
+        <h1><a href="http://wiki.twinstone.org/display/TDI/Home" title="Twinstone TDI">Twinstone TDI</a></h1>
+        <h3>TDI&nbsp; <span class="subtitle">1.5-pre02</span></h3>
+        <a href="./index.html" title="Twinstone TDI">Twinstone TDI</a> 
+            &gt; <a href="./module_tdi.html" title="TDI">TDI</a>
+                 &gt; TDI.Ajax 
+                
+        <form onsubmit="return false">
+            <div id="propertysearch">
+                Search: <input autocomplete="off" id="searchinput" />
+                <div id="searchresults">
+                    &nbsp;
+                </div>
+            </div>
+        </form>
+	</div>
+
+	<div id="bd">
+		<div id="yui-main">
+			<div class="yui-b">
+            <form action="#" name="yui-classopts-form" method="get" id="yui-classopts-form">
+                <fieldset>
+                    <legend>Filters</legend>
+                <span class="classopts"><input type="checkbox" name="show_private" id="show_private" /> <label for="show_private">Show Private</label></span>
+                <span class="classopts"><input type="checkbox" name="show_protected" id="show_protected" /> <label for="show_protected">Show Protected</label></span>
+                <span class="classopts"><input type="checkbox" name="show_deprecated" id="show_deprecated" /> <label for="show_deprecated">Show Deprecated</label></span>
+                </fieldset>
+            </form>
+
+                    <h2>
+                        
+
+                        
+                        
+                            Class <b property="yui:name">TDI.Ajax</b>
+                        <span class="extends">
+                        </span>
+
+                    </h2>
+                    <!-- class tree goes here -->
+                    
+                
+  
+
+                    <div class="summary description" property="yui:description">
+                        <p>Basic Ajax functionality for the TDI library. Used to bind DOM events to desired HTML elements
+and send the TDI request when the events fire.</p>
+<p>Requires TDI global object.</p>
+                    </div>
+
+                    
+                    <div rel="yui:properties" resource="#properties">
+                        <div class="section field details">
+                            <h3 id="properties">Properties</h3>
+                            <div class="content">
+                                    <div class="private" rel="yui:property" resource="#property__delegateSelectors">
+                                    <h4><a name="property__delegateSelectors" property="yui:name">_delegateSelectors</a>
+                                        - <code>private final <span property="yui:type">object</span></code>
+                                    </h4>
+                                    <div class="detail">
+                                        <div class="description" property="yui:description">
+                                            <p>Selectors for ajax enabled elements:</p>
+<ul>
+<li><code>a.tdi</code></li>
+<li><code>form.tdi</code></li>
+<li><code>form.tdi input[type=submit], form.tdi button</code></li>
+<li><code>select.tdi, input[type=checkbox].tdi, input[type=radio].tdi</code></li>
+<li><code>input[type=text].tdi</code></li>
+</ul>
+                                        </div>
+                                    </div>
+     
+                                        
+
+
+                                    <hr />
+                                    </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div rel="yui:methods" resource="#methods">
+                        <div class="section method details">
+                            <h3 id="methods">Methods</h3>
+                            <div class="content">
+                                    <div class="private" rel="yui:method" resource="#method__bindUI">
+                                    <h4>
+                                        <a name="method__bindUI">_bindUI</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_bindUI</strong>
+                                           (
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>Bind all the needed DOM events for Ajax enabled elements:</p>
+<ul>
+<li><code>onclick</code> - ajax enabled links and submit buttons</li>
+<li><code>onsubmit</code> - ajax enabled forms</li>
+<li><code>onchange</code> - ajax enabled form fields</li>
+<li><code>onunload</code> - window</li>
+</ul>
+                                        </div>
+
+                                        <div class="description">
+
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="private" rel="yui:method" resource="#method__onBeforeFormSubmit">
+                                    <h4>
+                                        <a name="method__onBeforeFormSubmit">_onBeforeFormSubmit</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_onBeforeFormSubmit</strong>
+                                           (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>The form onsubmit event handler. Used to trigger the preventable <code>tdi:ajax:beforeFormSubmit</code> event.</p>
+                                        </div>
+
+                                        <div class="description">
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">evt</span>
+                                                        &lt;<span property="yui:type">Event</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                </dl>
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="private" rel="yui:method" resource="#method__onBeforeLinkClick">
+                                    <h4>
+                                        <a name="method__onBeforeLinkClick">_onBeforeLinkClick</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_onBeforeLinkClick</strong>
+                                           (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>The link onclick event handler. Used to trigger the preventable <code>tdi:ajax:beforeLinkClick</code> event.</p>
+                                        </div>
+
+                                        <div class="description">
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">evt</span>
+                                                        &lt;<span property="yui:type">Event</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                </dl>
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="private" rel="yui:method" resource="#method__onFieldChange">
+                                    <h4>
+                                        <a name="method__onFieldChange">_onFieldChange</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_onFieldChange</strong>
+                                           (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>The field onchange event handler. If the field has the <code>data-ajax-url</code> attribute
+it is used as the trigger element. Otherwise, the fields form is considered to be the trigger
+element.</p>
+                                        </div>
+
+                                        <div class="description">
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">evt</span>
+                                                        &lt;<span property="yui:type">Event</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                </dl>
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="private" rel="yui:method" resource="#method__onFieldSubmit">
+                                    <h4>
+                                        <a name="method__onFieldSubmit">_onFieldSubmit</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_onFieldSubmit</strong>
+                                           (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>The field onkeydown event handler. If the field has the <code>data-ajax-url</code> attribute,
+a TDI ajax request is sent when Enter is pressed.</p>
+                                        </div>
+
+                                        <div class="description">
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">evt</span>
+                                                        &lt;<span property="yui:type">Event</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                </dl>
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="private" rel="yui:method" resource="#method__onFormButtonActivate">
+                                    <h4>
+                                        <a name="method__onFormButtonActivate">_onFormButtonActivate</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_onFormButtonActivate</strong>
+                                           (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>Saves the <code>name</code> and <code>value</code> of the submit button which the user used to
+submit the form.</p>
+                                        </div>
+
+                                        <div class="description">
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">evt</span>
+                                                        &lt;<span property="yui:type">Event</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                </dl>
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="private" rel="yui:method" resource="#method__onFormSubmit">
+                                    <h4>
+                                        <a name="method__onFormSubmit">_onFormSubmit</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_onFormSubmit</strong>
+                                           (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>The form onsubmit event default method.</p>
+                                        </div>
+
+                                        <div class="description">
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">evt</span>
+                                                        &lt;<span property="yui:type">Event</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                </dl>
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="private" rel="yui:method" resource="#method__onLinkClick">
+                                    <h4>
+                                        <a name="method__onLinkClick">_onLinkClick</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_onLinkClick</strong>
+                                           (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>The link onclick event handler.</p>
+                                        </div>
+
+                                        <div class="description">
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">evt</span>
+                                                        &lt;<span property="yui:type">Event</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                </dl>
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="private" rel="yui:method" resource="#method__unbindUI">
+                                    <h4>
+                                        <a name="method__unbindUI">_unbindUI</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                         private 
+                                        
+                                        
+                                        void
+                                            <strong property="yui:name">_unbindUI</strong>
+                                           (
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>Unbind all previously attached DOM event handlers:</p>
+<ul>
+<li><code>onclick</code></li>
+<li><code>onsubmit</code></li>
+<li><code>onchange</code></li>
+<li><code>onunload</code></li>
+</ul>
+                                        </div>
+
+                                        <div class="description">
+
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="" rel="yui:method" resource="#method_send">
+                                    <h4>
+                                        <a name="method_send">send</a></h4>
+                                    <div class="detail" >
+                                        <code>
+                                        
+                                         static 
+                                        
+                                        void
+                                            <strong property="yui:name">send</strong>
+                                           (
+                                                
+                                                        
+                                                         elm
+                                                    
+                                                
+                                                        , 
+                                                         callbacks
+                                                    
+                                                
+                                            )
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>Universal method for sending a TDI.Ajax call. It is called internaly for all Ajax enabled
+elements (like Links, Forms, Selects, Inputs). This method may be used in other scripts as <code>TDI.Ajax.send( elm );</code> where the <code>elm</code> parameter points to the element, which would trigger the Ajax call if it was Ajax enabled.</p>
+<dl>
+<dt>There are some HTML attributes of the element, which are used to configure the call:</dt>
+<dd><code><span>href</span></code> <span>The target URL of the Ajax call</span></dd>
+<dd><code><span>action</span></code> <span>The same as <strong>href</strong but used at Form elements</span></dd>
+<dd><code><span>data-ajax-url</span></code> <span>The target URL of the Ajax call. Used if the Ajax URL should be different than the one defined by <strong>href</strong> or <strong>action</strong> attributes, or if the HTML element does not have URL attributes (select, input, ...)</span></dd>
+<dd><code><span>data-related-element</span></code> <span>A selector pointing to a related element. This element(s) gets notified when the Ajax call starts/ends.</span></dd>
+<dd class="parameter_deprecated"><code><span>rel</span></code> <span>(deprecated; use <strong>data-related-element</strong> instead) The same as <strong>data-related-element</strong></span></dd>
+<dd><code><span>data-related-ancestor</span></code> <span>A selector pointing to a related parent element. This element gets notified when the Ajax call starts/ends</span></dd>
+<dd><code><span>data-confirm</span></code> <span>A confirmation message. Use when the user should be able to stop the Ajax call</span></dd>
+<dd><code><span>disabled</span></code> <span>The Ajax call does not start if the element has the <strong>disabled</strong> atribute set</span></dd>
+<dd><code><span>class="disabled"</span></code> <span>The Ajax call does not start if the element has a <strong>disabled</strong> class name</span></dd>
+</dl>
+                                        </div>
+
+                                        <div class="description">
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">elm</span>
+                                                        &lt;<span property="yui:type">(String|jQuery|HTMLElement)</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> The element which is used as a trigger for the Ajax call.</span>
+                                                        </dd>
+                                                        <dd rel="yui:parameter">
+                                                        <code><span property="yui:name">callbacks</span>
+                                                        &lt;<span property="yui:type">Object</span>&gt;
+                                                        </code>
+                                                        <span property="yui:description"> An optional set of callbacks:
+<dl>
+<dd><code><span>beforeStart</span> <span>&lt;Function&gt;</span></code> <span>If it returns false, the AJAX call and the default <code>start</code> callback will not be executed.</span></dd>
+<dd><code><span>start</span> <span>&lt;Function&gt;</span></code></dd>
+<dd><code><span>beforeEnd</span> <span>&lt;Function&gt;</span></code> <span>If it returns false, the default <code>end</code> callback will not be executed.</span></dd>
+<dd><code><span>end</span> <span>&lt;Function&gt;</span></code></dd>
+</dl></span>
+                                                        </dd>
+                                                </dl>
+
+                                                <dl>
+                                                    <dt>Returns:
+                                                    <code property="yui:return">
+                                                        void
+                                                    </code></dt>
+                                                    <dd property="yui:returnInfo"></dd>
+                                                </dl>
+
+
+             
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div rel="yui:events" resource="#events">
+                        <div class="section method details">
+                            <h3 id="events">Events</h3>
+                            <div class="content">
+                                    <div class="" rel="yui:event" resource="#event_tdi:ajax:beforeFormSubmit">
+                                    <h4>
+                                        <a name="event_tdi:ajax:beforeFormSubmit">tdi:ajax:beforeFormSubmit</a></h4>
+                                    <div class="detail">
+                                        <code>
+                                        
+                                        
+                                        
+                                            <strong property="yui:name">tdi:ajax:beforeFormSubmit</strong>
+
+                                            (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                                        , 
+                                                         data
+                                                    
+                                                
+                                            )
+
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>Fires before the form is submited.</p>
+<p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>_onFormSubmit</code>).</p>
+                                        </div>
+
+                                        <div class="description">
+
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                            <code><span property="yui:name">evt</span>
+                                                                &lt;<span property="yui:type">Event</span>&gt;
+                                                            </code>
+                                                            <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                        
+                                                        <dd rel="yui:parameter">
+                                                            <code><span property="yui:name">data</span>
+                                                                &lt;<span property="yui:type">Object</span>&gt;
+                                                            </code>
+                                                            <span property="yui:description"> The event data:
+<dl>
+<dd><code><span>form</span> <span>&lt;jQuery&gt;</span></code> <span>The form object</span></dd>
+</dl></span>
+                                                        </dd>
+                                                        
+                                                </dl>
+
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                                    <div class="" rel="yui:event" resource="#event_tdi:ajax:beforeLinkClick">
+                                    <h4>
+                                        <a name="event_tdi:ajax:beforeLinkClick">tdi:ajax:beforeLinkClick</a></h4>
+                                    <div class="detail">
+                                        <code>
+                                        
+                                        
+                                        
+                                            <strong property="yui:name">tdi:ajax:beforeLinkClick</strong>
+
+                                            (
+                                                
+                                                        
+                                                         evt
+                                                    
+                                                
+                                                        , 
+                                                         data
+                                                    
+                                                
+                                            )
+
+                                        </code>
+                                        
+                                        <div class="description" property="yui:description">
+                                            <p>Fires before the link is clicked (before the link action is executed).</p>
+<p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>_onLinkClick</code>).</p>
+                                        </div>
+
+                                        <div class="description">
+
+
+                                                <dl rel="yui:parameters">
+                                                    <dt>Parameters:</dt>
+                                                        <dd rel="yui:parameter">
+                                                            <code><span property="yui:name">evt</span>
+                                                                &lt;<span property="yui:type">Event</span>&gt;
+                                                            </code>
+                                                            <span property="yui:description"> The event object</span>
+                                                        </dd>
+                                                        
+                                                        <dd rel="yui:parameter">
+                                                            <code><span property="yui:name">data</span>
+                                                                &lt;<span property="yui:type">Object</span>&gt;
+                                                            </code>
+                                                            <span property="yui:description"> The event data:
+<dl>
+<dd><code><span>link</span> <span>&lt;jQuery&gt;</span></code> <span>The link object</span></dd>
+</dl></span>
+                                                        </dd>
+                                                        
+                                                </dl>
+
+
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div rel="yui:attributes" resource="#configattributes">
+
+                    </div>
+
+			</div>
+		</div>
+		<div class="yui-b">
+            <div class="nav">
+
+                    <div id="moduleList" class="module">
+                        <h4>Modules</h4>
+                        <ul class="content">
+                                <li class="selected"><a href="module_TDI.html" title="TDI">TDI</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="classList" class="module">
+                        <h4>Classes</h4>
+                        <ul class="content">
+                                <li class="selected"><a href="TDI.Ajax.html" title="TDI.Ajax">TDI.Ajax</a></li>
+                                <li class=""><a href="TDI.Ajax.Request.html" title="TDI.Ajax.Request">TDI.Ajax.Request</a></li>
+                                <li class=""><a href="TDI.Ajax.Response.html" title="TDI.Ajax.Response">TDI.Ajax.Response</a></li>
+                                <li class=""><a href="TDI.Tools.html" title="TDI.Tools">TDI.Tools</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="fileList" class="module">
+                        <h4>Files</h4>
+                        <ul class="content">        
+                                <li class=""><a href="tdi-ajax.js.html" title="tdi-ajax.js">tdi-ajax.js</a></li>
+                                <li class=""><a href="tdi-tools.js.html" title="tdi-tools.js">tdi-tools.js</a></li>
+                                <li class=""><a href="tdi.js.html" title="tdi.js">tdi.js</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="propertyList" class="module">
+                        <h4>Properties</h4>
+                        <ul class="content">        
+                                <li class="private"><a href="#property__delegateSelectors" title="_delegateSelectors">_delegateSelectors</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="methodsList" class="module">
+                        <h4>Methods</h4>
+                        <ul class="content">        
+                                <li class="private"><a href="#method__bindUI" title="_bindUI">_bindUI</a></li>
+                                <li class="private"><a href="#method__onBeforeFormSubmit" title="_onBeforeFormSubmit">_onBeforeFormSubmit</a></li>
+                                <li class="private"><a href="#method__onBeforeLinkClick" title="_onBeforeLinkClick">_onBeforeLinkClick</a></li>
+                                <li class="private"><a href="#method__onFieldChange" title="_onFieldChange">_onFieldChange</a></li>
+                                <li class="private"><a href="#method__onFieldSubmit" title="_onFieldSubmit">_onFieldSubmit</a></li>
+                                <li class="private"><a href="#method__onFormButtonActivate" title="_onFormButtonActivate">_onFormButtonActivate</a></li>
+                                <li class="private"><a href="#method__onFormSubmit" title="_onFormSubmit">_onFormSubmit</a></li>
+                                <li class="private"><a href="#method__onLinkClick" title="_onLinkClick">_onLinkClick</a></li>
+                                <li class="private"><a href="#method__unbindUI" title="_unbindUI">_unbindUI</a></li>
+                                <li class=""><a href="#method_send" title="send">send</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="eventsList" class="module">
+                        <h4>Events</h4>
+                        <ul class="content">        
+                                <li class=""><a href="#event_tdi:ajax:beforeFormSubmit" title="tdi:ajax:beforeFormSubmit">tdi:ajax:beforeFormSubmit</a></li>
+                                <li class=""><a href="#event_tdi:ajax:beforeLinkClick" title="tdi:ajax:beforeLinkClick">tdi:ajax:beforeLinkClick</a></li>
+                        </ul>
+                    </div>
+
+
+            </div>
+		</div>
+	</div>
+	<div id="ft">
+        <hr />
+        Copyright &copy; 2012 Yahoo! Inc. All rights reserved.
+	</div>
+</div>
+<script type="text/javascript">
+    ALL_YUI_PROPS = [{"url": "TDI.Ajax.html#method__bindUI", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_bindUI"}, {"url": "TDI.Ajax.html#property__delegateSelectors", "access": "private", "host": "TDI.Ajax", "type": "property", "name": "_delegateSelectors"}, {"url": "TDI.Ajax.html#method__onBeforeFormSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onBeforeFormSubmit"}, {"url": "TDI.Ajax.html#method__onBeforeLinkClick", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onBeforeLinkClick"}, {"url": "TDI.Ajax.html#method__onFieldChange", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFieldChange"}, {"url": "TDI.Ajax.html#method__onFieldSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFieldSubmit"}, {"url": "TDI.Ajax.html#method__onFormButtonActivate", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFormButtonActivate"}, {"url": "TDI.Ajax.html#method__onFormSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFormSubmit"}, {"url": "TDI.Ajax.html#method__onLinkClick", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onLinkClick"}, {"url": "TDI.Ajax.html#method_send", "access": "", "host": "TDI.Ajax", "type": "method", "name": "send"}, {"url": "TDI.Ajax.html#event_tdi:ajax:beforeFormSubmit", "access": "", "host": "TDI.Ajax", "type": "event", "name": "tdi:ajax:beforeFormSubmit"}, {"url": "TDI.Ajax.html#event_tdi:ajax:beforeLinkClick", "access": "", "host": "TDI.Ajax", "type": "event", "name": "tdi:ajax:beforeLinkClick"}, {"url": "TDI.Ajax.html#method__unbindUI", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_unbindUI"}];
+</script>
+</body>
+</html>

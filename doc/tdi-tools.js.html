@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:yui="http://yuilibrary.com/rdf/1.0/yui.rdf#">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>API: TDI   tdi-tools.js  (YUI Library)</title>
+
+	<link rel="stylesheet" type="text/css" href="assets/reset-fonts-grids-min.css?stamp=1352381307.73" />
+	<link rel="stylesheet" type="text/css" href="assets/api.css?stamp=1352381307.73" />
+
+    <script type="text/javascript" src="assets/api-js?stamp=1352381307.73"></script>
+    <script type="text/javascript" src="assets/ac-js?stamp=1352381307.73"></script>
+</head>
+
+<body id="yahoo-com">
+
+<div id="doc3" class="yui-t2">
+	<div id="hd">
+        <h1><a href="http://wiki.twinstone.org/display/TDI/Home" title="Twinstone TDI">Twinstone TDI</a></h1>
+        <h3>TDI&nbsp; <span class="subtitle">1.5-pre02</span></h3>
+        <a href="./index.html" title="Twinstone TDI">Twinstone TDI</a> 
+            &gt; <a href="./module_tdi.html" title="TDI">TDI</a>
+                
+                 &gt; tdi-tools.js (source view) 
+        <form onsubmit="return false">
+            <div id="propertysearch">
+                Search: <input autocomplete="off" id="searchinput" />
+                <div id="searchresults">
+                    &nbsp;
+                </div>
+            </div>
+        </form>
+	</div>
+
+	<div id="bd">
+		<div id="yui-main">
+			<div class="yui-b">
+            <form action="#" name="yui-classopts-form" method="get" id="yui-classopts-form">
+                <fieldset>
+                    <legend>Filters</legend>
+                <span class="classopts"><input type="checkbox" name="show_private" id="show_private" /> <label for="show_private">Show Private</label></span>
+                <span class="classopts"><input type="checkbox" name="show_protected" id="show_protected" /> <label for="show_protected">Show Protected</label></span>
+                <span class="classopts"><input type="checkbox" name="show_deprecated" id="show_deprecated" /> <label for="show_deprecated">Show Deprecated</label></span>
+                </fieldset>
+            </form>
+
+                    <div id="srcout">
+                        <style>
+                            #doc3 .classopts { display:none; }
+                        </style>
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * &lt;p&gt;A set of tools for the TDI library.&lt;/p&gt;</span>
+<span class="cm"> * &lt;p&gt;Requires TDI global object.&lt;/p&gt;</span>
+<span class="cm"> * @class Tools</span>
+<span class="cm"> * @namespace TDI</span>
+<span class="cm"> */</span>
+<span class="nx">TDI</span><span class="p">.</span><span class="nx">Tools</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="c1">// PUBLIC STUFF ------------------------------------------------------------</span>
+		<span class="k">return</span> <span class="p">{</span>
+			<span class="cm">/**</span>
+<span class="cm">			 * &lt;p&gt;Loads an external javascript file. It uses a &#39;script tag&#39; technique instead of AJAX,</span>
+<span class="cm">			 * so the loaded javascript file is debugable in tools like Firebug.&lt;/p&gt;</span>
+<span class="cm">			 * @method getScript</span>
+<span class="cm">			 * @param {String} url URL of the external javascript file</span>
+<span class="cm">			 * @param {Object} options Additional options</span>
+<span class="cm">			 *   &lt;dl&gt;</span>
+<span class="cm">			 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;complete&lt;/span&gt; &lt;span&gt;&amp;lt;Function&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">			 *       &lt;span&gt;It is called when the javascript is fully loaded.&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">			 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;id&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">			 *       &lt;span&gt;An optional &lt;em&gt;id&lt;/em&gt; attribute of the script tag.&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">			 *   &lt;/dl&gt;</span>
+<span class="cm">			 */</span>
+			<span class="nx">getScript</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">url</span><span class="p">,</span> <span class="nx">options</span> <span class="p">)</span> <span class="p">{</span>
+				<span class="kd">var</span> <span class="nx">loaded</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+					<span class="nx">node</span><span class="p">;</span>
+
+				<span class="k">if</span> <span class="p">(</span> <span class="nx">url</span> <span class="p">)</span> <span class="p">{</span>
+					<span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span> <span class="o">||</span> <span class="p">{};</span>
+
+					<span class="nx">node</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s1">&#39;script&#39;</span> <span class="p">);</span>
+					<span class="nx">node</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/javascript&#39;</span><span class="p">;</span>
+					<span class="nx">node</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
+					<span class="k">if</span> <span class="p">(</span> <span class="nx">options</span><span class="p">.</span><span class="nx">id</span> <span class="p">)</span> <span class="p">{</span>
+						<span class="nx">node</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+					<span class="p">}</span>
+
+					<span class="k">if</span> <span class="p">(</span> <span class="nx">options</span><span class="p">.</span><span class="nx">complete</span> <span class="p">)</span> <span class="p">{</span>
+						<span class="cm">/*</span>
+<span class="cm">							IE supports only the `onreadystatechange` event.</span>
+<span class="cm">							Other browsers (Chrome, Firefox, Opera, Safari) support the `onload` event.</span>
+<span class="cm">							IE9 supports both. But we make sure, that only one callback is fired.</span>
+<span class="cm">						*/</span>
+							<span class="nx">node</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+								<span class="kd">var</span> <span class="nx">rs</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span><span class="p">;</span>
+								<span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">loaded</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">rs</span> <span class="o">===</span> <span class="s1">&#39;loaded&#39;</span> <span class="o">||</span> <span class="nx">rs</span> <span class="o">===</span> <span class="s1">&#39;complete&#39;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+									<span class="nx">loaded</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+									<span class="nx">node</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+									<span class="nx">options</span><span class="p">.</span><span class="nx">complete</span><span class="p">(</span> <span class="nx">node</span> <span class="p">);</span>
+								<span class="p">}</span>
+							<span class="p">};</span>
+							<span class="nx">node</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+								<span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">loaded</span> <span class="p">)</span> <span class="p">{</span>
+									<span class="nx">loaded</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+									<span class="nx">options</span><span class="p">.</span><span class="nx">complete</span><span class="p">(</span> <span class="nx">node</span> <span class="p">);</span>
+								<span class="p">}</span>
+							<span class="p">};</span>
+					<span class="p">}</span>
+
+					<span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span> <span class="s1">&#39;head&#39;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">node</span> <span class="p">);</span>
+				<span class="p">}</span>
+			<span class="p">},</span>
+
+			<span class="cm">/**</span>
+<span class="cm">			 * &lt;p&gt;Loads an external CSS file. It uses AJAX to load the CSS data to provide the &lt;em&gt;complete&lt;/em&gt; event.&lt;/p&gt;</span>
+<span class="cm">			 * @method getStyle</span>
+<span class="cm">			 * @param {String} url URL of the external CSS file</span>
+<span class="cm">			 * @param {Object} options Additional options</span>
+<span class="cm">			 *   &lt;dl&gt;</span>
+<span class="cm">			 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;complete&lt;/span&gt; &lt;span&gt;&amp;lt;Function&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">			 *       &lt;span&gt;It is called when the CSS file is fully loaded.&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">			 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;id&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">			 *       &lt;span&gt;An optional &lt;em&gt;id&lt;/em&gt; attribute of the style tag.&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">			 *   &lt;/dl&gt;</span>
+<span class="cm">			 */</span>
+			<span class="nx">getStyle</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">url</span><span class="p">,</span> <span class="nx">options</span> <span class="p">)</span> <span class="p">{</span>
+				<span class="kd">var</span> <span class="nx">node</span><span class="p">;</span>
+				<span class="k">if</span> <span class="p">(</span> <span class="nx">url</span> <span class="p">)</span> <span class="p">{</span>
+					<span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span> <span class="o">||</span> <span class="p">{};</span>
+
+					<span class="nx">node</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s1">&#39;link&#39;</span> <span class="p">);</span>
+					<span class="nx">node</span><span class="p">.</span><span class="nx">rel</span> <span class="o">=</span> <span class="s1">&#39;stylesheet&#39;</span><span class="p">;</span>
+					<span class="nx">node</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/css&#39;</span><span class="p">;</span>
+					<span class="nx">node</span><span class="p">.</span><span class="nx">media</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">media</span> <span class="o">||</span> <span class="s1">&#39;screen&#39;</span><span class="p">;</span>
+					<span class="nx">node</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
+					<span class="k">if</span> <span class="p">(</span> <span class="nx">options</span><span class="p">.</span><span class="nx">id</span> <span class="p">)</span> <span class="p">{</span>
+						<span class="nx">node</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+					<span class="p">}</span>
+
+					<span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span> <span class="s1">&#39;head&#39;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">node</span> <span class="p">);</span>
+
+					<span class="nx">options</span><span class="p">.</span><span class="nx">complete</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">complete</span><span class="p">(</span> <span class="nx">node</span> <span class="p">);</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+
+<span class="p">}(</span><span class="nx">jQuery</span><span class="p">);</span>
+</pre></div>
+                    </div>
+			</div>
+		</div>
+		<div class="yui-b">
+            <div class="nav">
+
+                    <div id="moduleList" class="module">
+                        <h4>Modules</h4>
+                        <ul class="content">
+                                <li class="selected"><a href="module_TDI.html" title="TDI">TDI</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="classList" class="module">
+                        <h4>Classes</h4>
+                        <ul class="content">
+                                <li class=""><a href="TDI.Ajax.html" title="TDI.Ajax">TDI.Ajax</a></li>
+                                <li class=""><a href="TDI.Ajax.Request.html" title="TDI.Ajax.Request">TDI.Ajax.Request</a></li>
+                                <li class=""><a href="TDI.Ajax.Response.html" title="TDI.Ajax.Response">TDI.Ajax.Response</a></li>
+                                <li class=""><a href="TDI.Tools.html" title="TDI.Tools">TDI.Tools</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="fileList" class="module">
+                        <h4>Files</h4>
+                        <ul class="content">        
+                                <li class=""><a href="tdi-ajax.js.html" title="tdi-ajax.js">tdi-ajax.js</a></li>
+                                <li class="selected"><a href="tdi-tools.js.html" title="tdi-tools.js">tdi-tools.js</a></li>
+                                <li class=""><a href="tdi.js.html" title="tdi.js">tdi.js</a></li>
+                        </ul>
+                    </div>
+
+
+
+
+
+            </div>
+		</div>
+	</div>
+	<div id="ft">
+        <hr />
+        Copyright &copy; 2012 Yahoo! Inc. All rights reserved.
+	</div>
+</div>
+<script type="text/javascript">
+    ALL_YUI_PROPS = [{"url": "TDI.Ajax.Request.html#method_ajaxifyUrl", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "ajaxifyUrl"}, {"url": "TDI.Ajax.html#method__bindUI", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_bindUI"}, {"url": "TDI.Tools.html#method__checkDependencies", "access": "private", "host": "TDI.Tools", "type": "method", "name": "_checkDependencies"}, {"url": "TDI.Ajax.html#property__delegateSelectors", "access": "private", "host": "TDI.Ajax", "type": "property", "name": "_delegateSelectors"}, {"url": "TDI.Ajax.Response.html#method__end", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_end"}, {"url": "TDI.Ajax.Response.html#method__error", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_error"}, {"url": "TDI.Tools.html#method_getScript", "access": "", "host": "TDI.Tools", "type": "method", "name": "getScript"}, {"url": "TDI.Tools.html#method_getStyle", "access": "", "host": "TDI.Tools", "type": "method", "name": "getStyle"}, {"url": "TDI.Tools.html#property__jQueryMinVersion", "access": "private", "host": "TDI.Tools", "type": "property", "name": "_jQueryMinVersion"}, {"url": "TDI.Ajax.Response.html#method__onBeforeDialog", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeDialog"}, {"url": "TDI.Ajax.html#method__onBeforeFormSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onBeforeFormSubmit"}, {"url": "TDI.Ajax.Response.html#method__onBeforeInsert", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeInsert"}, {"url": "TDI.Ajax.html#method__onBeforeLinkClick", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onBeforeLinkClick"}, {"url": "TDI.Ajax.Response.html#method__onBeforeMessage", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeMessage"}, {"url": "TDI.Ajax.Response.html#method__onBeforePopup", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforePopup"}, {"url": "TDI.Ajax.Response.html#method__onBeforeRedirect", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeRedirect"}, {"url": "TDI.Ajax.Response.html#method__onBeforeReload", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeReload"}, {"url": "TDI.Ajax.Response.html#method__onBeforeScript", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeScript"}, {"url": "TDI.Ajax.Response.html#method__onBeforeStyle", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeStyle"}, {"url": "TDI.Ajax.Response.html#method__onBeforeUpdate", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeUpdate"}, {"url": "TDI.Ajax.Response.html#method__onDialogDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onDialogDefault"}, {"url": "TDI.Ajax.html#method__onFieldChange", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFieldChange"}, {"url": "TDI.Ajax.html#method__onFieldSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFieldSubmit"}, {"url": "TDI.Ajax.html#method__onFormButtonActivate", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFormButtonActivate"}, {"url": "TDI.Ajax.html#method__onFormSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFormSubmit"}, {"url": "TDI.Ajax.Response.html#method__onInsertDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onInsertDefault"}, {"url": "TDI.Ajax.html#method__onLinkClick", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onLinkClick"}, {"url": "TDI.Ajax.Response.html#method__onMessageDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onMessageDefault"}, {"url": "TDI.Ajax.Response.html#method__onPopupDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onPopupDefault"}, {"url": "TDI.Ajax.Response.html#method__onRedirectDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onRedirectDefault"}, {"url": "TDI.Ajax.Response.html#method__onReloadDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onReloadDefault"}, {"url": "TDI.Ajax.Response.html#method__onScriptDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onScriptDefault"}, {"url": "TDI.Ajax.Response.html#method__onStyleDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onStyleDefault"}, {"url": "TDI.Ajax.Response.html#method__onUpdateDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onUpdateDefault"}, {"url": "TDI.Ajax.html#method_send", "access": "", "host": "TDI.Ajax", "type": "method", "name": "send"}, {"url": "TDI.Ajax.Request.html#method_send", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "send"}, {"url": "TDI.Ajax.Request.html#method_sendForm", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "sendForm"}, {"url": "TDI.Ajax.Response.html#method__start", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_start"}, {"url": "TDI.Ajax.Response.html#method__success", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_success"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeDialog", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeDialog"}, {"url": "TDI.Ajax.html#event_tdi:ajax:beforeFormSubmit", "access": "", "host": "TDI.Ajax", "type": "event", "name": "tdi:ajax:beforeFormSubmit"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeInsert", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeInsert"}, {"url": "TDI.Ajax.html#event_tdi:ajax:beforeLinkClick", "access": "", "host": "TDI.Ajax", "type": "event", "name": "tdi:ajax:beforeLinkClick"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeMessage", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeMessage"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforePopup", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforePopup"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeRedirect", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeRedirect"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeReload", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeReload"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeScript", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeScript"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeStyle", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeStyle"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeUpdate", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeUpdate"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:dialog", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:dialog"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:dialogsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:dialogsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:done", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:done"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:end", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:end"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:error", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:error"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:insert", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:insert"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:insertsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:insertsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:message", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:message"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:messagesDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:messagesDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:popup", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:popup"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:popupsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:popupsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:script", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:script"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:scriptsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:scriptsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:start", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:start"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:style", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:style"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:stylesDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:stylesDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:update", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:update"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:updatesDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:updatesDone"}, {"url": "TDI.Ajax.html#method__unbindUI", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_unbindUI"}];
+</script>
+</body>
+</html>

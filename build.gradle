@@ -59,7 +59,34 @@ task compress(type: JavaExec, dependsOn: bundle) {
    args += file("$bundleDir/js/tdi-bundle.js")
 }
 
-task makeJs(dependsOn: [compress]) << {
+task doc(overwrite: true) << {
+	file("$bundleDir/temp/doc-in").mkdirs()
+
+	copy {
+		into "$bundleDir/temp/doc-in"
+	   	from("$projectDir/src/js") {include "*.js"}
+	}
+	exec {
+		executable pythonBin
+		args += yuidocBin
+		args += "$bundleDir/temp/doc-in"
+		args += "--showprivate"
+		args += "--parseroutdir"
+		args += "$bundleDir/temp/doc-out"
+		args += "--outputdir"
+		args += "$projectDir/doc"
+		args += "--template"
+		args += yuidocTemplate
+		args += "--version"
+		args += "$version"
+		args += "--project"
+		args += "Twinstone TDI"
+		args += "--projecturl"
+		args += projectUrl
+	}
+}
+
+task makeJs(dependsOn: [compress, doc]) << {
 	ant.concat(destfile: "$bundleDir/js/tdi-bundle-min.js", encoding: "UTF-8", fixlastline: "yes") {
 		fileset(dir: "$projectDir", includes: "banner.txt")
 		fileset(dir: "$bundleDir/temp", includes: "tdi-bundle-min-temp.js")
