@@ -33,14 +33,11 @@ def bundleDir = "$buildDir/minify"
 
 configurations {
 	sources
-	runtime
+	runtime { visible = false }
+	minify { visible = false }
 }
 
 configurations['default'].extendsFrom configurations.runtime
-
-configurations {
-	minify
-}
 
 task prepare << {
 	file("$bundleDir/temp").mkdirs()
@@ -129,12 +126,13 @@ task jsJar(type: Jar, dependsOn: makeJs) {
 	into 'META-INF/resources/tdi/js'
 	from("$bundleDir/js") {
 		include '*.js'
+		exclude '*-temp.js'
 	}
 }
 
 artifacts {
-	runtime (jsJar) {
-		type = 'bundle'
+	["runtime","archives"].each { conf -> 
+			"$conf" (jsJar)
 	}
 }
 
