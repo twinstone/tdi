@@ -18,14 +18,25 @@ uploadArchives {
 	repositories {
 		ivy {
 			url = "$artifactory/twinstone"
-			credentials { username = "$login" ; password = "$pwd" }
 		}
 	}
 }
 
+if (getProperty("etn.artifactory.user") != null) {
+    uploadArchives.repositories.ivy.credentials {
+        username = getProperty("etn.artifactory.user")
+        password = getProperty("etn.artifactory.password")
+    }
+}
+
 def bundleDir = "$buildDir/minify"
 
-configurations['default'].extendsFrom configurations.archives
+configurations {
+	sources
+	runtime
+}
+
+configurations['default'].extendsFrom configurations.runtime
 
 configurations {
 	minify
@@ -103,13 +114,13 @@ task makeJs(dependsOn: [compress]) << {
 }
 
 artifacts {
-	archives (file("$bundleDir/js/tdi-bundle.js")) {
+	sources (file("$bundleDir/js/tdi-bundle.js")) {
 		name = 'tdi-bundle'
 	}
-	archives (file("$bundleDir/js/tdi-bundle-min.js")) {
+	sources (file("$bundleDir/js/tdi-bundle-min.js")) {
 		name = 'tdi-bundle-min'
 	}
-	archives (file("$bundleDir/js/tdi-bundle-all-min.js")) {
+	sources (file("$bundleDir/js/tdi-bundle-all-min.js")) {
 		name = 'tdi-bundle-all-min'
 	}
 }
@@ -122,7 +133,7 @@ task jsJar(type: Jar, dependsOn: makeJs) {
 }
 
 artifacts {
-	archives (jsJar) {
+	runtime (jsJar) {
 		type = 'bundle'
 	}
 }
