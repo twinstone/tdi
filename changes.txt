@@ -3,8 +3,8 @@ CHANGES AFTER VERSION 1.5.0
 
 ==== Overview ====
   * Added support for dialog ID attribute
-  * Fixed form serialization problem - http://bugs.twinstone.org/browse/TDI-6
-  * Fixed browser check, was not working correctly in IE10
+  * 28.1.2013 Fixed form serialization problem - http://bugs.twinstone.org/browse/TDI-6
+  * 28.1.2013 Fixed browser check, was not working correctly in IE10
 
 CHANGES AFTER VERSION 1.4.1
 =============================

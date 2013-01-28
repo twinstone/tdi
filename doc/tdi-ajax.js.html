@@ -4,19 +4,19 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<title>API: TDI   tdi-ajax.js  (YUI Library)</title>
 
-	<link rel="stylesheet" type="text/css" href="assets/reset-fonts-grids-min.css?stamp=1352381307.73" />
-	<link rel="stylesheet" type="text/css" href="assets/api.css?stamp=1352381307.73" />
+	<link rel="stylesheet" type="text/css" href="assets/reset-fonts-grids-min.css?stamp=1359382025.14" />
+	<link rel="stylesheet" type="text/css" href="assets/api.css?stamp=1359382025.14" />
 
-    <script type="text/javascript" src="assets/api-js?stamp=1352381307.73"></script>
-    <script type="text/javascript" src="assets/ac-js?stamp=1352381307.73"></script>
+    <script type="text/javascript" src="assets/api-js?stamp=1359382025.14"></script>
+    <script type="text/javascript" src="assets/ac-js?stamp=1359382025.14"></script>
 </head>
 
 <body id="yahoo-com">
 
 <div id="doc3" class="yui-t2">
 	<div id="hd">
-        <h1><a href="http://wiki.twinstone.org/display/TDI/Home" title="Twinstone TDI">Twinstone TDI</a></h1>
-        <h3>TDI&nbsp; <span class="subtitle">1.5-pre02</span></h3>
+        <h1><a href="http://wiki.twinstone.org/display/TDI" title="Twinstone TDI">Twinstone TDI</a></h1>
+        <h3>TDI&nbsp; <span class="subtitle">1.5.1</span></h3>
         <a href="./index.html" title="Twinstone TDI">Twinstone TDI</a> 
             &gt; <a href="./module_tdi.html" title="TDI">TDI</a>
                 
@@ -295,7 +295,7 @@
 					<span class="nx">related</span> <span class="o">=</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span> <span class="s1">&#39;related-ancestor&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span> <span class="p">).</span><span class="nx">add</span><span class="p">(</span> <span class="nx">$</span><span class="p">(</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span> <span class="s1">&#39;related-element&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span> <span class="p">)</span> <span class="p">).</span><span class="nx">add</span><span class="p">(</span> <span class="nx">$</span><span class="p">(</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;rel&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span> <span class="p">)</span> <span class="p">).</span><span class="nx">add</span><span class="p">(</span> <span class="nx">$</span><span class="p">(</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span> <span class="s1">&#39;_submitButton&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span> <span class="p">)</span> <span class="p">),</span>
 					<span class="nx">triggerGroup</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span> <span class="s1">&#39;trigger-group&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span> <span class="p">),</span>
 					<span class="nx">url</span> <span class="o">=</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span> <span class="s1">&#39;ajax-url&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;href&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;action&#39;</span> <span class="p">),</span>
-					<span class="nx">data</span> <span class="o">=</span> <span class="p">{},</span> <span class="nx">formData</span> <span class="o">=</span> <span class="p">[];</span>
+					<span class="nx">data</span> <span class="o">=</span> <span class="p">{};</span>
 
 				<span class="c1">// if the URL is empty, try to use $elm.value</span>
 					<span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="nx">url</span> <span class="o">===</span> <span class="s2">&quot;&quot;</span> <span class="o">||</span> <span class="nx">url</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
@@ -366,10 +366,7 @@
 						<span class="nx">TDI</span><span class="p">.</span><span class="nx">Ajax</span><span class="p">.</span><span class="nx">Request</span><span class="p">.</span><span class="nx">sendForm</span><span class="p">(</span> <span class="nx">$elm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">_options</span> <span class="p">);</span>
 					<span class="p">}</span>
 					<span class="k">else</span> <span class="p">{</span>
-						<span class="nx">formData</span> <span class="o">=</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">serializeArray</span><span class="p">();</span>
-						<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">formData</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-							<span class="nx">_options</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">formData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">formData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
-						<span class="p">}</span>
+						<span class="nx">_options</span><span class="p">.</span><span class="nx">data</span> <span class="o">=</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">serialize</span><span class="p">();</span> <span class="c1">// safe to overwrite</span>
 						<span class="nx">_options</span><span class="p">.</span><span class="nx">method</span> <span class="o">=</span> <span class="nx">$elm</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">);</span>
 						<span class="nx">_options</span><span class="p">.</span><span class="nx">end</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 							<span class="nx">$elm</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span> <span class="s1">&#39;_submitButton&#39;</span><span class="p">,</span> <span class="kc">null</span> <span class="p">);</span>
@@ -546,7 +543,7 @@
 					<span class="nx">iframe</span><span class="p">;</span>
 
 					<span class="c1">// IE8- has a problem assigning the `name` attribute to a dynamicaly created Iframe. It needs to be created as a string.</span>
-					<span class="k">if</span> <span class="p">(</span> <span class="nx">$</span><span class="p">.</span><span class="nx">browser</span><span class="p">.</span><span class="nx">msie</span> <span class="o">&amp;&amp;</span> <span class="nx">$</span><span class="p">.</span><span class="nx">browser</span><span class="p">.</span><span class="nx">version</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">8</span> <span class="p">)</span> <span class="p">{</span>
+					<span class="k">if</span> <span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span> <span class="o">&lt;=</span> <span class="mi">8</span> <span class="p">)</span> <span class="p">{</span>
 						<span class="nx">iframe</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s1">&#39;&lt;iframe name=&quot;&#39;</span> <span class="o">+</span> <span class="nx">iframeName</span> <span class="o">+</span> <span class="s1">&#39;&quot;&gt;&#39;</span> <span class="p">);</span>
 					<span class="p">}</span>
 					<span class="k">else</span> <span class="p">{</span>
@@ -1809,7 +1806,7 @@
 	</div>
 	<div id="ft">
         <hr />
-        Copyright &copy; 2012 Yahoo! Inc. All rights reserved.
+        Copyright &copy; 2013 Yahoo! Inc. All rights reserved.
 	</div>
 </div>
 <script type="text/javascript">
