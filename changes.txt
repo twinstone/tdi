@@ -3,6 +3,8 @@ CHANGES AFTER VERSION 1.5.0
 
 ==== Overview ====
   * Added support for dialog ID attribute
+  * Fixed form serialization problem - http://bugs.twinstone.org/browse/TDI-6
+  * Fixed browser check, was not working correctly in IE10
 
 CHANGES AFTER VERSION 1.4.1
 =============================
@@ -20,61 +22,3 @@ CHANGES AFTER VERSION 1.3.4
 
 ==== Overview ====
   * Added support for <message> XML protocol tag
-
-
-ZMENY OPROTI VERZI 1.3.3
-=============================
-
-==== Overview ====
-  * Added TDI events tdi:ajax:start and tdi:ajax:end
-
-ZMENY OPROTI VERZI 1.3.2
-=============================
-
-==== P�ehled ====
-  * zm�na a sjednocen� CSS t��dy **loading-related** na **loading-target**
-  * podpora infuze pro v�echny elementy &lt;input&gt;
-
-ZMENY OPROTI VERZI 1.3.1
-=============================
-
-==== P�ehled ====
-  * ozna�en� submit button� jako "loading" p�i b��c�m infuzn�m requestu
-
-ZMENY OPROTI VERZI 1.3.0
-=============================
-
-==== P�ehled ====
-  * oprava chyby p�i odstra�ov�n� CSS t��dy **loading-related**
-  
-ZMENY OPROTI VERZI 1.2.1
-=============================
-
-==== P�ehled ====
-  * infuse form fieldy v requestu pos�laj� i sv�j name=value
-  
-ZMENY OPROTI VERZI 1.1.0
-=============================
-
-==== P�ehled ====
-  * p�idan� unit testy (ICe)
-  * oprava chyb plynouc�ch z unit test� (ICe)
-
-ZMENY OPROTI VERZI 1.0.2
-=============================
-
-==== P�ehled ====
-  * zamezen� dvoj�ho sta�en� stejn�ho script/style v p��pad� nastaven�ho id atributu (ICe)
-  * zm�na na��t�n� extern�ch styl� (ajax->node) (ICe)
-
-ZMENY OPROTI VERZI 1.0.1
-=============================
-
-==== P�ehled ====
-  * odstran�n� automatick� na�ten� "modul�", javascripty se bundluj� (ICe)
-
-ZMENY OPROTI VERZI 1.0
-=============================
-
-==== P�ehled ====
-  * nastaven� enctype="multipart/form-data" jen na formul��e, kter� obsahuj� input[type=file] (ICe)

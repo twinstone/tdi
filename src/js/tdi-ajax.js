@@ -246,7 +246,7 @@ TDI.Ajax = function($) {
 					related = $elm.closest( $elm.data( 'related-ancestor' ) || '' ).add( $( $elm.data( 'related-element' ) || '' ) ).add( $( $elm.attr( 'rel' ) || '' ) ).add( $( $elm.data( '_submitButton' ) || '' ) ),
 					triggerGroup = $( $elm.data( 'trigger-group' ) || '' ),
 					url = $elm.data( 'ajax-url' ) || $elm.attr( 'href' ) || $elm.attr( 'action' ),
-					data = {}, formData = [];
+					data = {};
 
 				// if the URL is empty, try to use $elm.value
 					if ( (url === "" || url === undefined) && value ) {
@@ -317,10 +317,7 @@ TDI.Ajax = function($) {
 						TDI.Ajax.Request.sendForm( $elm[0], _options );
 					}
 					else {
-						formData = $elm.serializeArray();
-						for (var i = 0, l = formData.length; i < l; i++) {
-							_options.data[formData[i].name] = formData[i].value;
-						}
+						_options.data = $elm.serialize(); // safe to overwrite
 						_options.method = $elm.attr('method');
 						_options.end = function() {
 							$elm.data( '_submitButton', null );
@@ -497,7 +494,7 @@ TDI.Ajax.Request = function($) {
 					iframe;
 
 					// IE8- has a problem assigning the `name` attribute to a dynamicaly created Iframe. It needs to be created as a string.
-					if ( $.browser.msie && $.browser.version.slice( 0, 1 ) <= 8 ) {
+					if ( document.documentMode && document.documentMode <= 8 ) {
 						iframe = document.createElement( '<iframe name="' + iframeName + '">' );
 					}
 					else {
