@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.5.1
+=============================
+
+==== Overview ====
+  * Changed the way of collectiong XML instructions to allow HtmlUnit testing
+
 CHANGES AFTER VERSION 1.5.0
 =============================
 

@@ -675,10 +675,14 @@ TDI.Ajax.Response = function($) {
 				}
 
 			// handle tags
+				var elements = [];
 				$.each( _infusionInstructions, function( key, value ) {
-					infusionInstructionsNames.push( key );
+					$xml.find(key).each( function( ) {
+						elements.push( this );
+					});
 				} );
-				$xml.find( infusionInstructionsNames.join( ',' ) ).each( function() {
+
+				$.each(elements, function( ) {
 					var instruction = this.tagName.toLowerCase();
 
 					switch( instruction ) {
