@@ -49,9 +49,9 @@ task prepare << {
 	}
 }
 
-task bundle(dependsOn: prepare) {
+task bundle(dependsOn: prepare) << {
 	ant.concat(destfile: "$bundleDir/js/tdi-bundle.js", encoding: "UTF-8", fixlastline: "yes") {
-		fileset(dir: "$projectDir", includes: "banner.txt")
+		fileset(dir: "$bundleDir/temp/", includes: "banner.txt")
 		fileset(dir: "$projectDir/src/js/", includes: "tdi.js")
 		fileset(dir: "$projectDir/src/js/", includes: "tdi-ajax.js")
 		fileset(dir: "$projectDir/src/js/", includes: "tdi-tools.js")
@@ -101,7 +101,7 @@ task doc(overwrite: true) << {
 
 task makeJs(dependsOn: [compress]) << {
 	ant.concat(destfile: "$bundleDir/js/tdi-bundle-min.js", encoding: "UTF-8", fixlastline: "yes") {
-		fileset(dir: "$projectDir", includes: "banner.txt")
+		fileset(dir: "$bundleDir/temp", includes: "banner.txt")
 		fileset(dir: "$bundleDir/temp", includes: "tdi-bundle-min-temp.js")
 	}
 	ant.concat(destfile: "$bundleDir/js/tdi-bundle-all-min.js", encoding: "UTF-8", fixlastline: "yes") {
