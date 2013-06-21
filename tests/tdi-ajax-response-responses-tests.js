@@ -1,7 +1,7 @@
 module( 'TDI.Ajax.Response' );
 	
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(83);
+		expect(92);
 		
 		// bind the events
 			$(document)
@@ -13,13 +13,14 @@ module( 'TDI.Ajax.Response' );
 					return false;
 				} )
 				.bind( 'tdi:ajax:updatesDone', function( evt, data ) {
-					// check the API data (expect 6 updates)
+					// check the API data (expect 7 updates)
 						var u1 = data.updates[0],
 							u2 = data.updates[1],
 							u3 = data.updates[2],
 							u4 = data.updates[3],
 							u5 = data.updates[4],
-							u6 = data.updates[5];
+							u6 = data.updates[5],
+							u7 = data.updates[6];
 
 						equals( u1.target_id, 'update-default', 'Update1: target_id' );
 						equals( u1.target.attr( 'id' ), 'update-default', 'Update1: target' );
@@ -43,10 +44,17 @@ module( 'TDI.Ajax.Response' );
 						equals( u5.target_id, 'update-add-class', 'Update5: target_id' );
 						equals( u5.target.attr( 'id' ), 'update-add-class', 'Update5: target' );
 						equals( u5.class_add, 'cls-add', 'Update5: class add' );
+						equals( u5.content, 'Update add class', 'Update5: content' );
 
 						equals( u6.target_id, 'update-remove-class', 'Update6: target_id' );
 						equals( u6.target.attr( 'id' ), 'update-remove-class', 'Update6: target' );
 						equals( u6.class_remove, 'cls-remove', 'Update6: class remove' );
+						equals( u6.content, '', 'Update6: content' );
+
+						equals( u7.target_id, 'update-empty-the-content', 'Update7: target_id' );
+						equals( u7.target.attr( 'id' ), 'update-empty-the-content', 'Update7: target' );
+						equals( u7.clear, 'true', 'Update7: empty' );
+						equals( u7.content, 'This content will not be used', 'Update7: content' );
 
 					// check the markup
 						equals( $( '#update-default' ).text(), 'Update default', 'The target was updated and has the correct contents.' );
@@ -56,7 +64,10 @@ module( 'TDI.Ajax.Response' );
 						equals( $( '#update-append' ).text(), 'This is the first text.Update append', 'The target was updated and new contents were appended at the end.' );
 						equals( $( '#update-prepend' ).text(), 'Update prependThis is the last text.', 'The target was updated and new contents were prepended at the beginning.' );
 						ok( $( '#update-add-class' ).hasClass( 'cls-add' ), 'A new class name was added to the target.' );
+						equals( $( '#update-add-class' ).text(), 'Update add class' );
 						ok( !$( '#update-remove-class' ).hasClass( 'cls-remove' ), 'A class name was removed from the target.' );
+						equals( $( '#update-remove-class' ).text(), 'This should not be overwriten.' );
+						equals( $( '#update-empty-the-content' ).text(), '' );
 				} )
 				.bind( 'tdi:ajax:insertsDone', function( evt, data ) {
 					// check the API data (expect 3 inserts)
@@ -148,7 +159,7 @@ module( 'TDI.Ajax.Response' );
 				.bind( 'tdi:ajax:done', function( evt, data ) {
 					var r = data.responses;
 					setTimeout( function() {
-						equals( r.updates && r.updates.length, 6, 'Ajax done: updates' );
+						equals( r.updates && r.updates.length, 7, 'Ajax done: updates' );
 						equals( r.inserts && r.inserts.length, 3, 'Ajax done: inserts' );
 						equals( r.scripts && r.scripts.length, 3, 'Ajax done: scripts' );
 						equals( r.styles && r.styles.length, 1, 'Ajax done: styles' );

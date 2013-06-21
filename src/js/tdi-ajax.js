@@ -888,6 +888,7 @@ TDI.Ajax.Response = function($) {
 				replace = $tag.attr( 'replace' ),
 				append = $tag.attr( 'append' ),
 				prepend = $tag.attr( 'prepend' ),
+				clear = $tag.attr( 'clear' ),
 				class_add = $tag.attr( 'class-add' ) || '',
 				class_remove = $tag.attr( 'class-remove' ) || '',
 				event_data = {
@@ -898,6 +899,7 @@ TDI.Ajax.Response = function($) {
 					replace			: replace,
 					append			: append,
 					prepend			: prepend,
+					clear			: clear,
 					class_add		: class_add,
 					class_remove	: class_remove,
 					options			: options
@@ -926,6 +928,8 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Indicates whether the contents will be appended to the end of the target</span></dd>
 					 *     <dd><code><span>prepend</span> <span>&lt;String&gt;</span></code>
 					 *       <span>Indicates whether the contents will be prepended to the beginning of the target</span></dd>
+					 *     <dd><code><span>clear</span> <span>&lt;String&gt;</span></code>
+					 *       <span>("true"|"false") Whether to clear the content of the target</span></dd>
 					 *     <dd><code><span>class_add</span> <span>&lt;String&gt;</span></code>
 					 *       <span>Space separated list of class names to add</span></dd>
 					 *     <dd><code><span>class_remove</span> <span>&lt;String&gt;</span></code>
@@ -1292,6 +1296,8 @@ TDI.Ajax.Response = function($) {
 		 *       <span>("true"|"false") Whether to append the new contents at the end of the target</span></dd>
 		 *     <dd><code><span>prepend</span> <span>&lt;String&gt;</span></code>
 		 *       <span>("true"|"false") Whether to prepend the new contents at the begining of the target</span></dd>
+		 *     <dd><code><span>clear</span> <span>&lt;String&gt;</span></code>
+		 *       <span>("true"|"false") Whether to clear the content of the target</span></dd>
 		 *     <dd><code><span>class_add</span> <span>&lt;String&gt;</span></code>
 		 *       <span>CSS class name(s) which will be added to the target. Multiple class names are separated by a space</span></dd>
 		 *     <dd><code><span>class_remove</span> <span>&lt;String&gt;</span></code>
@@ -1317,7 +1323,14 @@ TDI.Ajax.Response = function($) {
 				}
 				else {
 					data.target.find( '*' ).unbind(); // detach all event handlers from the targets child nodes
-					data.target.html( data.content );
+					if (data.clear === 'true') {
+						data.target.html('');
+					}
+					else {
+						if (data.content !== "") {
+							data.target.html( data.content );
+						}
+					}
 				}
 
 			// trigger the update event
