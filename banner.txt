@@ -1,4 +1,4 @@
-/*
-* Twinstone TDI (${projectUrl})
-* Version: ${productVersion}
-*/
+/*!
+ * Twinstone TDI (${projectUrl})
+ * Version: ${productVersion}
+ */
