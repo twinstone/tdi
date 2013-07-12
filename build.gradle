@@ -104,10 +104,6 @@ task makeJs(dependsOn: [compress]) << {
 		fileset(dir: "$bundleDir/temp", includes: "banner.txt")
 		fileset(dir: "$bundleDir/temp", includes: "tdi-bundle-min-temp.js")
 	}
-	ant.concat(destfile: "$bundleDir/js/tdi-bundle-all-min.js", encoding: "UTF-8", fixlastline: "yes") {
-		fileset(dir: "$projectDir/src/js/jquery", includes: "jquery-1.8.2.min.js")
-		fileset(dir: "$bundleDir/js", includes: "tdi-bundle-min.js")
-	}
 }
 
 artifacts {
@@ -116,9 +112,6 @@ artifacts {
 	}
 	sources (file("$bundleDir/js/tdi-bundle-min.js")) {
 		name = 'tdi-bundle-min'
-	}
-	sources (file("$bundleDir/js/tdi-bundle-all-min.js")) {
-		name = 'tdi-bundle-all-min'
 	}
 }
 
