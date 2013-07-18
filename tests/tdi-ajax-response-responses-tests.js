@@ -1,7 +1,7 @@
 module( 'TDI.Ajax.Response' );
 	
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(92);
+		expect(90);
 		
 		// bind the events
 			$(document)
@@ -127,34 +127,29 @@ module( 'TDI.Ajax.Response' );
 						p3.popup.close();
 
 				} )
-				.bind( 'tdi:ajax:messagesDone', function( evt, data ) {
-					// 2 messages are expected
-						var m1 = data.messages[0],
-							m2 = data.messages[1];
+				.bind( 'tdi:ajax:unknownsDone', function( evt, data ) {
+					// 5 unknowns are expected
+						var u1 = data.unknowns[0],
+							u2 = data.unknowns[1],
+							u3 = data.unknowns[2],
+							u4 = data.unknowns[3],
+							u5 = data.unknowns[4];
 
-						equals( m1.severity.toUpperCase(), 'INFO', 'Message: correct severity' );
-						equals( m1.contents, 'Info message 1', 'Message: correct text' );
-						equals( m1.title, 'Info message 1 title', 'Message: correct title' );
-						equals( m2.severity.toUpperCase(), 'ERROR', 'Message: correct severity' );
-						equals( m2.contents, 'Info message 2', 'Message: correct text' );
-						equals( m2.title, undefined, 'Message: correct title' );
-				} )
-				.bind( 'tdi:ajax:dialogsDone', function( evt, data ) {
-					// 3 dialogs are expected
-						var d1 = data.dialogs[0],
-							d2 = data.dialogs[1],
-							d3 = data.dialogs[2];
-
-						equals( d1.contents, 'This is a dialog!', 'Dialog: correct contents' );
-						equals( d1.action, 'open', 'Dialog: default action is `open`' );
-						equals( d1.width, 500, 'Dialog: correct width' );
-						equals( d1.id, 'dialog1', 'Dialog: correct id' );
-						equals( d1.height, 400, 'Dialog: correct height' );
-						equals( d2.action, 'open', 'Dialog: correct action' );
-						equals( d2.cancelUrl, 'cancel/url', 'Dialog: correct cancel URL' );
-						equals( d2.id, 'dialog2', 'Dialog: correct id' );
-						equals( d3.action, 'close', 'Dialog: correct action' );
-						equals( d3.id, 'dialog3', 'Dialog: correct id' );
+						equals( u1.severity.toUpperCase(), 'INFO', 'Message: correct severity' );
+						equals( u1.contents, 'Info message 1', 'Message: correct text' );
+						equals( u1.title, 'Info message 1 title', 'Message: correct title' );
+						equals( u2.severity.toUpperCase(), 'ERROR', 'Message: correct severity' );
+						equals( u2.contents, 'Info message 2', 'Message: correct text' );
+						equals( u2.title, undefined, 'Message: correct title' );
+						equals( u3.contents, 'This is a dialog!', 'Dialog: correct contents' );
+						equals( u3.width, "500", 'Dialog: correct width' );
+						equals( u3.id, 'dialog1', 'Dialog: correct id' );
+						equals( u3.height, "400", 'Dialog: correct height' );
+						equals( u4.action, 'open', 'Dialog: correct action' );
+						equals( u4["cancel-url"], 'cancel/url', 'Dialog: correct cancel URL' );
+						equals( u4.id, 'dialog2', 'Dialog: correct id' );
+						equals( u5.action, 'close', 'Dialog: correct action' );
+						equals( u5.id, 'dialog3', 'Dialog: correct id' );
 				} )
 				.bind( 'tdi:ajax:done', function( evt, data ) {
 					var r = data.responses;
@@ -164,8 +159,7 @@ module( 'TDI.Ajax.Response' );
 						equals( r.scripts && r.scripts.length, 3, 'Ajax done: scripts' );
 						equals( r.styles && r.styles.length, 1, 'Ajax done: styles' );
 						equals( r.popups && r.popups.length, 3, 'Ajax done: popups' );
-						equals( r.messages && r.messages.length, 2, 'Ajax done: messages' );
-						equals( r.dialogs && r.dialogs.length, 3, 'Ajax done: dialogs' );
+						equals( r.unknowns && r.unknowns.length, 5, 'Ajax done: unknowns' );
 
 						start();
 					}, 1000 );

@@ -1,6 +1,6 @@
 module( 'TDI.Ajax.Response' );
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(50);
+		expect(48);
 		
 		// bind the events
 			$(document)
@@ -78,11 +78,8 @@ module( 'TDI.Ajax.Response' );
 				.bind( 'tdi:ajax:popupsDone', function() {
 					ok( true, 'tdi:ajax:popupsDone triggered.' );
 				} )
-				.bind( 'tdi:ajax:messagesDone', function() {
-					ok( true, 'tdi:ajax:messagesDone triggered.' );
-				} )
-				.bind( 'tdi:ajax:dialogsDone', function() {
-					ok( true, 'tdi:ajax:dialogsDone triggered.' );
+				.bind( 'tdi:ajax:unknownsDone', function() {
+					ok( true, 'tdi:ajax:unknownsDone triggered.' );
 				} )
 				.bind( 'tdi:ajax:done', function() {
 					ok( true, 'tdi:ajax:done triggered.' );

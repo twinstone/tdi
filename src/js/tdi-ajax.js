@@ -621,9 +621,7 @@ TDI.Ajax.Response = function($) {
 				'style'		: _onBeforeStyle,
 				'reload'	: _onBeforeReload,
 				'redirect'	: _onBeforeRedirect,
-				'popup'		: _onBeforePopup,
-				'message'	: _onBeforeMessage,
-				'dialog'	: _onBeforeDialog
+				'popup'		: _onBeforePopup
 			};
 
 	// a collection of new script tags which will be added after the response is done to preserve the execution order
@@ -636,8 +634,7 @@ TDI.Ajax.Response = function($) {
 			scripts : [],
 			styles : [],
 			popups : [],
-			messages : [],
-			dialogs : []
+			unknowns : []
 		};
 
 	// CALLBACKS -----------------------------------------------------------------
@@ -682,8 +679,7 @@ TDI.Ajax.Response = function($) {
 			}
 
 			var $xml = $(xml),
-				status = $xml.find( 'status' ),
-				infusionInstructionsNames = [];
+				status = $xml.find( 'status' );
 
 			// check for status
 				if ( status.text().toLowerCase() != 'ok' ) {
@@ -691,14 +687,7 @@ TDI.Ajax.Response = function($) {
 				}
 
 			// handle tags
-				var elements = [];
-				$.each( _infusionInstructions, function( key, value ) {
-					$xml.find(key).each( function( ) {
-						elements.push( this );
-					});
-				} );
-
-				$.each(elements, function( ) {
+				$xml.find("response > *:not(status)").each(function( ) {
 					var instruction = this.tagName.toLowerCase();
 
 					switch( instruction ) {
@@ -707,10 +696,15 @@ TDI.Ajax.Response = function($) {
 								_scriptTags.push( this );
 							break;
 						default:
-								_infusionInstructions[ instruction ]( this, options );
+								if (_infusionInstructions[ instruction ]) {
+									_infusionInstructions[ instruction ]( this, options );
+								}
+								else {
+									_onBeforeUnknown( this, options );
+								}
 							break;
 					}
-				} );
+				});
 
 				// download and execute the list of script tags
 					_onBeforeScript( _scriptTags.shift(), options );
@@ -787,31 +781,17 @@ TDI.Ajax.Response = function($) {
 						options : options
 					}] );
 					/**
-					 * <p>Fires when all TDI &lt;message&gt;s are done.</p>
-					 * @event tdi:ajax:messagesDone
+					 * <p>Fires when all &lt;unknown&gt; TDI instructions are done.</p>
+					 * @event tdi:ajax:unknownsDone
 					 * @param {Event} evt The event object
 					 * @param {Object} data The event data:
 					 *   <dl>
-					 *     <dd><code><span>messages</span> <span>&lt;Array&gt;</span></code>
-					 *       <span>The list of all messages</span></dd>
+					 *     <dd><code><span>instructions</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>The list of all unknown instructions</span></dd>
 					 *   </dl>
 					 */
-					$(document).trigger( 'tdi:ajax:messagesDone', [{
-						messages : _responses.messages,
-						options : options
-					}] );
-					/**
-					 * <p>Fires when all TDI &lt;dialog&gt;s are done.</p>
-					 * @event tdi:ajax:dialogsDone
-					 * @param {Event} evt The event object
-					 * @param {Object} data The event data:
-					 *   <dl>
-					 *     <dd><code><span>dialogs</span> <span>&lt;Array&gt;</span></code>
-					 *       <span>The list of all dialogs</span></dd>
-					 *   </dl>
-					 */
-					$(document).trigger( 'tdi:ajax:dialogsDone', [{
-						dialogs : _responses.dialogs,
+					$(document).trigger( 'tdi:ajax:unknownsDone', [{
+						unknowns : _responses.unknowns,
 						options : options
 					}] );
 					/**
@@ -1195,101 +1175,50 @@ TDI.Ajax.Response = function($) {
 		}
 
 		/**
-		 * <p>The beforeMessage callback. It takes the &lt;message&gt; xml node, gets its data and triggers a custom event which
-		 * can stop the default message action.</p>
+		 * <p>The beforeUnknown callback. It takes an unknown instruction xml node, gets its data and triggers a custom event which
+		 * can stop the default unknown action.</p>
 		 *
-		 * @method _onBeforeMessage
+		 * @method _onBeforeUnknown
 		 * @private
-		 * @param {XMLNode} tag The &lt;message&gt; xml tag
+		 * @param {XMLNode} tag The unknown instruction xml tag
 		 * @param {Object} options Additional request options
 		 */
-		function _onBeforeMessage( tag, options ) {
+		function _onBeforeUnknown( tag, options ) {
 			if ( !tag ) { return false; }
 
 			var $tag = $(tag),
-				severity = $tag.attr( 'severity' ) || 'INFO',
-				title = $tag.attr( 'title' ),
-				contents = $.trim( $tag.text() ),
+				name = tag.tagName.toLowerCase(),
+				beforeName = name[0].toUpperCase() + name.substr(1),
+				attributes = tag.attributes,
 				event_data = {
-					severity	: severity,
-					title		: title,
-					contents	: contents,
-					options		: options
+					name : name,
+					contents : $.trim( $tag.text() )
 				};
+
+			for (var i = 0, l = attributes.length; i < l; i++) {
+				event_data[attributes[i].name] = attributes[i].value;
+			}
 
 			// fire custom events
 				/**
-				 * <p>Fires before the TDI <em>message</em> takes place.</p>
-				 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onMessageDefault</code>).</p>
-				 * @event tdi:ajax:beforeMessage
-				 * @param {Event} evt The event object
-				 * @param {Object} data The event data:
-				 *   <dl>
-				 *     <dd><code><span>severity</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Severity of the message (defaults to INFO)</span></dd>
-				 *     <dd><code><span>title</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Optional title of the message</span></dd>
-				 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Message text</dd>
-				 *   </dl>
-				 */
-				$(document).trigger( 'tdi:ajax:beforeMessage', event_data );
-				_responses.messages.push( event_data );
-		}
-
-		/**
-		 * <p>The beforeDialog callback. It takes the &lt;dialog&gt; xml node, gets its data and triggers a custom event which
-		 * can stop the default dialog action.</p>
-		 *
-		 * @method _onBeforeDialog
-		 * @private
-		 * @param {XMLNode} tag The &lt;dialog&gt; xml tag
-		 * @param {Object} options Additional request options
-		 */
-		function _onBeforeDialog( tag, options ) {
-			if ( !tag ) { return false; }
-
-			var $tag = $(tag),
-				contents = $.trim( $tag.text() ),
-				action = $tag.attr( 'action' ) || 'open',
-				id = $tag.attr( 'id' ),
-				cancelUrl = $tag.attr( 'cancel-url' ),
-				width = $tag.attr( 'width' ) || 'auto',
-				height = $tag.attr( 'height' ) || 'auto',
-				event_data = {
-					contents	: contents,
-					action		: action,
-					id			: id,
-					cancelUrl	: cancelUrl,
-					width		: parseInt(width),
-					height		: parseInt(height),
-					options		: options
-				};
-
-			// fire custom events
-				/**
-				 * <p>Fires before the TDI <em>dialog</em> takes place.</p>
-				 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onDialogDefault</code>).</p>
-				 * @event tdi:ajax:beforeDialog
+				 * <p>Fires before the TDI instruction takes place.</p>
+				 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onUnknownDefault</code>).</p>
+				 * @event tdi:ajax:beforeUnknown
 				 * @param {Event} evt The event object
 				 * @param {Object} data The event data:
 				 *   <dl>
 				 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Dialog contents</dd>
-				 *     <dd><code><span>action</span> <span>&lt;String&gt;</span></code>
-				 *       <span>What to do with the dialog (defaults to `open`)</dd>
-				 *     <dd><code><span>id</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The dialogs identifier. Used for closing when multiple dialogs are opened at once.</dd>
-				 *     <dd><code><span>cancel-url</span> <span>&lt;String&gt;</span></code>
-				 *       <span>An optional cancel URL. Can be used to close the Dialog with ESC and other UI options.</dd>
-				 *     <dd><code><span>width</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Optional width of the Dialog.</dd>
-				 *     <dd><code><span>height</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Optional height of the Dialog.</dd>
+				 *       <span>Instruction contents</dd>
+				 *     <dd><code><span>ATTRS_NAME</span> <span>&lt;String&gt;</span></code>
+				 *       <span>Other attributes</dd>
 				 *   </dl>
 				 */
-				$(document).trigger( 'tdi:ajax:beforeDialog', event_data );
-				_responses.dialogs.push( event_data );
+				$.event.special[ 'tdi:ajax:before' + beforeName ] = {
+					_default : customDefault
+				};
+
+				$(document).trigger( 'tdi:ajax:before' + beforeName, event_data );
+				_responses.unknowns.push( event_data );
 		}
 
 	// RESPONSES DEFAULTS
@@ -1636,89 +1565,33 @@ TDI.Ajax.Response = function($) {
 		}
 
 		/**
-		 * <p>The message default response handler.</p>
-		 * @method _onMessageDefault
-		 * @private
-		 * @param {Object} evt The event object
-		 * @param {Object} data The popup data object:
-		 *   <dl>
-		 *     <dd><code><span>severity</span> <span>&lt;String&gt;</span></code>
-		 *       <span>Severity of the message (defaults to INFO)</span></dd>
-		 *     <dd><code><span>title</span> <span>&lt;String&gt;</span></code>
-		 *       <span>Optional title of the message</span></dd>
-		 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
-		 *       <span>Message text</span></dd>
-		 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
-		 *       <span>Additional request options</span></dd>
-		 *   </dl>
-		 */
-		function _onMessageDefault( evt, data ) {
-			var message = data.severity;
-			if ( data.title ) {
-				message += ': ' + data.title;
-			}
-			if ( data.contents ) {
-				message += '\n\n' + data.contents;
-			}
-
-			// trigger the message event
-				/**
-				 * <p>Fires after the TDI <em>message</em> takes place.</p>
-				 * @event tdi:ajax:message
-				 * @param {Event} evt The event object
-				 * @param {Object} data The event data:
-				 *   <dl>
-				 *     <dd><code><span>severity</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Severity of the message (defaults to INFO)</span></dd>
-				 *     <dd><code><span>title</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Optional title of the message</span></dd>
-				 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Message text</dd>
-				 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
-				 *       <span>Additional request options</span></dd>
-				 *   </dl>
-				 */
-				$(document).trigger( 'tdi:ajax:message', data );
-		}
-
-		/**
-		 * <p>The dialog default response handler.</p>
-		 * @method _onDialogDefault
+		 * <p>The unknown instruction default response handler.</p>
+		 * @method _onUnknownDefault
 		 * @private
 		 * @param {Object} evt The event object
 		 * @param {Object} data The dialog data object:
 		 *   <dl>
 		 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
-		 *       <span>Dialog contents</span></dd>
+		 *       <span>Instruction contents</span></dd>
 		 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
 		 *       <span>Additional request options</span></dd>
 		 *   </dl>
 		 */
-		function _onDialogDefault( evt, data ) {
+		function _onUnknownDefault( evt, data ) {
 			// trigger the dialog event
 				/**
-				 * <p>Fires after the TDI <em>dialog</em> takes place.</p>
-				 * @event tdi:ajax:dialog
+				 * <p>Fires after the TDI unknown instruction takes place.</p>
+				 * @event tdi:ajax:unknown
 				 * @param {Event} evt The event object
 				 * @param {Object} data The event data:
 				 *   <dl>
 				 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Dialog contents</dd>
-				 *     <dd><code><span>action</span> <span>&lt;String&gt;</span></code>
-				 *       <span>What to do with the dialog (defaults to `open`)</dd>
-				 *     <dd><code><span>id</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The dialogs identifier. Used for closing when multiple dialogs are opened at once.</dd>
-				 *     <dd><code><span>cancel-url</span> <span>&lt;String&gt;</span></code>
-				 *       <span>An optional cancel URL. Can be used to close the Dialog with ESC and other UI options.</dd>
-				 *     <dd><code><span>width</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Optional width of the Dialog.</dd>
-				 *     <dd><code><span>height</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Optional height of the Dialog.</dd>
-				 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
-				 *       <span>Additional request options</span></dd>
+				 *       <span>Instruction contents</dd>
+				 *     <dd><code><span>ATTRS_NAME</span> <span>&lt;String&gt;</span></code>
+				 *       <span>Other attributes</dd>
 				 *   </dl>
 				 */
-				$(document).trigger( 'tdi:ajax:dialog', data );
+				$(document).trigger( 'tdi:ajax:' + data.name, data );
 		}
 
 	// TDI Ajax custom events -------------------------------------------------
@@ -1730,12 +1603,15 @@ TDI.Ajax.Response = function($) {
 				'tdi:ajax:beforeStyle'		: _onStyleDefault,
 				'tdi:ajax:beforeReload'		: _onReloadDefault,
 				'tdi:ajax:beforeRedirect'	: _onRedirectDefault,
-				'tdi:ajax:beforePopup'		: _onPopupDefault,
-				'tdi:ajax:beforeMessage'	: _onMessageDefault,
-				'tdi:ajax:beforeDialog'		: _onDialogDefault
+				'tdi:ajax:beforePopup'		: _onPopupDefault
 			},
 			customDefault = function( evt, data ) {
-				customHandlers[ evt.type ].call( this, evt, ($.isArray(data) ? data[1] : data) );
+				if (customHandlers[ evt.type ]) {
+					customHandlers[ evt.type ].call( this, evt, ($.isArray(data) ? data[1] : data) );
+				}
+				else {
+					_onUnknownDefault.call( this, evt, ($.isArray(data) ? data[1] : data) );
+				}
 			};
 
 		for ( i in customHandlers ) {
