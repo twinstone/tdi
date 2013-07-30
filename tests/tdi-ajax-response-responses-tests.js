@@ -1,7 +1,7 @@
 module( 'TDI.Ajax.Response' );
 	
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(90);
+		expect(84);
 		
 		// bind the events
 			$(document)
@@ -51,11 +51,6 @@ module( 'TDI.Ajax.Response' );
 						equals( u6.class_remove, 'cls-remove', 'Update6: class remove' );
 						equals( u6.content, '', 'Update6: content' );
 
-						equals( u7.target_id, 'update-empty-the-content', 'Update7: target_id' );
-						equals( u7.target.attr( 'id' ), 'update-empty-the-content', 'Update7: target' );
-						equals( u7.clear, 'true', 'Update7: empty' );
-						equals( u7.content, 'This content will not be used', 'Update7: content' );
-
 					// check the markup
 						equals( $( '#update-default' ).text(), 'Update default', 'The target was updated and has the correct contents.' );
 						equals( $( '#update-replace' ).length, 0, 'The target does not exist, it was replaced.' );
@@ -66,8 +61,6 @@ module( 'TDI.Ajax.Response' );
 						ok( $( '#update-add-class' ).hasClass( 'cls-add' ), 'A new class name was added to the target.' );
 						equals( $( '#update-add-class' ).text(), 'Update add class' );
 						ok( !$( '#update-remove-class' ).hasClass( 'cls-remove' ), 'A class name was removed from the target.' );
-						equals( $( '#update-remove-class' ).text(), 'This should not be overwriten.' );
-						equals( $( '#update-empty-the-content' ).text(), '' );
 				} )
 				.bind( 'tdi:ajax:insertsDone', function( evt, data ) {
 					// check the API data (expect 3 inserts)
@@ -154,7 +147,7 @@ module( 'TDI.Ajax.Response' );
 				.bind( 'tdi:ajax:done', function( evt, data ) {
 					var r = data.responses;
 					setTimeout( function() {
-						equals( r.updates && r.updates.length, 7, 'Ajax done: updates' );
+						equals( r.updates && r.updates.length, 6, 'Ajax done: updates' );
 						equals( r.inserts && r.inserts.length, 3, 'Ajax done: inserts' );
 						equals( r.scripts && r.scripts.length, 3, 'Ajax done: scripts' );
 						equals( r.styles && r.styles.length, 1, 'Ajax done: styles' );

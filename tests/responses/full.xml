@@ -7,7 +7,6 @@
 	<update target="update-prepend" prepend="true">Update prepend</update>
 	<update target="update-add-class" class-add="cls-add">Update add class</update>
 	<update target="update-remove-class" class-remove="cls-remove"></update>
-	<update target="update-empty-the-content" clear="true">This content will not be used</update>
 
 	<insert target="inserts">&lt;div id="inserted-after-default"&gt;Inserted after (default)&lt;/div&gt;</insert>
 	<insert target="inserts" position="after">&lt;div id="inserted-after"&gt;Inserted after&lt;/div&gt;</insert>
