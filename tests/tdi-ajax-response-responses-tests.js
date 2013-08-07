@@ -1,7 +1,7 @@
 module( 'TDI.Ajax.Response' );
 	
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(84);
+		expect(99);
 		
 		// bind the events
 			$(document)
@@ -92,6 +92,41 @@ module( 'TDI.Ajax.Response' );
 						equals( $( '#inserted-before' ).length, 1, 'Inserted before' );
 						equals( $( '#inserts' ).next( '#inserted-after' ).next( '#inserted-after-default' ).length, 1, 'Inserted after: correct position' );
 						equals( $( '#inserts' ).prev( '#inserted-before' ).length, 1, 'Inserted before: correct position' );
+				} )
+				.bind( 'tdi:ajax:scriptsDone', function( evt, data ) {
+					var s1 = data.scripts[0],
+						s2 = data.scripts[1],
+						s3 = data.scripts[2];
+
+					equals( s1.script_src, undefined );
+					equals( s1.script_data, "test( 'TDI.Ajax.Response: inline script', function() {\n\
+			expect(1);\n\
+			\n\
+			ok( true, 'Inline script executed.' );\n\
+		} );" );
+					equals( s1.script_id, undefined );
+					equals( s1.script_node, undefined );
+					ok( s1.script_node_inline, "Script 1 inline tag exists" );
+
+					equals( s2.script_src, 'responses/script1.js' );
+					equals( s2.script_data, "" );
+					equals( s2.script_id, undefined );
+					ok( s2.script_node, "Script 2 tag exists" );
+					equals( s2.script_node_inline, undefined );
+
+					equals( s3.script_src, 'responses/script2.js' );
+					equals( s3.script_data, "if ( window._TDI_TEST_SCRIPT_EXTERNAL_2 = true ) {\n\
+			test( 'TDI.Ajax.Response: external script with inline script', function() {\n\
+				expect(3);\n\
+				\n\
+				ok( true, 'External script loaded and inline script executed.' );\n\
+				equals( $( '#script2' ).length, 1, 'External script with ID.' );\n\
+				equals( $( '#script2_inline' ).length, 1, 'Inline script with ID.' );\n\
+			} );\n\
+		}" );
+					equals( s3.script_id, "script2" );
+					ok( s3.script_node, "Script 3 tag exists" );
+					ok( s3.script_node_inline, "Script 3 inline tag exists" );
 				} )
 				.bind( 'tdi:ajax:stylesDone', function( evt, data ) {
 					// check the API data (expect 1 style)

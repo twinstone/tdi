@@ -412,6 +412,7 @@ TDI.Ajax.Request = function($) {
 			$.ajax( {
 				url			: options.url,
 				type		: options.method || 'GET',
+				async       : !options.sync,
 				data		: options.data || '',
 				dataType	: 'xml',
 				beforeSend	: function( xhr, settings ) {
@@ -427,12 +428,12 @@ TDI.Ajax.Request = function($) {
 				success		: function( data, textStatus, xhr ) {
 					$(document).trigger( 'tdi:ajax:_success', { data : data, textStatus : textStatus, xhr : xhr, options : options } );
 					// TDI.Ajax.Response._success( data, textStatus, xhr, options );
-					options.success && options.success( data, textStatus, xhr );
+					options.success && options.success( data, textStatus, xhr, options );
 				},
 				error		: function( xhr, textStatus, error ) {
 					$(document).trigger( 'tdi:ajax:_error', { xhr : xhr, textStatus : textStatus, error : error, options : options } );
 					// TDI.Ajax.Response._error( xhr, textStatus, error, options );
-					options.error && options.error( xhr, textStatus, error );
+					options.error && options.error( xhr, textStatus, error, options );
 				},
 				complete	: function( xhr, textStatus ) {
 					var res = options.beforeEnd && options.beforeEnd( xhr, textStatus, options );
@@ -1378,6 +1379,7 @@ TDI.Ajax.Response = function($) {
 
 					// trigger the script event
 						data.script_node = node;
+						data.script_node_inline = s;
 						/**
 						 * <p>Fires after the TDI <em>script</em> takes place.</p>
 						 * @event tdi:ajax:script

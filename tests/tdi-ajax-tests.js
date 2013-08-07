@@ -181,4 +181,34 @@ module( 'TDI.Ajax' );
 			start();
 		}, 1000 );
 	} );
-	
+
+	test( 'TDI.Ajax.send: async option/default', function() {
+		expect(2);
+
+		var _ajax = $.ajax;
+		$.ajax = function(conf) {
+			ok(conf.async, "Has a `async` option");
+			equals(conf.async, true, "Has the `async` option, defaults to true");
+		};
+		TDI.Ajax.Request.send("url");
+
+		$.ajax = _ajax;
+	} );
+
+
+	test( 'TDI.Ajax.send: async option/custom', function() {
+		expect(2);
+
+		var _ajax = $.ajax;
+		$.ajax = function(conf) {
+			equals(conf.async, false, "Has the `async` option set to a custom value");
+		};
+		TDI.Ajax.Request.send("url", {
+			sync : true
+		});
+		TDI.Ajax.Request.send("url", {
+			sync : "lorem"
+		});
+
+		$.ajax = _ajax;
+	} );
