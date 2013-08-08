@@ -371,6 +371,8 @@ TDI.Ajax.Request = function($) {
 		 *       <span>The HTTP method used to send the request. Defaults to <em>get</em>.</span></dd>
 		 *     <dd><code><span>data</span> <span>&lt;(String|Object)&gt;</span></code>
 		 *       <span>Data to be sent to the server. It is converted to a query string, if not already a string. See jQuery documentation for <a href="http://api.jquery.com/jQuery.ajax/">$.ajax()</a></span></dd>
+		 *     <dd><code><span>sync</span> <span>&lt;(Boolean)&gt;</span></code>
+		 *       <span>Whether the AJAX request should be synchronous or not. Defaults to <em>false</em></span></dd>
 		 *     <dd><code><span>beforeStart</span> <span>&lt;Function&gt;</span></code>
 		 *         <span>Function to be called before the request is sent. If this function returns <em>false</em>, the request is not sent. This function is called with parameters:</span>
 		 *         <dl>
