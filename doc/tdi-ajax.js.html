@@ -4,11 +4,11 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<title>API: TDI   tdi-ajax.js  (YUI Library)</title>
 
-	<link rel="stylesheet" type="text/css" href="assets/reset-fonts-grids-min.css?stamp=1373641025.24" />
-	<link rel="stylesheet" type="text/css" href="assets/api.css?stamp=1373641025.24" />
+	<link rel="stylesheet" type="text/css" href="assets/reset-fonts-grids-min.css?stamp=1375955937.08" />
+	<link rel="stylesheet" type="text/css" href="assets/api.css?stamp=1375955937.08" />
 
-    <script type="text/javascript" src="assets/api-js?stamp=1373641025.24"></script>
-    <script type="text/javascript" src="assets/ac-js?stamp=1373641025.24"></script>
+    <script type="text/javascript" src="assets/api-js?stamp=1375955937.08"></script>
+    <script type="text/javascript" src="assets/ac-js?stamp=1375955937.08"></script>
 </head>
 
 <body id="yahoo-com">
@@ -16,7 +16,7 @@
 <div id="doc3" class="yui-t2">
 	<div id="hd">
         <h1><a href="http://wiki.twinstone.org/display/TDI" title="Twinstone TDI">Twinstone TDI</a></h1>
-        <h3>TDI&nbsp; <span class="subtitle">1.6.1</span></h3>
+        <h3>TDI&nbsp; <span class="subtitle">1.7.3</span></h3>
         <a href="./index.html" title="Twinstone TDI">Twinstone TDI</a> 
             &gt; <a href="./module_tdi.html" title="TDI">TDI</a>
                 
@@ -420,6 +420,8 @@
 <span class="cm">		 *       &lt;span&gt;The HTTP method used to send the request. Defaults to &lt;em&gt;get&lt;/em&gt;.&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;data&lt;/span&gt; &lt;span&gt;&amp;lt;(String|Object)&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">		 *       &lt;span&gt;Data to be sent to the server. It is converted to a query string, if not already a string. See jQuery documentation for &lt;a href=&quot;http://api.jquery.com/jQuery.ajax/&quot;&gt;$.ajax()&lt;/a&gt;&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;sync&lt;/span&gt; &lt;span&gt;&amp;lt;(Boolean)&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">		 *       &lt;span&gt;Whether the AJAX request should be synchronous or not. Defaults to &lt;em&gt;false&lt;/em&gt;&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;beforeStart&lt;/span&gt; &lt;span&gt;&amp;lt;Function&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">		 *         &lt;span&gt;Function to be called before the request is sent. If this function returns &lt;em&gt;false&lt;/em&gt;, the request is not sent. This function is called with parameters:&lt;/span&gt;</span>
 <span class="cm">		 *         &lt;dl&gt;</span>
@@ -461,6 +463,7 @@
 			<span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span> <span class="p">{</span>
 				<span class="nx">url</span>			<span class="o">:</span> <span class="nx">options</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span>
 				<span class="nx">type</span>		<span class="o">:</span> <span class="nx">options</span><span class="p">.</span><span class="nx">method</span> <span class="o">||</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+				<span class="nx">async</span>       <span class="o">:</span> <span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">sync</span><span class="p">,</span>
 				<span class="nx">data</span>		<span class="o">:</span> <span class="nx">options</span><span class="p">.</span><span class="nx">data</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
 				<span class="nx">dataType</span>	<span class="o">:</span> <span class="s1">&#39;xml&#39;</span><span class="p">,</span>
 				<span class="nx">beforeSend</span>	<span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">settings</span> <span class="p">)</span> <span class="p">{</span>
@@ -476,12 +479,12 @@
 				<span class="nx">success</span>		<span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">)</span> <span class="p">{</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:_success&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">data</span> <span class="o">:</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">textStatus</span> <span class="o">:</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">xhr</span> <span class="o">:</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">options</span> <span class="o">:</span> <span class="nx">options</span> <span class="p">}</span> <span class="p">);</span>
 					<span class="c1">// TDI.Ajax.Response._success( data, textStatus, xhr, options );</span>
-					<span class="nx">options</span><span class="p">.</span><span class="nx">success</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+					<span class="nx">options</span><span class="p">.</span><span class="nx">success</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
 				<span class="p">},</span>
 				<span class="nx">error</span>		<span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:_error&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">xhr</span> <span class="o">:</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">textStatus</span> <span class="o">:</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">error</span> <span class="o">:</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span> <span class="o">:</span> <span class="nx">options</span> <span class="p">}</span> <span class="p">);</span>
 					<span class="c1">// TDI.Ajax.Response._error( xhr, textStatus, error, options );</span>
-					<span class="nx">options</span><span class="p">.</span><span class="nx">error</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">error</span> <span class="p">);</span>
+					<span class="nx">options</span><span class="p">.</span><span class="nx">error</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
 				<span class="p">},</span>
 				<span class="nx">complete</span>	<span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">textStatus</span> <span class="p">)</span> <span class="p">{</span>
 					<span class="kd">var</span> <span class="nx">res</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">beforeEnd</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">beforeEnd</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">textStatus</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
@@ -670,9 +673,7 @@
 				<span class="s1">&#39;style&#39;</span>		<span class="o">:</span> <span class="nx">_onBeforeStyle</span><span class="p">,</span>
 				<span class="s1">&#39;reload&#39;</span>	<span class="o">:</span> <span class="nx">_onBeforeReload</span><span class="p">,</span>
 				<span class="s1">&#39;redirect&#39;</span>	<span class="o">:</span> <span class="nx">_onBeforeRedirect</span><span class="p">,</span>
-				<span class="s1">&#39;popup&#39;</span>		<span class="o">:</span> <span class="nx">_onBeforePopup</span><span class="p">,</span>
-				<span class="s1">&#39;message&#39;</span>	<span class="o">:</span> <span class="nx">_onBeforeMessage</span><span class="p">,</span>
-				<span class="s1">&#39;dialog&#39;</span>	<span class="o">:</span> <span class="nx">_onBeforeDialog</span>
+				<span class="s1">&#39;popup&#39;</span>		<span class="o">:</span> <span class="nx">_onBeforePopup</span>
 			<span class="p">};</span>
 
 	<span class="c1">// a collection of new script tags which will be added after the response is done to preserve the execution order</span>
@@ -685,8 +686,7 @@
 			<span class="nx">scripts</span> <span class="o">:</span> <span class="p">[],</span>
 			<span class="nx">styles</span> <span class="o">:</span> <span class="p">[],</span>
 			<span class="nx">popups</span> <span class="o">:</span> <span class="p">[],</span>
-			<span class="nx">messages</span> <span class="o">:</span> <span class="p">[],</span>
-			<span class="nx">dialogs</span> <span class="o">:</span> <span class="p">[]</span>
+			<span class="nx">unknowns</span> <span class="o">:</span> <span class="p">[]</span>
 		<span class="p">};</span>
 
 	<span class="c1">// CALLBACKS -----------------------------------------------------------------</span>
@@ -731,8 +731,7 @@
 			<span class="p">}</span>
 
 			<span class="kd">var</span> <span class="nx">$xml</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">xml</span><span class="p">),</span>
-				<span class="nx">status</span> <span class="o">=</span> <span class="nx">$xml</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="s1">&#39;status&#39;</span> <span class="p">),</span>
-				<span class="nx">infusionInstructionsNames</span> <span class="o">=</span> <span class="p">[];</span>
+				<span class="nx">status</span> <span class="o">=</span> <span class="nx">$xml</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="s1">&#39;status&#39;</span> <span class="p">);</span>
 
 			<span class="c1">// check for status</span>
 				<span class="k">if</span> <span class="p">(</span> <span class="nx">status</span><span class="p">.</span><span class="nx">text</span><span class="p">().</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;ok&#39;</span> <span class="p">)</span> <span class="p">{</span>
@@ -740,14 +739,7 @@
 				<span class="p">}</span>
 
 			<span class="c1">// handle tags</span>
-				<span class="kd">var</span> <span class="nx">elements</span> <span class="o">=</span> <span class="p">[];</span>
-				<span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">_infusionInstructions</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
-					<span class="nx">$xml</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">key</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span>
-						<span class="nx">elements</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="k">this</span> <span class="p">);</span>
-					<span class="p">});</span>
-				<span class="p">}</span> <span class="p">);</span>
-
-				<span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">elements</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span>
+				<span class="nx">$xml</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s2">&quot;response &gt; *:not(status)&quot;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span>
 					<span class="kd">var</span> <span class="nx">instruction</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">tagName</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
 
 					<span class="k">switch</span><span class="p">(</span> <span class="nx">instruction</span> <span class="p">)</span> <span class="p">{</span>
@@ -756,10 +748,15 @@
 								<span class="nx">_scriptTags</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="k">this</span> <span class="p">);</span>
 							<span class="k">break</span><span class="p">;</span>
 						<span class="k">default</span><span class="o">:</span>
-								<span class="nx">_infusionInstructions</span><span class="p">[</span> <span class="nx">instruction</span> <span class="p">](</span> <span class="k">this</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+								<span class="k">if</span> <span class="p">(</span><span class="nx">_infusionInstructions</span><span class="p">[</span> <span class="nx">instruction</span> <span class="p">])</span> <span class="p">{</span>
+									<span class="nx">_infusionInstructions</span><span class="p">[</span> <span class="nx">instruction</span> <span class="p">](</span> <span class="k">this</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+								<span class="p">}</span>
+								<span class="k">else</span> <span class="p">{</span>
+									<span class="nx">_onBeforeUnknown</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+								<span class="p">}</span>
 							<span class="k">break</span><span class="p">;</span>
 					<span class="p">}</span>
-				<span class="p">}</span> <span class="p">);</span>
+				<span class="p">});</span>
 
 				<span class="c1">// download and execute the list of script tags</span>
 					<span class="nx">_onBeforeScript</span><span class="p">(</span> <span class="nx">_scriptTags</span><span class="p">.</span><span class="nx">shift</span><span class="p">(),</span> <span class="nx">options</span> <span class="p">);</span>
@@ -836,31 +833,17 @@
 						<span class="nx">options</span> <span class="o">:</span> <span class="nx">options</span>
 					<span class="p">}]</span> <span class="p">);</span>
 					<span class="cm">/**</span>
-<span class="cm">					 * &lt;p&gt;Fires when all TDI &amp;lt;message&amp;gt;s are done.&lt;/p&gt;</span>
-<span class="cm">					 * @event tdi:ajax:messagesDone</span>
+<span class="cm">					 * &lt;p&gt;Fires when all &amp;lt;unknown&amp;gt; TDI instructions are done.&lt;/p&gt;</span>
+<span class="cm">					 * @event tdi:ajax:unknownsDone</span>
 <span class="cm">					 * @param {Event} evt The event object</span>
 <span class="cm">					 * @param {Object} data The event data:</span>
 <span class="cm">					 *   &lt;dl&gt;</span>
-<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;messages&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">					 *       &lt;span&gt;The list of all messages&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;instructions&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">					 *       &lt;span&gt;The list of all unknown instructions&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *   &lt;/dl&gt;</span>
 <span class="cm">					 */</span>
-					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:messagesDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
-						<span class="nx">messages</span> <span class="o">:</span> <span class="nx">_responses</span><span class="p">.</span><span class="nx">messages</span><span class="p">,</span>
-						<span class="nx">options</span> <span class="o">:</span> <span class="nx">options</span>
-					<span class="p">}]</span> <span class="p">);</span>
-					<span class="cm">/**</span>
-<span class="cm">					 * &lt;p&gt;Fires when all TDI &amp;lt;dialog&amp;gt;s are done.&lt;/p&gt;</span>
-<span class="cm">					 * @event tdi:ajax:dialogsDone</span>
-<span class="cm">					 * @param {Event} evt The event object</span>
-<span class="cm">					 * @param {Object} data The event data:</span>
-<span class="cm">					 *   &lt;dl&gt;</span>
-<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;dialogs&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">					 *       &lt;span&gt;The list of all dialogs&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">					 *   &lt;/dl&gt;</span>
-<span class="cm">					 */</span>
-					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:dialogsDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
-						<span class="nx">dialogs</span> <span class="o">:</span> <span class="nx">_responses</span><span class="p">.</span><span class="nx">dialogs</span><span class="p">,</span>
+					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:unknownsDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
+						<span class="nx">unknowns</span> <span class="o">:</span> <span class="nx">_responses</span><span class="p">.</span><span class="nx">unknowns</span><span class="p">,</span>
 						<span class="nx">options</span> <span class="o">:</span> <span class="nx">options</span>
 					<span class="p">}]</span> <span class="p">);</span>
 					<span class="cm">/**</span>
@@ -953,7 +936,6 @@
 				<span class="nx">replace</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;replace&#39;</span> <span class="p">),</span>
 				<span class="nx">append</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;append&#39;</span> <span class="p">),</span>
 				<span class="nx">prepend</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;prepend&#39;</span> <span class="p">),</span>
-				<span class="nx">clear</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;clear&#39;</span> <span class="p">),</span>
 				<span class="nx">class_add</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;class-add&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
 				<span class="nx">class_remove</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;class-remove&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
 				<span class="nx">event_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -964,7 +946,6 @@
 					<span class="nx">replace</span>			<span class="o">:</span> <span class="nx">replace</span><span class="p">,</span>
 					<span class="nx">append</span>			<span class="o">:</span> <span class="nx">append</span><span class="p">,</span>
 					<span class="nx">prepend</span>			<span class="o">:</span> <span class="nx">prepend</span><span class="p">,</span>
-					<span class="nx">clear</span>			<span class="o">:</span> <span class="nx">clear</span><span class="p">,</span>
 					<span class="nx">class_add</span>		<span class="o">:</span> <span class="nx">class_add</span><span class="p">,</span>
 					<span class="nx">class_remove</span>	<span class="o">:</span> <span class="nx">class_remove</span><span class="p">,</span>
 					<span class="nx">options</span>			<span class="o">:</span> <span class="nx">options</span>
@@ -993,8 +974,6 @@
 <span class="cm">					 *       &lt;span&gt;Indicates whether the contents will be appended to the end of the target&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;prepend&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;Indicates whether the contents will be prepended to the beginning of the target&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;clear&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">					 *       &lt;span&gt;(&quot;true&quot;|&quot;false&quot;) Whether to clear the content of the target&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;class_add&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;Space separated list of class names to add&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;class_remove&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
@@ -1244,101 +1223,50 @@
 		<span class="p">}</span>
 
 		<span class="cm">/**</span>
-<span class="cm">		 * &lt;p&gt;The beforeMessage callback. It takes the &amp;lt;message&amp;gt; xml node, gets its data and triggers a custom event which</span>
-<span class="cm">		 * can stop the default message action.&lt;/p&gt;</span>
+<span class="cm">		 * &lt;p&gt;The beforeUnknown callback. It takes an unknown instruction xml node, gets its data and triggers a custom event which</span>
+<span class="cm">		 * can stop the default unknown action.&lt;/p&gt;</span>
 <span class="cm">		 *</span>
-<span class="cm">		 * @method _onBeforeMessage</span>
+<span class="cm">		 * @method _onBeforeUnknown</span>
 <span class="cm">		 * @private</span>
-<span class="cm">		 * @param {XMLNode} tag The &amp;lt;message&amp;gt; xml tag</span>
+<span class="cm">		 * @param {XMLNode} tag The unknown instruction xml tag</span>
 <span class="cm">		 * @param {Object} options Additional request options</span>
 <span class="cm">		 */</span>
-		<span class="kd">function</span> <span class="nx">_onBeforeMessage</span><span class="p">(</span> <span class="nx">tag</span><span class="p">,</span> <span class="nx">options</span> <span class="p">)</span> <span class="p">{</span>
+		<span class="kd">function</span> <span class="nx">_onBeforeUnknown</span><span class="p">(</span> <span class="nx">tag</span><span class="p">,</span> <span class="nx">options</span> <span class="p">)</span> <span class="p">{</span>
 			<span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">tag</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
 
 			<span class="kd">var</span> <span class="nx">$tag</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">tag</span><span class="p">),</span>
-				<span class="nx">severity</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;severity&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;INFO&#39;</span><span class="p">,</span>
-				<span class="nx">title</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;title&#39;</span> <span class="p">),</span>
-				<span class="nx">contents</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">text</span><span class="p">()</span> <span class="p">),</span>
+				<span class="nx">name</span> <span class="o">=</span> <span class="nx">tag</span><span class="p">.</span><span class="nx">tagName</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">(),</span>
+				<span class="nx">beforeName</span> <span class="o">=</span> <span class="nx">name</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">+</span> <span class="nx">name</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+				<span class="nx">attributes</span> <span class="o">=</span> <span class="nx">tag</span><span class="p">.</span><span class="nx">attributes</span><span class="p">,</span>
 				<span class="nx">event_data</span> <span class="o">=</span> <span class="p">{</span>
-					<span class="nx">severity</span>	<span class="o">:</span> <span class="nx">severity</span><span class="p">,</span>
-					<span class="nx">title</span>		<span class="o">:</span> <span class="nx">title</span><span class="p">,</span>
-					<span class="nx">contents</span>	<span class="o">:</span> <span class="nx">contents</span><span class="p">,</span>
-					<span class="nx">options</span>		<span class="o">:</span> <span class="nx">options</span>
+					<span class="nx">name</span> <span class="o">:</span> <span class="nx">name</span><span class="p">,</span>
+					<span class="nx">contents</span> <span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">text</span><span class="p">()</span> <span class="p">)</span>
 				<span class="p">};</span>
+
+			<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">attributes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">event_data</span><span class="p">[</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">attributes</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+			<span class="p">}</span>
 
 			<span class="c1">// fire custom events</span>
 				<span class="cm">/**</span>
-<span class="cm">				 * &lt;p&gt;Fires before the TDI &lt;em&gt;message&lt;/em&gt; takes place.&lt;/p&gt;</span>
-<span class="cm">				 * &lt;p&gt;This event is &lt;strong&gt;preventable&lt;/strong&gt;. Use &lt;a href=&quot;http://api.jquery.com/event.preventDefault/&quot;&gt;preventDefault()&lt;/a&gt; to prevent the default action (&lt;code&gt;Response._onMessageDefault&lt;/code&gt;).&lt;/p&gt;</span>
-<span class="cm">				 * @event tdi:ajax:beforeMessage</span>
-<span class="cm">				 * @param {Event} evt The event object</span>
-<span class="cm">				 * @param {Object} data The event data:</span>
-<span class="cm">				 *   &lt;dl&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;severity&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Severity of the message (defaults to INFO)&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;title&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Optional title of the message&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;contents&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Message text&lt;/dd&gt;</span>
-<span class="cm">				 *   &lt;/dl&gt;</span>
-<span class="cm">				 */</span>
-				<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:beforeMessage&#39;</span><span class="p">,</span> <span class="nx">event_data</span> <span class="p">);</span>
-				<span class="nx">_responses</span><span class="p">.</span><span class="nx">messages</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">event_data</span> <span class="p">);</span>
-		<span class="p">}</span>
-
-		<span class="cm">/**</span>
-<span class="cm">		 * &lt;p&gt;The beforeDialog callback. It takes the &amp;lt;dialog&amp;gt; xml node, gets its data and triggers a custom event which</span>
-<span class="cm">		 * can stop the default dialog action.&lt;/p&gt;</span>
-<span class="cm">		 *</span>
-<span class="cm">		 * @method _onBeforeDialog</span>
-<span class="cm">		 * @private</span>
-<span class="cm">		 * @param {XMLNode} tag The &amp;lt;dialog&amp;gt; xml tag</span>
-<span class="cm">		 * @param {Object} options Additional request options</span>
-<span class="cm">		 */</span>
-		<span class="kd">function</span> <span class="nx">_onBeforeDialog</span><span class="p">(</span> <span class="nx">tag</span><span class="p">,</span> <span class="nx">options</span> <span class="p">)</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">tag</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
-
-			<span class="kd">var</span> <span class="nx">$tag</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">tag</span><span class="p">),</span>
-				<span class="nx">contents</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">text</span><span class="p">()</span> <span class="p">),</span>
-				<span class="nx">action</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;action&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
-				<span class="nx">id</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;id&#39;</span> <span class="p">),</span>
-				<span class="nx">cancelUrl</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;cancel-url&#39;</span> <span class="p">),</span>
-				<span class="nx">width</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;width&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span>
-				<span class="nx">height</span> <span class="o">=</span> <span class="nx">$tag</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="s1">&#39;height&#39;</span> <span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span>
-				<span class="nx">event_data</span> <span class="o">=</span> <span class="p">{</span>
-					<span class="nx">contents</span>	<span class="o">:</span> <span class="nx">contents</span><span class="p">,</span>
-					<span class="nx">action</span>		<span class="o">:</span> <span class="nx">action</span><span class="p">,</span>
-					<span class="nx">id</span>			<span class="o">:</span> <span class="nx">id</span><span class="p">,</span>
-					<span class="nx">cancelUrl</span>	<span class="o">:</span> <span class="nx">cancelUrl</span><span class="p">,</span>
-					<span class="nx">width</span>		<span class="o">:</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">width</span><span class="p">),</span>
-					<span class="nx">height</span>		<span class="o">:</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">height</span><span class="p">),</span>
-					<span class="nx">options</span>		<span class="o">:</span> <span class="nx">options</span>
-				<span class="p">};</span>
-
-			<span class="c1">// fire custom events</span>
-				<span class="cm">/**</span>
-<span class="cm">				 * &lt;p&gt;Fires before the TDI &lt;em&gt;dialog&lt;/em&gt; takes place.&lt;/p&gt;</span>
-<span class="cm">				 * &lt;p&gt;This event is &lt;strong&gt;preventable&lt;/strong&gt;. Use &lt;a href=&quot;http://api.jquery.com/event.preventDefault/&quot;&gt;preventDefault()&lt;/a&gt; to prevent the default action (&lt;code&gt;Response._onDialogDefault&lt;/code&gt;).&lt;/p&gt;</span>
-<span class="cm">				 * @event tdi:ajax:beforeDialog</span>
+<span class="cm">				 * &lt;p&gt;Fires before the TDI instruction takes place.&lt;/p&gt;</span>
+<span class="cm">				 * &lt;p&gt;This event is &lt;strong&gt;preventable&lt;/strong&gt;. Use &lt;a href=&quot;http://api.jquery.com/event.preventDefault/&quot;&gt;preventDefault()&lt;/a&gt; to prevent the default action (&lt;code&gt;Response._onUnknownDefault&lt;/code&gt;).&lt;/p&gt;</span>
+<span class="cm">				 * @event tdi:ajax:beforeUnknown</span>
 <span class="cm">				 * @param {Event} evt The event object</span>
 <span class="cm">				 * @param {Object} data The event data:</span>
 <span class="cm">				 *   &lt;dl&gt;</span>
 <span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;contents&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Dialog contents&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;action&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;What to do with the dialog (defaults to `open`)&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;id&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;The dialogs identifier. Used for closing when multiple dialogs are opened at once.&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;cancel-url&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;An optional cancel URL. Can be used to close the Dialog with ESC and other UI options.&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;width&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Optional width of the Dialog.&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;height&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Optional height of the Dialog.&lt;/dd&gt;</span>
+<span class="cm">				 *       &lt;span&gt;Instruction contents&lt;/dd&gt;</span>
+<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;ATTRS_NAME&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">				 *       &lt;span&gt;Other attributes&lt;/dd&gt;</span>
 <span class="cm">				 *   &lt;/dl&gt;</span>
 <span class="cm">				 */</span>
-				<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:beforeDialog&#39;</span><span class="p">,</span> <span class="nx">event_data</span> <span class="p">);</span>
-				<span class="nx">_responses</span><span class="p">.</span><span class="nx">dialogs</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">event_data</span> <span class="p">);</span>
+				<span class="nx">$</span><span class="p">.</span><span class="nx">event</span><span class="p">.</span><span class="nx">special</span><span class="p">[</span> <span class="s1">&#39;tdi:ajax:before&#39;</span> <span class="o">+</span> <span class="nx">beforeName</span> <span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+					<span class="nx">_default</span> <span class="o">:</span> <span class="nx">customDefault</span>
+				<span class="p">};</span>
+
+				<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:before&#39;</span> <span class="o">+</span> <span class="nx">beforeName</span><span class="p">,</span> <span class="nx">event_data</span> <span class="p">);</span>
+				<span class="nx">_responses</span><span class="p">.</span><span class="nx">unknowns</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">event_data</span> <span class="p">);</span>
 		<span class="p">}</span>
 
 	<span class="c1">// RESPONSES DEFAULTS</span>
@@ -1361,8 +1289,6 @@
 <span class="cm">		 *       &lt;span&gt;(&quot;true&quot;|&quot;false&quot;) Whether to append the new contents at the end of the target&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;prepend&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">		 *       &lt;span&gt;(&quot;true&quot;|&quot;false&quot;) Whether to prepend the new contents at the begining of the target&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;clear&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">		 *       &lt;span&gt;(&quot;true&quot;|&quot;false&quot;) Whether to clear the content of the target&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;class_add&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">		 *       &lt;span&gt;CSS class name(s) which will be added to the target. Multiple class names are separated by a space&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;class_remove&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
@@ -1388,14 +1314,7 @@
 				<span class="p">}</span>
 				<span class="k">else</span> <span class="p">{</span>
 					<span class="nx">data</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="s1">&#39;*&#39;</span> <span class="p">).</span><span class="nx">unbind</span><span class="p">();</span> <span class="c1">// detach all event handlers from the targets child nodes</span>
-					<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">clear</span> <span class="o">===</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span> <span class="p">{</span>
-						<span class="nx">data</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
-					<span class="p">}</span>
-					<span class="k">else</span> <span class="p">{</span>
-						<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">content</span> <span class="o">!==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="p">{</span>
-							<span class="nx">data</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span> <span class="nx">data</span><span class="p">.</span><span class="nx">content</span> <span class="p">);</span>
-						<span class="p">}</span>
-					<span class="p">}</span>
+					<span class="nx">data</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span> <span class="nx">data</span><span class="p">.</span><span class="nx">content</span> <span class="p">);</span>
 				<span class="p">}</span>
 
 			<span class="c1">// trigger the update event</span>
@@ -1511,6 +1430,7 @@
 
 					<span class="c1">// trigger the script event</span>
 						<span class="nx">data</span><span class="p">.</span><span class="nx">script_node</span> <span class="o">=</span> <span class="nx">node</span><span class="p">;</span>
+						<span class="nx">data</span><span class="p">.</span><span class="nx">script_node_inline</span> <span class="o">=</span> <span class="nx">s</span><span class="p">;</span>
 						<span class="cm">/**</span>
 <span class="cm">						 * &lt;p&gt;Fires after the TDI &lt;em&gt;script&lt;/em&gt; takes place.&lt;/p&gt;</span>
 <span class="cm">						 * @event tdi:ajax:script</span>
@@ -1685,89 +1605,33 @@
 		<span class="p">}</span>
 
 		<span class="cm">/**</span>
-<span class="cm">		 * &lt;p&gt;The message default response handler.&lt;/p&gt;</span>
-<span class="cm">		 * @method _onMessageDefault</span>
-<span class="cm">		 * @private</span>
-<span class="cm">		 * @param {Object} evt The event object</span>
-<span class="cm">		 * @param {Object} data The popup data object:</span>
-<span class="cm">		 *   &lt;dl&gt;</span>
-<span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;severity&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">		 *       &lt;span&gt;Severity of the message (defaults to INFO)&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;title&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">		 *       &lt;span&gt;Optional title of the message&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;contents&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">		 *       &lt;span&gt;Message text&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Object&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">		 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">		 *   &lt;/dl&gt;</span>
-<span class="cm">		 */</span>
-		<span class="kd">function</span> <span class="nx">_onMessageDefault</span><span class="p">(</span> <span class="nx">evt</span><span class="p">,</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
-			<span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">severity</span><span class="p">;</span>
-			<span class="k">if</span> <span class="p">(</span> <span class="nx">data</span><span class="p">.</span><span class="nx">title</span> <span class="p">)</span> <span class="p">{</span>
-				<span class="nx">message</span> <span class="o">+=</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">title</span><span class="p">;</span>
-			<span class="p">}</span>
-			<span class="k">if</span> <span class="p">(</span> <span class="nx">data</span><span class="p">.</span><span class="nx">contents</span> <span class="p">)</span> <span class="p">{</span>
-				<span class="nx">message</span> <span class="o">+=</span> <span class="s1">&#39;\n\n&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">contents</span><span class="p">;</span>
-			<span class="p">}</span>
-
-			<span class="c1">// trigger the message event</span>
-				<span class="cm">/**</span>
-<span class="cm">				 * &lt;p&gt;Fires after the TDI &lt;em&gt;message&lt;/em&gt; takes place.&lt;/p&gt;</span>
-<span class="cm">				 * @event tdi:ajax:message</span>
-<span class="cm">				 * @param {Event} evt The event object</span>
-<span class="cm">				 * @param {Object} data The event data:</span>
-<span class="cm">				 *   &lt;dl&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;severity&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Severity of the message (defaults to INFO)&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;title&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Optional title of the message&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;contents&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Message text&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Object&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
-<span class="cm">				 *   &lt;/dl&gt;</span>
-<span class="cm">				 */</span>
-				<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:message&#39;</span><span class="p">,</span> <span class="nx">data</span> <span class="p">);</span>
-		<span class="p">}</span>
-
-		<span class="cm">/**</span>
-<span class="cm">		 * &lt;p&gt;The dialog default response handler.&lt;/p&gt;</span>
-<span class="cm">		 * @method _onDialogDefault</span>
+<span class="cm">		 * &lt;p&gt;The unknown instruction default response handler.&lt;/p&gt;</span>
+<span class="cm">		 * @method _onUnknownDefault</span>
 <span class="cm">		 * @private</span>
 <span class="cm">		 * @param {Object} evt The event object</span>
 <span class="cm">		 * @param {Object} data The dialog data object:</span>
 <span class="cm">		 *   &lt;dl&gt;</span>
 <span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;contents&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">		 *       &lt;span&gt;Dialog contents&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">		 *       &lt;span&gt;Instruction contents&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">		 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Object&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">		 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">		 *   &lt;/dl&gt;</span>
 <span class="cm">		 */</span>
-		<span class="kd">function</span> <span class="nx">_onDialogDefault</span><span class="p">(</span> <span class="nx">evt</span><span class="p">,</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+		<span class="kd">function</span> <span class="nx">_onUnknownDefault</span><span class="p">(</span> <span class="nx">evt</span><span class="p">,</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
 			<span class="c1">// trigger the dialog event</span>
 				<span class="cm">/**</span>
-<span class="cm">				 * &lt;p&gt;Fires after the TDI &lt;em&gt;dialog&lt;/em&gt; takes place.&lt;/p&gt;</span>
-<span class="cm">				 * @event tdi:ajax:dialog</span>
+<span class="cm">				 * &lt;p&gt;Fires after the TDI unknown instruction takes place.&lt;/p&gt;</span>
+<span class="cm">				 * @event tdi:ajax:unknown</span>
 <span class="cm">				 * @param {Event} evt The event object</span>
 <span class="cm">				 * @param {Object} data The event data:</span>
 <span class="cm">				 *   &lt;dl&gt;</span>
 <span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;contents&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Dialog contents&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;action&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;What to do with the dialog (defaults to `open`)&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;id&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;The dialogs identifier. Used for closing when multiple dialogs are opened at once.&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;cancel-url&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;An optional cancel URL. Can be used to close the Dialog with ESC and other UI options.&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;width&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Optional width of the Dialog.&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;height&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Optional height of the Dialog.&lt;/dd&gt;</span>
-<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Object&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">				 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">				 *       &lt;span&gt;Instruction contents&lt;/dd&gt;</span>
+<span class="cm">				 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;ATTRS_NAME&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">				 *       &lt;span&gt;Other attributes&lt;/dd&gt;</span>
 <span class="cm">				 *   &lt;/dl&gt;</span>
 <span class="cm">				 */</span>
-				<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:dialog&#39;</span><span class="p">,</span> <span class="nx">data</span> <span class="p">);</span>
+				<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="nx">data</span> <span class="p">);</span>
 		<span class="p">}</span>
 
 	<span class="c1">// TDI Ajax custom events -------------------------------------------------</span>
@@ -1779,12 +1643,15 @@
 				<span class="s1">&#39;tdi:ajax:beforeStyle&#39;</span>		<span class="o">:</span> <span class="nx">_onStyleDefault</span><span class="p">,</span>
 				<span class="s1">&#39;tdi:ajax:beforeReload&#39;</span>		<span class="o">:</span> <span class="nx">_onReloadDefault</span><span class="p">,</span>
 				<span class="s1">&#39;tdi:ajax:beforeRedirect&#39;</span>	<span class="o">:</span> <span class="nx">_onRedirectDefault</span><span class="p">,</span>
-				<span class="s1">&#39;tdi:ajax:beforePopup&#39;</span>		<span class="o">:</span> <span class="nx">_onPopupDefault</span><span class="p">,</span>
-				<span class="s1">&#39;tdi:ajax:beforeMessage&#39;</span>	<span class="o">:</span> <span class="nx">_onMessageDefault</span><span class="p">,</span>
-				<span class="s1">&#39;tdi:ajax:beforeDialog&#39;</span>		<span class="o">:</span> <span class="nx">_onDialogDefault</span>
+				<span class="s1">&#39;tdi:ajax:beforePopup&#39;</span>		<span class="o">:</span> <span class="nx">_onPopupDefault</span>
 			<span class="p">},</span>
 			<span class="nx">customDefault</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">evt</span><span class="p">,</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
-				<span class="nx">customHandlers</span><span class="p">[</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">type</span> <span class="p">].</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">evt</span><span class="p">,</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">:</span> <span class="nx">data</span><span class="p">)</span> <span class="p">);</span>
+				<span class="k">if</span> <span class="p">(</span><span class="nx">customHandlers</span><span class="p">[</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">type</span> <span class="p">])</span> <span class="p">{</span>
+					<span class="nx">customHandlers</span><span class="p">[</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">type</span> <span class="p">].</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">evt</span><span class="p">,</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">:</span> <span class="nx">data</span><span class="p">)</span> <span class="p">);</span>
+				<span class="p">}</span>
+				<span class="k">else</span> <span class="p">{</span>
+					<span class="nx">_onUnknownDefault</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">evt</span><span class="p">,</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">:</span> <span class="nx">data</span><span class="p">)</span> <span class="p">);</span>
+				<span class="p">}</span>
 			<span class="p">};</span>
 
 		<span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">customHandlers</span> <span class="p">)</span> <span class="p">{</span>
@@ -1843,7 +1710,7 @@
 	</div>
 </div>
 <script type="text/javascript">
-    ALL_YUI_PROPS = [{"url": "TDI.Ajax.Request.html#method_ajaxifyUrl", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "ajaxifyUrl"}, {"url": "TDI.Ajax.html#method__bindUI", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_bindUI"}, {"url": "TDI.Ajax.html#property__delegateSelectors", "access": "private", "host": "TDI.Ajax", "type": "property", "name": "_delegateSelectors"}, {"url": "TDI.Ajax.Response.html#method__end", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_end"}, {"url": "TDI.Ajax.Response.html#method__error", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_error"}, {"url": "TDI.Tools.html#method_getScript", "access": "", "host": "TDI.Tools", "type": "method", "name": "getScript"}, {"url": "TDI.Tools.html#method_getStyle", "access": "", "host": "TDI.Tools", "type": "method", "name": "getStyle"}, {"url": "TDI.Ajax.Response.html#method__onBeforeDialog", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeDialog"}, {"url": "TDI.Ajax.html#method__onBeforeFormSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onBeforeFormSubmit"}, {"url": "TDI.Ajax.Response.html#method__onBeforeInsert", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeInsert"}, {"url": "TDI.Ajax.html#method__onBeforeLinkClick", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onBeforeLinkClick"}, {"url": "TDI.Ajax.Response.html#method__onBeforeMessage", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeMessage"}, {"url": "TDI.Ajax.Response.html#method__onBeforePopup", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforePopup"}, {"url": "TDI.Ajax.Response.html#method__onBeforeRedirect", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeRedirect"}, {"url": "TDI.Ajax.Response.html#method__onBeforeReload", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeReload"}, {"url": "TDI.Ajax.Response.html#method__onBeforeScript", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeScript"}, {"url": "TDI.Ajax.Response.html#method__onBeforeStyle", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeStyle"}, {"url": "TDI.Ajax.Response.html#method__onBeforeUpdate", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeUpdate"}, {"url": "TDI.Ajax.Response.html#method__onDialogDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onDialogDefault"}, {"url": "TDI.Ajax.html#method__onFieldChange", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFieldChange"}, {"url": "TDI.Ajax.html#method__onFieldSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFieldSubmit"}, {"url": "TDI.Ajax.html#method__onFormButtonActivate", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFormButtonActivate"}, {"url": "TDI.Ajax.html#method__onFormSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFormSubmit"}, {"url": "TDI.Ajax.Response.html#method__onInsertDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onInsertDefault"}, {"url": "TDI.Ajax.html#method__onLinkClick", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onLinkClick"}, {"url": "TDI.Ajax.Response.html#method__onMessageDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onMessageDefault"}, {"url": "TDI.Ajax.Response.html#method__onPopupDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onPopupDefault"}, {"url": "TDI.Ajax.Response.html#method__onRedirectDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onRedirectDefault"}, {"url": "TDI.Ajax.Response.html#method__onReloadDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onReloadDefault"}, {"url": "TDI.Ajax.Response.html#method__onScriptDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onScriptDefault"}, {"url": "TDI.Ajax.Response.html#method__onStyleDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onStyleDefault"}, {"url": "TDI.Ajax.Response.html#method__onUpdateDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onUpdateDefault"}, {"url": "TDI.Ajax.html#method_send", "access": "", "host": "TDI.Ajax", "type": "method", "name": "send"}, {"url": "TDI.Ajax.Request.html#method_send", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "send"}, {"url": "TDI.Ajax.Request.html#method_sendForm", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "sendForm"}, {"url": "TDI.Ajax.Response.html#method__start", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_start"}, {"url": "TDI.Ajax.Response.html#method__success", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_success"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeDialog", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeDialog"}, {"url": "TDI.Ajax.html#event_tdi:ajax:beforeFormSubmit", "access": "", "host": "TDI.Ajax", "type": "event", "name": "tdi:ajax:beforeFormSubmit"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeInsert", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeInsert"}, {"url": "TDI.Ajax.html#event_tdi:ajax:beforeLinkClick", "access": "", "host": "TDI.Ajax", "type": "event", "name": "tdi:ajax:beforeLinkClick"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeMessage", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeMessage"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforePopup", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforePopup"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeRedirect", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeRedirect"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeReload", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeReload"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeScript", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeScript"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeStyle", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeStyle"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeUpdate", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeUpdate"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:dialog", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:dialog"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:dialogsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:dialogsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:done", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:done"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:end", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:end"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:error", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:error"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:insert", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:insert"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:insertsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:insertsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:message", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:message"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:messagesDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:messagesDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:popup", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:popup"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:popupsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:popupsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:script", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:script"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:scriptsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:scriptsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:start", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:start"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:style", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:style"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:stylesDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:stylesDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:update", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:update"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:updatesDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:updatesDone"}, {"url": "TDI.Ajax.html#method__unbindUI", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_unbindUI"}];
+    ALL_YUI_PROPS = [{"url": "TDI.Ajax.Request.html#method_ajaxifyUrl", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "ajaxifyUrl"}, {"url": "TDI.Ajax.html#method__bindUI", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_bindUI"}, {"url": "TDI.Ajax.html#property__delegateSelectors", "access": "private", "host": "TDI.Ajax", "type": "property", "name": "_delegateSelectors"}, {"url": "TDI.Ajax.Response.html#method__end", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_end"}, {"url": "TDI.Ajax.Response.html#method__error", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_error"}, {"url": "TDI.Tools.html#method_getScript", "access": "", "host": "TDI.Tools", "type": "method", "name": "getScript"}, {"url": "TDI.Tools.html#method_getStyle", "access": "", "host": "TDI.Tools", "type": "method", "name": "getStyle"}, {"url": "TDI.Ajax.html#method__onBeforeFormSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onBeforeFormSubmit"}, {"url": "TDI.Ajax.Response.html#method__onBeforeInsert", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeInsert"}, {"url": "TDI.Ajax.html#method__onBeforeLinkClick", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onBeforeLinkClick"}, {"url": "TDI.Ajax.Response.html#method__onBeforePopup", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforePopup"}, {"url": "TDI.Ajax.Response.html#method__onBeforeRedirect", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeRedirect"}, {"url": "TDI.Ajax.Response.html#method__onBeforeReload", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeReload"}, {"url": "TDI.Ajax.Response.html#method__onBeforeScript", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeScript"}, {"url": "TDI.Ajax.Response.html#method__onBeforeStyle", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeStyle"}, {"url": "TDI.Ajax.Response.html#method__onBeforeUnknown", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeUnknown"}, {"url": "TDI.Ajax.Response.html#method__onBeforeUpdate", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onBeforeUpdate"}, {"url": "TDI.Ajax.html#method__onFieldChange", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFieldChange"}, {"url": "TDI.Ajax.html#method__onFieldSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFieldSubmit"}, {"url": "TDI.Ajax.html#method__onFormButtonActivate", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFormButtonActivate"}, {"url": "TDI.Ajax.html#method__onFormSubmit", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onFormSubmit"}, {"url": "TDI.Ajax.Response.html#method__onInsertDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onInsertDefault"}, {"url": "TDI.Ajax.html#method__onLinkClick", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_onLinkClick"}, {"url": "TDI.Ajax.Response.html#method__onPopupDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onPopupDefault"}, {"url": "TDI.Ajax.Response.html#method__onRedirectDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onRedirectDefault"}, {"url": "TDI.Ajax.Response.html#method__onReloadDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onReloadDefault"}, {"url": "TDI.Ajax.Response.html#method__onScriptDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onScriptDefault"}, {"url": "TDI.Ajax.Response.html#method__onStyleDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onStyleDefault"}, {"url": "TDI.Ajax.Response.html#method__onUnknownDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onUnknownDefault"}, {"url": "TDI.Ajax.Response.html#method__onUpdateDefault", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_onUpdateDefault"}, {"url": "TDI.Ajax.html#method_send", "access": "", "host": "TDI.Ajax", "type": "method", "name": "send"}, {"url": "TDI.Ajax.Request.html#method_send", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "send"}, {"url": "TDI.Ajax.Request.html#method_sendForm", "access": "", "host": "TDI.Ajax.Request", "type": "method", "name": "sendForm"}, {"url": "TDI.Ajax.Response.html#method__start", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_start"}, {"url": "TDI.Ajax.Response.html#method__success", "access": "private", "host": "TDI.Ajax.Response", "type": "method", "name": "_success"}, {"url": "TDI.Ajax.html#event_tdi:ajax:beforeFormSubmit", "access": "", "host": "TDI.Ajax", "type": "event", "name": "tdi:ajax:beforeFormSubmit"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeInsert", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeInsert"}, {"url": "TDI.Ajax.html#event_tdi:ajax:beforeLinkClick", "access": "", "host": "TDI.Ajax", "type": "event", "name": "tdi:ajax:beforeLinkClick"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforePopup", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforePopup"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeRedirect", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeRedirect"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeReload", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeReload"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeScript", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeScript"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeStyle", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeStyle"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeUnknown", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeUnknown"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:beforeUpdate", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:beforeUpdate"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:done", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:done"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:end", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:end"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:error", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:error"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:insert", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:insert"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:insertsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:insertsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:popup", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:popup"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:popupsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:popupsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:script", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:script"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:scriptsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:scriptsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:start", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:start"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:style", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:style"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:stylesDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:stylesDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:unknown", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:unknown"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:unknownsDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:unknownsDone"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:update", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:update"}, {"url": "TDI.Ajax.Response.html#event_tdi:ajax:updatesDone", "access": "", "host": "TDI.Ajax.Response", "type": "event", "name": "tdi:ajax:updatesDone"}, {"url": "TDI.Ajax.html#method__unbindUI", "access": "private", "host": "TDI.Ajax", "type": "method", "name": "_unbindUI"}];
 </script>
 </body>
 </html>

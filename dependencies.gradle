@@ -1,3 +1,0 @@
-dependencies {
-	minify (group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: '2.4.7')
-}

@@ -1,43 +1,46 @@
-buildscript {
-	repositories {
-		ivy { url = "$artifactory/etn-all" }
-	}
-	dependencies {
-		classpath(group: 'org.apache.jackrabbit', name: 'jackrabbit-webdav', version: '2.5.2')
-	}
-}
-
 apply plugin: 'base'
+apply plugin: 'webdav'
 
 repositories {
-	ivy { url = "$artifactory/etn-all" }
-	ivy { url = "$artifactory/twinstone" }
-}
-
-uploadArchives {
-	repositories {
-		ivy {
-			url = "$artifactory/twinstone"
-		}
-	}
-}
-
-if (getProperty("etn.artifactory.user") != null) {
-    uploadArchives.repositories.ivy.credentials {
-        username = getProperty("etn.artifactory.user")
-        password = getProperty("etn.artifactory.password")
-    }
+	mavenCentral()
 }
 
 def bundleDir = "$buildDir/minify"
 
 configurations {
-	sources
-	runtime { visible = false }
 	minify { visible = false }
 }
 
-configurations['default'].extendsFrom configurations.runtime
+dependencies {
+	minify (group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: '2.4.7')
+}
+
+webdav {
+       site(domain:'docs.twinstone.org', proto: 'https', port:'443') {
+             credentials(user: twinstoneWebdavUser, pass: twinstoneWebdavPass)
+       }
+}
+
+uploadArchives {
+	dependsOn "makeJs"
+	repositories {
+		ivy {
+			url = new File(localIvy).toURL();
+			layout 'maven';
+			ivyPattern '[organisation]/[module]/[revision]/[module]-[revision]-ivy.xml'
+		}
+	}
+}
+
+task('copydoc', type: WebdavCopy, dependsOn: 'doc') {
+	def m = version =~ /([0-9]+)\.([0-9]+)\.([0-9]+)/
+    if (!m) error()
+    def path = m.group(1) + "." + m.group(2)
+
+	preclean = true
+	baseUrl = "https://docs.twinstone.org/webdav/doc/tdi/" + path
+	from("doc")
+}
 
 task prepare << {
 	file("$bundleDir/temp").mkdirs()
@@ -106,27 +109,6 @@ task makeJs(dependsOn: [compress]) << {
 }
 
 artifacts {
-	sources (file("$bundleDir/js/tdi-bundle.js")) {
-		name = 'tdi-bundle'
-	}
-	sources (file("$bundleDir/js/tdi-bundle.min.js")) {
-		name = 'tdi-bundle.min'
-	}
+	archives file("$bundleDir/js/tdi-bundle.js")
+	archives file("$bundleDir/js/tdi-bundle.min.js")
 }
-
-task jsJar(type: Jar, dependsOn: makeJs) {
-	into 'META-INF/resources/tdi/js'
-	from("$bundleDir/js") {
-		include '*.js'
-		exclude '*-temp.js'
-	}
-}
-
-artifacts {
-	["runtime","archives"].each { conf -> 
-			"$conf" (jsJar)
-	}
-}
-
-
-apply from: 'dependencies.gradle'
