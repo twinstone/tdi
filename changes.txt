@@ -1,3 +1,16 @@
+CHANGES AFTER VERSION 1.6.1
+=============================
+
+==== Overview ====
+  * Removed jQuery from repository. Use your own copy of jQuery.
+  * Removed the tdi-bundle-all (with jquery included) bundle. Use your own copy of jQuery.
+  * Added general support for unknown instructions. All unknown instructions will be recognized and their custom events will be triggered with all their attributes.
+  * Removed the direct support for Message and Dialog instructions. Replaced with general support for "unknown" instructions.
+  * Removed the {{clear}} attribute of {{<update>}} instruction.
+  * Changed the bundle name from {{tdi-bundle-min.js}} to {{tdi-bundle.min.js}}
+  * Added {{script_node_inline}} property to {{tdi:ajax:script}} custom event
+  * Added {{sync}} property to {{TDI.Ajax.Request.send}} method. It controls whether the AJAX request will be synchronous or not. Defaults to false.
+
 CHANGES AFTER VERSION 1.5.3
 =============================
 
