@@ -25,9 +25,7 @@ uploadArchives {
 	dependsOn "makeJs"
 	repositories {
 		ivy {
-			url = new File(localIvy).toURL();
-			layout 'maven';
-			ivyPattern '[organisation]/[module]/[revision]/[module]-[revision]-ivy.xml'
+			url = new File(localRepo + "/ivy").toURL();
 		}
 	}
 }

@@ -4,12 +4,12 @@ gradle.beforeProject {
        it.buildscript {
              println "INITIALIZING: " + it
              repositories {
-                    ivy { url 'https://artifacts.twinstone.org/' }
+                    ivy { url 'https://artifacts.twinstone.org/ivy/' }
                     mavenCentral()
              }
 
              dependencies {
-                    classpath(group: 'org.twinstone', name: 'commons-building', version: '0.2.0')
+                    classpath(group: 'org.twinstone', name: 'commons-building', version: '0.2.1')
              }
        }
 }
