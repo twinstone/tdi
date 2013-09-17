@@ -4,11 +4,11 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<title>API: TDI   tdi-ajax.js  (YUI Library)</title>
 
-	<link rel="stylesheet" type="text/css" href="assets/reset-fonts-grids-min.css?stamp=1375966820.76" />
-	<link rel="stylesheet" type="text/css" href="assets/api.css?stamp=1375966820.76" />
+	<link rel="stylesheet" type="text/css" href="assets/reset-fonts-grids-min.css?stamp=1376660842.23" />
+	<link rel="stylesheet" type="text/css" href="assets/api.css?stamp=1376660842.23" />
 
-    <script type="text/javascript" src="assets/api-js?stamp=1375966820.76"></script>
-    <script type="text/javascript" src="assets/ac-js?stamp=1375966820.76"></script>
+    <script type="text/javascript" src="assets/api-js?stamp=1376660842.23"></script>
+    <script type="text/javascript" src="assets/ac-js?stamp=1376660842.23"></script>
 </head>
 
 <body id="yahoo-com">
@@ -770,6 +770,8 @@
 <span class="cm">					 *   &lt;dl&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;updates&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;The list of all updates&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">					 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *   &lt;/dl&gt;</span>
 <span class="cm">					 */</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:updatesDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
@@ -784,6 +786,8 @@
 <span class="cm">					 *   &lt;dl&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;inserts&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;The list of all inserts&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">					 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *   &lt;/dl&gt;</span>
 <span class="cm">					 */</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:insertsDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
@@ -798,6 +802,8 @@
 <span class="cm">					 *   &lt;dl&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;scripts&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;The list of all scripts&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">					 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *   &lt;/dl&gt;</span>
 <span class="cm">					 */</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:scriptsDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
@@ -812,6 +818,8 @@
 <span class="cm">					 *   &lt;dl&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;styles&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;The list of all styles&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">					 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *   &lt;/dl&gt;</span>
 <span class="cm">					 */</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:stylesDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
@@ -826,6 +834,8 @@
 <span class="cm">					 *   &lt;dl&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;popups&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;The list of all popups&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">					 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *   &lt;/dl&gt;</span>
 <span class="cm">					 */</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:popupsDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
@@ -840,6 +850,8 @@
 <span class="cm">					 *   &lt;dl&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;instructions&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;The list of all unknown instructions&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">					 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *   &lt;/dl&gt;</span>
 <span class="cm">					 */</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:unknownsDone&#39;</span><span class="p">,</span> <span class="p">[{</span>
@@ -852,15 +864,15 @@
 <span class="cm">					 * @param {Event} evt The event object</span>
 <span class="cm">					 * @param {Object} data The event data:</span>
 <span class="cm">					 *   &lt;dl&gt;</span>
-<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
-<span class="cm">					 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;responses&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">					 *       &lt;span&gt;The list of all TDI actions&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">					 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">					 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">					 *   &lt;/dl&gt;</span>
 <span class="cm">					 */</span>
 					<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:done&#39;</span><span class="p">,</span> <span class="p">[{</span>
-						<span class="nx">options</span> <span class="o">:</span> <span class="nx">options</span><span class="p">,</span>
-						<span class="nx">responses</span> <span class="o">:</span> <span class="nx">_responses</span>
+						<span class="nx">responses</span> <span class="o">:</span> <span class="nx">_responses</span><span class="p">,</span>
+						<span class="nx">options</span> <span class="o">:</span> <span class="nx">options</span>
 					<span class="p">}]</span> <span class="p">);</span>
 		<span class="p">}</span>
 
@@ -884,6 +896,12 @@
 <span class="cm">			 *       &lt;span&gt;The XHR status text (if available)&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">			 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;message&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
 <span class="cm">			 *       &lt;span&gt;The error message&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">			 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;xhr&lt;/span&gt; &lt;span&gt;&amp;lt;jqXHR&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">			 *       &lt;span&gt;The jqXHR object (see jQuery documentation for jQuery.ajax())&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">			 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;textStatus&lt;/span&gt; &lt;span&gt;&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">			 *       &lt;span&gt;The XHR text status (if available)&lt;/span&gt;&lt;/dd&gt;</span>
+<span class="cm">			 *     &lt;dd&gt;&lt;code&gt;&lt;span&gt;options&lt;/span&gt; &lt;span&gt;&amp;lt;Array&amp;gt;&lt;/span&gt;&lt;/code&gt;</span>
+<span class="cm">			 *       &lt;span&gt;Additional request options&lt;/span&gt;&lt;/dd&gt;</span>
 <span class="cm">			 *   &lt;/dl&gt;</span>
 <span class="cm">			 */</span>
 			<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span> <span class="s1">&#39;tdi:ajax:error&#39;</span><span class="p">,</span> <span class="p">[{</span>
