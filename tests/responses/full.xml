@@ -42,7 +42,7 @@
 	<redirect href="http://google.com"></redirect>
 	
 	<message severity="INFO" title="Info message 1 title">Info message 1</message>
-	<message severity="ERROR">Info message 2</message>
+	<message severity="ERROR" name="message-name">Info message 2</message>
 	
 	<dialog width="500" height="400" id="dialog1">This is a dialog!</dialog>
 	<dialog action="open" cancel-url="cancel/url" id="dialog2">This is a dialog!</dialog>

@@ -1,7 +1,7 @@
 module( 'TDI.Ajax.Response' );
 	
 	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(99);
+		expect(105);
 		
 		// bind the events
 			$(document)
@@ -163,19 +163,25 @@ module( 'TDI.Ajax.Response' );
 							u4 = data.unknowns[3],
 							u5 = data.unknowns[4];
 
+						equals( u1._name, 'message', 'Message: correct instruction name' );
 						equals( u1.severity.toUpperCase(), 'INFO', 'Message: correct severity' );
 						equals( u1.contents, 'Info message 1', 'Message: correct text' );
 						equals( u1.title, 'Info message 1 title', 'Message: correct title' );
+						equals( u2._name, 'message', 'Message: correct instruction name' );
+						equals( u2.name, 'message-name', 'Message: correct name' );
 						equals( u2.severity.toUpperCase(), 'ERROR', 'Message: correct severity' );
 						equals( u2.contents, 'Info message 2', 'Message: correct text' );
 						equals( u2.title, undefined, 'Message: correct title' );
+						equals( u3._name, 'dialog', 'Dialog: correct instruction name' );
 						equals( u3.contents, 'This is a dialog!', 'Dialog: correct contents' );
 						equals( u3.width, "500", 'Dialog: correct width' );
 						equals( u3.id, 'dialog1', 'Dialog: correct id' );
 						equals( u3.height, "400", 'Dialog: correct height' );
+						equals( u4._name, 'dialog', 'Dialog: correct instruction name' );
 						equals( u4.action, 'open', 'Dialog: correct action' );
 						equals( u4["cancel-url"], 'cancel/url', 'Dialog: correct cancel URL' );
 						equals( u4.id, 'dialog2', 'Dialog: correct id' );
+						equals( u5._name, 'dialog', 'Dialog: correct instruction name' );
 						equals( u5.action, 'close', 'Dialog: correct action' );
 						equals( u5.id, 'dialog3', 'Dialog: correct id' );
 				} )

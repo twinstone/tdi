@@ -721,6 +721,8 @@ TDI.Ajax.Response = function($) {
 					 *   <dl>
 					 *     <dd><code><span>updates</span> <span>&lt;Array&gt;</span></code>
 					 *       <span>The list of all updates</span></dd>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:updatesDone', [{
@@ -735,6 +737,8 @@ TDI.Ajax.Response = function($) {
 					 *   <dl>
 					 *     <dd><code><span>inserts</span> <span>&lt;Array&gt;</span></code>
 					 *       <span>The list of all inserts</span></dd>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:insertsDone', [{
@@ -749,6 +753,8 @@ TDI.Ajax.Response = function($) {
 					 *   <dl>
 					 *     <dd><code><span>scripts</span> <span>&lt;Array&gt;</span></code>
 					 *       <span>The list of all scripts</span></dd>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:scriptsDone', [{
@@ -763,6 +769,8 @@ TDI.Ajax.Response = function($) {
 					 *   <dl>
 					 *     <dd><code><span>styles</span> <span>&lt;Array&gt;</span></code>
 					 *       <span>The list of all styles</span></dd>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:stylesDone', [{
@@ -777,6 +785,8 @@ TDI.Ajax.Response = function($) {
 					 *   <dl>
 					 *     <dd><code><span>popups</span> <span>&lt;Array&gt;</span></code>
 					 *       <span>The list of all popups</span></dd>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:popupsDone', [{
@@ -791,6 +801,8 @@ TDI.Ajax.Response = function($) {
 					 *   <dl>
 					 *     <dd><code><span>instructions</span> <span>&lt;Array&gt;</span></code>
 					 *       <span>The list of all unknown instructions</span></dd>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:unknownsDone', [{
@@ -803,15 +815,15 @@ TDI.Ajax.Response = function($) {
 					 * @param {Event} evt The event object
 					 * @param {Object} data The event data:
 					 *   <dl>
-					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-					 *       <span>Additional request options</span></dd>
 					 *     <dd><code><span>responses</span> <span>&lt;Array&gt;</span></code>
 					 *       <span>The list of all TDI actions</span></dd>
+					 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:done', [{
-						options : options,
-						responses : _responses
+						responses : _responses,
+						options : options
 					}] );
 		}
 
@@ -835,6 +847,12 @@ TDI.Ajax.Response = function($) {
 			 *       <span>The XHR status text (if available)</span></dd>
 			 *     <dd><code><span>message</span> <span>&lt;Array&gt;</span></code>
 			 *       <span>The error message</span></dd>
+			 *     <dd><code><span>xhr</span> <span>&lt;jqXHR&gt;</span></code>
+			 *       <span>The jqXHR object (see jQuery documentation for jQuery.ajax())</span></dd>
+			 *     <dd><code><span>textStatus</span> <span>&lt;String&gt;</span></code>
+			 *       <span>The XHR text status (if available)</span></dd>
+			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>Additional request options</span></dd>
 			 *   </dl>
 			 */
 			$(document).trigger( 'tdi:ajax:error', [{
@@ -1190,7 +1208,7 @@ TDI.Ajax.Response = function($) {
 				beforeName = name[0].toUpperCase() + name.substr(1),
 				attributes = tag.attributes,
 				event_data = {
-					name : name,
+					_name : name,
 					contents : $.trim( $tag.text() )
 				};
 
@@ -1582,7 +1600,7 @@ TDI.Ajax.Response = function($) {
 				 *       <span>Other attributes</dd>
 				 *   </dl>
 				 */
-				$(document).trigger( 'tdi:ajax:' + data.name, data );
+				$(document).trigger( 'tdi:ajax:' + data._name, data );
 		}
 
 	// TDI Ajax custom events -------------------------------------------------
