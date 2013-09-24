@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <insert target="last-feature" position="before">
+		<![CDATA[
+			<li>TDI may be customized.</li>
+		]]>
+    </insert>
+</response>

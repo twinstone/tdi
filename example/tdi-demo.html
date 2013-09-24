@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Twinstone TDI Demo Page</title>
+	<meta name="description" content="Simple page to demonstrate the functionality of Twinstone TDI">
+	<meta name="author" content="Martin Kacer">
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="tdi-bundle.min-1.7.3.js"></script>
+	<style>
+		* {margin:0;padding:0;}
+		body {font-family: Arial, sans-serif;font-size: 14px;}
+		#page {padding: 10px;}
+		#page-h {height: 50px;line-height: 50px;margin-bottom: 10px;background: #eee;padding: 10px;text-align: center;font-size: 30px;font-weight: bold;}
+		#page-c {overflow: hidden;margin-bottom: 10px;}
+		#page-f {text-align: center;border-top: 1px solid #ccc;padding-top: 10px;}
+		.col-left, .col-right {float: left;width: 180px;background: #eee;padding: 10px;}
+		.col-right {float: right;width: 260px;}
+		.col-right li {font-weight: bold;}
+		.col-main {margin: 0 290px 0 210px;background: #eee;padding: 10px;}
+		.breadcrumbs {color: #aaa;}
+		h1, h2, h3, p, ul, ol, table {margin-bottom: 10px;}
+		.col-main h2 {margin-top: 24px;}
+		h1 {font-size: 24px;}
+		h3 {font-size: 16px;}
+		ul {
+			margin-left: 20px;
+		}
+		li {
+			margin-bottom: 5px;
+		}
+		ul.nav {list-style: none; margin-left: 0;}
+		ul.nav li a {display: block;text-decoration: none;background: #ddd;padding: 5px;}
+		ul.nav li a:hover {background: #ccc;}
+		ul.nav li a.current {background: #aaa;font-weight: bold;}
+		a {color: blue;}
+		.demo {color: #448; font-style: italic;}
+		#filter-count, #filter-state {font-size: 20px;font-weight: bold;}
+	</style>
+</head>
+<body id="page">
+	<div id="page-h">Twinstone TDI Demo Page</div>
+	<div id="page-c">
+		<div class="col-left">
+			<h2>Sidebar Menu</h2>
+			<p>This menu only switches the current section indicator in breadcrumbs.</p>
+			<p class="demo">It is the demonstration of <code>update</code> instruction.</p>
+			<ul class="nav">
+				<li><a id="menu1" class="tdi current" href="resp-menu-1.xml">Item 1</a></li>
+				<li><a id="menu2" class="tdi" href="resp-menu-2.xml">Item 2</a></li>
+				<li><a id="menu3" class="tdi" href="resp-menu-3.xml">Item 3</a></li>
+				<li><a id="menu4" class="tdi" href="resp-menu-4.xml">Item 4</a></li>
+			</ul>
+		</div>
+		<div class="col-right">
+			<h2>Features Selected</h2>
+			<p>
+				This is the list of TDI features that you like.
+			</p>
+			<ul id="features">
+				<li id="last-feature">TDI is simple to use!</li>
+			</ul>
+		</div>
+		<div class="col-main">
+			<p class="breadcrumbs">TDI &raquo; Demo Page &raquo; Breadcrumbs &raquo; <strong id="current-section">First Section</strong></p>
+			<h1>Section #<span id="current-section-nr">1</span> &nbsp; This marvelous HTML page shows the basic TDI functions</h1>
+			<p id="intro">
+				We begin with this introductory paragraph, which is never touched by AJAX updates.
+				So it stays at the beginning of the page as if no TDI was used.
+				You may play with the rest of this page to try some of the almighty TDI features.
+			</p>
+			<p>
+				Please note that this is just a demo with static XML files instead of dynamic server responses.
+				Web pages are not typically done like this in real life. 
+				Instead, the server should use logic and templates to generate the appropriate XML response.
+			</p>
+			
+
+			<h2>Feature filter</h2>
+			<p>
+				The following links will cause the above list to show a different set of items.
+				Filtering is performed by a JavaScript function, which is not included until used for the first time.
+			</p>
+			<p class="demo">This is the demonstration of the <code>script</code> instruction.</p>
+			<ul>
+				<li>What features to show:
+					<a class="tdi" href="resp-show-all.xml">ALL FEATURES</a> |
+					<a class="tdi" href="resp-show-important.xml">IMPORTANT ONLY</a>
+				</li>
+			</ul>
+			<p>The filter is currently <span id="filter-state">OFF</span>.</p>
+
+			
+			<h2>List of features</h2>
+			<p>
+				Each feature has a "like" link that adds it to the right-hand sidebar.
+				It behaves almost like an e-shop shopping cart. However, please note that this is a simple static example only.
+				No logic is implemented at all. Therefore you may easily cause non-elegant things to happen, such as duplicate items etc.
+			</p>
+			<p class="demo">This is the demonstration of the <code>insert</code> instruction.</p>
+			<ul id="features-list">
+				<li id="feature-one" class="important">TDI is one AJAX that handles all page updates with no additional scripting needed.
+					<a class="tdi" href="resp-feature-one.xml">(I like this)</a></li>
+				<li id="feature-server">TDI lets the server to decide what should be changed.
+					The very same templates may be used as for normal page rendering.
+					<a class="tdi" href="resp-feature-server.xml">(I like this)</a></li>
+				<li id="feature-multiple">Multiple instructions may be included in a response,
+					allowing different portions of the page to reflect the current state.
+					<a class="tdi" href="resp-feature-multiple.xml">(I like this)</a></li>
+				<li id="feature-protocol" class="important">A documented XML protocol is used to send TDI instructions.
+					<a class="tdi" href="resp-feature-protocol.xml">(I like this)</a></li>
+				<li id="feature-custom" class="important">Allows custom extensions of the protocol.
+					<a class="tdi" href="resp-feature-custom.xml">(I like this)</a></li>
+			</ul>
+			<p>Number of items currently shown: <span id="filter-count">5</span></p>
+			<p><a class="tdi" href="resp-features-clear.xml">Clear all selected features</a>, I do not like them anymore.</p>
+
+		</div>
+	</div>
+	<div id="page-f"><a href="https://www.twinstone.org/project/TDI">Go back to the Twinstone TDI project page.</a></div>
+</body>
+</html>
