@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <script id="demo-hiding-support">
+		<![CDATA[
+			/*
+			 * This is a definition of some function.
+			 * TDI will ensure it is defined for the first time only.
+			 *
+			 * FIXME MKa: Move this to an external file after TDI-12 gets resolved.
+			 */
+			function tdiDemoShow(parent, selector, show) {
+				var csssel = "#" + parent + " li:not(." + selector + ")";
+				if (show) { $(csssel).show(); } else { $(csssel).hide(); }
+			}
+		]]>
+    </script>
+    <script>
+		<![CDATA[
+			tdiDemoShow('features-list', 'important', false);
+		]]>
+    </script>
+    <update target="filter-count">3</update>
+    <update target="filter-state">ON</update>
+</response>

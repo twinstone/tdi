@@ -15,6 +15,14 @@ dependencies {
 	minify (group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: '2.4.7')
 }
 
+if (rootProject.hasProperty("twinstone.upload.user")) {
+	twinstoneWebdavUser = getProperty("twinstone.upload.user")
+	twinstoneWebdavPass = getProperty("twinstone.upload.password")
+}
+if (rootProject.hasProperty("twinstone.localRepo")) {
+	localRepo = getProperty("twinstone.localRepo")
+}
+
 webdav {
        site(domain:'docs.twinstone.org', proto: 'https', port:'443') {
              credentials(user: twinstoneWebdavUser, pass: twinstoneWebdavPass)
@@ -38,6 +46,19 @@ task('copydoc', type: WebdavCopy, dependsOn: 'doc') {
 	preclean = true
 	baseUrl = "https://docs.twinstone.org/webdav/doc/tdi/" + path
 	from("doc")
+}
+
+task('copydemo', type: WebdavCopy, dependsOn: 'makeJs') {
+	def m = version =~ /([0-9]+)\.([0-9]+)\.([0-9]+)/
+	if (!m) error()
+	def path = m.group(1) + "." + m.group(2)
+
+	preclean = true
+	baseUrl = "https://docs.twinstone.org/webdav/doc/tdi/demo/" + path
+	from("example")
+	
+	preclean = false
+	from("$bundleDir/js/tdi-bundle.min.js")
 }
 
 task prepare << {

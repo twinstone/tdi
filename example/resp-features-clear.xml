@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="features">
+		<![CDATA[
+			<li id="last-feature">TDI is simple to use!</li>
+		]]>
+    </update>
+</response>

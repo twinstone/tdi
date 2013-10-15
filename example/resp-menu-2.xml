@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="menu2" class-add="current" append="true"></update>
+    <update target="menu1" class-remove="current" append="true"></update>
+    <update target="menu3" class-remove="current" append="true"></update>
+    <update target="menu4" class-remove="current" append="true"></update>
+    <update target="current-section">Second Section</update>
+    <update target="current-section-nr">2</update>
+</response>
