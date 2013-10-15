@@ -1,7 +1,7 @@
 module( 'TDI.Ajax.Request' );
 	
 	test( 'TDI.Ajax.Request.ajaxifyUrl', function() {
-		expect(7);
+		expect(8);
 		
 		var urls = [
 			[ 'http://example.com', 'http://example.com?_infuse=1' ],
@@ -10,7 +10,8 @@ module( 'TDI.Ajax.Request' );
 			[ 'http://example.com?param=value', 'http://example.com?_infuse=1&param=value' ],
 			[ 'http://example.com?param1=value1&param2=value2', 'http://example.com?_infuse=1&param1=value1&param2=value2' ],
 			[ 'http://example.com?param1=value1#hash', 'http://example.com?_infuse=1&param1=value1#hash' ],
-			[ 'http://example.com?param1=value1&param2=value2#hash', 'http://example.com?_infuse=1&param1=value1&param2=value2#hash' ]
+			[ 'http://example.com?param1=value1&param2=value2#hash', 'http://example.com?_infuse=1&param1=value1&param2=value2#hash' ],
+			[ '#hash', '?_infuse=1#hash' ]
 		];
 		equals( TDI.Ajax.Request.ajaxifyUrl( urls[0][0] ).replace(/&_ts=\d+/, ""), urls[0][1].replace(/&_ts=\d+/, ""), 'URL without parameters and a hash.' );
 		equals( TDI.Ajax.Request.ajaxifyUrl( urls[1][0] ).replace(/&_ts=\d+/, ""), urls[1][1].replace(/&_ts=\d+/, ""), 'URL with a hash.' );
@@ -19,6 +20,7 @@ module( 'TDI.Ajax.Request' );
 		equals( TDI.Ajax.Request.ajaxifyUrl( urls[4][0] ).replace(/&_ts=\d+/, ""), urls[4][1].replace(/&_ts=\d+/, ""), 'URL with multiple parameters.' );
 		equals( TDI.Ajax.Request.ajaxifyUrl( urls[5][0] ).replace(/&_ts=\d+/, ""), urls[5][1].replace(/&_ts=\d+/, ""), 'URL with 1 parameter and a hash.' );
 		equals( TDI.Ajax.Request.ajaxifyUrl( urls[6][0] ).replace(/&_ts=\d+/, ""), urls[6][1].replace(/&_ts=\d+/, ""), 'URL with multiple parameters and a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[7][0] ).replace(/&_ts=\d+/, ""), urls[7][1].replace(/&_ts=\d+/, ""), 'URL with multiple parameters and a hash.' );
 	} );
 	
 	asyncTest( 'TDI.Ajax.Request.send: beforeStart/start/beforeEnd/end callbacks', function() {

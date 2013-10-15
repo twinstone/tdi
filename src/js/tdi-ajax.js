@@ -584,7 +584,7 @@ TDI.Ajax.Request = function($) {
 			else if ( url.indexOf( '?' ) > 0 ) {
 				return url.replace( /\?/, '?'+p+'&' );
 			}
-			else if ( url.indexOf( '#' ) > 0 ) {
+			else if ( url.indexOf( '#' ) >= 0 ) {
 				return url.replace( /#/, '?'+p+'#' );
 			}
 			else {

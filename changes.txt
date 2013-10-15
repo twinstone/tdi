@@ -10,6 +10,7 @@ CHANGES AFTER VERSION 1.6.1
   * Changed the bundle name from {{tdi-bundle-min.js}} to {{tdi-bundle.min.js}}
   * Added {{script_node_inline}} property to {{tdi:ajax:script}} custom event
   * Added {{sync}} property to {{TDI.Ajax.Request.send}} method. It controls whether the AJAX request will be synchronous or not. Defaults to false.
+  * Fixed URL generating when only the search part (#whatever) is provided. Fixes TDI-14
 
 CHANGES AFTER VERSION 1.5.3
 =============================
