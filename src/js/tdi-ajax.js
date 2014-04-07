@@ -1205,7 +1205,7 @@ TDI.Ajax.Response = function($) {
 
 			var $tag = $(tag),
 				name = tag.tagName.toLowerCase(),
-				beforeName = name[0].toUpperCase() + name.substr(1),
+				beforeName = name.substr(0, 1).toUpperCase() + name.substr(1),
 				attributes = tag.attributes,
 				event_data = {
 					_name : name,

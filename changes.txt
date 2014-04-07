@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.7.3
+=============================
+
+==== Overview ====
+  * Generating of event name fails in IE7 - fixes TDI-16
+
 CHANGES AFTER VERSION 1.6.1
 =============================
 
