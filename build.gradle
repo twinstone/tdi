@@ -37,7 +37,7 @@ uploadArchives {
 		}
 	}
 }
-
+/* ICe: tasky typu WebdavCopy funguji jen v gradle1.6
 task('copydoc', type: WebdavCopy, dependsOn: 'doc') {
 	def m = version =~ /([0-9]+)\.([0-9]+)\.([0-9]+)/
     if (!m) error()
@@ -60,7 +60,7 @@ task('copydemo', type: WebdavCopy, dependsOn: 'makeJs') {
 	preclean = false
 	from("$bundleDir/js/tdi-bundle.min.js")
 }
-
+*/
 task prepare << {
 	file("$bundleDir/temp").mkdirs()
 	file("$bundleDir/js").mkdirs()
