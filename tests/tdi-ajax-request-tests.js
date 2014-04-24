@@ -108,6 +108,21 @@ module( 'TDI.Ajax.Request' );
 			}
 		} );
 	} );
+	asyncTest( 'TDI.Ajax.Request.send: xhrFields', function() {
+		expect(1);
+		
+		TDI.Ajax.Request.send( 'responses/empty.xml', {
+			xhrFields : {
+				withCredentials : true
+			},
+			beforeStart : function( xhr, settings, options ) {
+				equals( settings.xhrFields.withCredentials, true, 'The withCredentials xhrField is set' );
+				
+				start();
+				return false;
+			}
+		} );
+	} );
 	
 	asyncTest( 'TDI.Ajax.Request.sendForm: beforeStart/start/beforeEnd/end callbacks', function() {
 		expect(4);

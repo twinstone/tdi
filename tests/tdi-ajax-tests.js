@@ -47,6 +47,20 @@ module( 'TDI.Ajax' );
 		} );
 	} );
 	
+	asyncTest( 'TDI.Ajax.send: xhrFields', function() {
+		expect(2);
+		
+		TDI.Ajax.send( $( '#tdi-ajax-xhrFields' ), {
+			beforeStart : function( xhr, settings, options ) {
+				equals( options.xhrFields.withCredentials, true, 'The option xhrField withCredentials' );
+				equals( settings.xhrFields.withCredentials, true, 'The xhrField withCredentials' );
+				
+				start();
+				return false;
+			}
+		} );
+	} );
+	
 	asyncTest( 'TDI.Ajax.send: Link/Disabled', function() {
 		expect(0);
 		

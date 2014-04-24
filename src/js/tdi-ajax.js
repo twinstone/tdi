@@ -262,8 +262,8 @@ TDI.Ajax = function($) {
 					related = $elm.closest( $elm.data( 'related-ancestor' ) || '' ).add( $( $elm.data( 'related-element' ) || '' ) ).add( $( $elm.attr( 'rel' ) || '' ) ).add( $( $elm.data( '_submitButton' ) || '' ) ),
 					triggerGroup = $( $elm.data( 'trigger-group' ) || '' ),
 					url = $elm.data( 'ajax-url' ) || $elm.attr( 'href' ) || $elm.attr( 'action' ),
+					xhrFields = $elm.data( 'ajax-xhr-fields' ) || {},
 					data = {};
-
 				// if the URL is empty, try to use $elm.value
 					if ( (url === "" || url === undefined) && value ) {
 						url = value;
@@ -325,7 +325,8 @@ TDI.Ajax = function($) {
 						}
 					},
 					data : data,
-					trigger : $elm
+					trigger : $elm,
+					xhrFields : xhrFields
 				};
 
 				if ( $elm.is( 'form' ) ) {
@@ -413,6 +414,7 @@ TDI.Ajax.Request = function($) {
 
 			$.ajax( {
 				url			: options.url,
+				xhrFields   : options.xhrFields || {},
 				type		: options.method || 'GET',
 				async       : !options.sync,
 				data		: options.data || '',

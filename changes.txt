@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.7.4
+=============================
+
+==== Overview ====
+  * Allow to pass xhrFields object to $.ajax() using data-ajax-xhr-fields='{JSON}' attribute
+
 CHANGES AFTER VERSION 1.7.3
 =============================
 
