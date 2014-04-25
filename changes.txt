@@ -3,6 +3,7 @@ CHANGES AFTER VERSION 1.7.4
 
 ==== Overview ====
   * Allow to pass xhrFields object to $.ajax() using data-ajax-xhr-fields='{JSON}' attribute
+  * Added `xhr` and xhr settings to the `tdi:ajax:start` event
 
 CHANGES AFTER VERSION 1.7.3
 =============================

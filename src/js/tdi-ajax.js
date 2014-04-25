@@ -659,12 +659,18 @@ TDI.Ajax.Response = function($) {
 			 * @param {Event} evt The event object
 			 * @param {Object} data The event data:
 			 *   <dl>
+			 *     <dd><code><span>xhr</span> <span>&lt;jqXHR&gt;</span></code>
+			 *       <span>The jqXHR object</span></dd>
 			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
 			 *       <span>Additional request options</span></dd>
+			 *     <dd><code><span>settings</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>The Ajax settings</span></dd>
 			 *   </dl>
 			 */
 			$(document).trigger( 'tdi:ajax:start', [{
-				options : options
+				xhr : xhr,
+				options : options,
+				settings : settings
 			}] );
 		}
 
