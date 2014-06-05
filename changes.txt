@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.7.5
+=============================
+
+==== Overview ====
+  * Clear "submit-action" hidden element every time after a form is submitted - FIXES #TDI-18
+
 CHANGES AFTER VERSION 1.7.4
 =============================
 

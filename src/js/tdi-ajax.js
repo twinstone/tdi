@@ -330,16 +330,17 @@ TDI.Ajax = function($) {
 				};
 
 				if ( $elm.is( 'form' ) ) {
+					_options.end = function() {
+						$elm.data( '_submitButton', null );
+						$elm.find( 'input.submit-action' ).remove();
+					};
+					
 					if ($elm.find("input[type=file]").length > 0) {
 						TDI.Ajax.Request.sendForm( $elm[0], _options );
 					}
 					else {
 						_options.data = $elm.serialize(); // safe to overwrite
 						_options.method = $elm.attr('method');
-						_options.end = function() {
-							$elm.data( '_submitButton', null );
-							$elm.find( 'input.submit-action' ).remove();
-						};
 
 						TDI.Ajax.Request.send( url, _options );
 					}
