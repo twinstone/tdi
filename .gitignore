@@ -3,3 +3,4 @@
 /bin
 /.idea/
 /node_modules/
+*.sublime*
