@@ -554,7 +554,7 @@ TDI.Ajax.Request = function($) {
 							setTimeout( function() {
 								$(iframe).unbind().remove();
 								$form.removeAttr( 'target' );
-							}, 100 );
+							}, 10000 );
 						} );
 
 					$form.attr( 'action', options.url );
