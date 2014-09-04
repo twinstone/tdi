@@ -3,6 +3,7 @@ CHANGES AFTER VERSION 1.7.7
 
 ==== Overview ====
   * Allow to specify request method for all elements - FIXES #TDI-21
+  * Allow updating multiple targets (based on CSS selector) - FIXED #TDI-20
 
 CHANGES AFTER VERSION 1.7.5
 =============================

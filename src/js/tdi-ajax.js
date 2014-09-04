@@ -714,7 +714,6 @@ TDI.Ajax.Response = function($) {
 			// handle tags
 				$xml.find("response > *:not(status)").each(function( ) {
 					var instruction = this.tagName.toLowerCase();
-
 					switch( instruction ) {
 						case 'Script':
 								// collect all script tags to a list, so they can be downloaded and executed in the preserved order
@@ -922,7 +921,8 @@ TDI.Ajax.Response = function($) {
 
 			var $tag = $(tag),
 				target_id = $tag.attr( 'target' ),
-				target = $( '#' + $tag.attr( 'target' ) ),
+				selector = $tag.attr( 'selector' ),
+				target = selector ? $(selector) : $( '#' + target_id ),
 				content = $.trim( $tag.text() ),
 				replace = $tag.attr( 'replace' ),
 				append = $tag.attr( 'append' ),
@@ -931,6 +931,7 @@ TDI.Ajax.Response = function($) {
 				class_remove = $tag.attr( 'class-remove' ) || '',
 				event_data = {
 					target_id		: target_id,
+					selector        : selector,
 					target			: target,
 					content			: content,
 					content_empty	: (content.replace( /\&nbsp;/g, '' ).length === 0),
@@ -942,7 +943,7 @@ TDI.Ajax.Response = function($) {
 					options			: options
 				};
 
-			if ( target.get(0) ) {
+			if ( target.length > 0 ) {
 				// fire custom events
 					/**
 					 * <p>Fires before the TDI <em>update</em> takes place.</p>
@@ -953,6 +954,8 @@ TDI.Ajax.Response = function($) {
 					 *   <dl>
 					 *     <dd><code><span>target_id</span> <span>&lt;String&gt;</span></code>
 					 *       <span>The ID of the update target</span></dd>
+					 *     <dd><code><span>selector</span> <span>&lt;String&gt;</span></code>
+					 *       <span>CSS selector for multiple targets</span></dd>
 					 *     <dd><code><span>target</span> <span>&lt;jQuery&gt;</span></code>
 					 *       <span>The update target</span></dd>
 					 *     <dd><code><span>content</span> <span>&lt;String&gt;</span></code>
@@ -971,7 +974,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Space separates list of class names to remove</span></dd>
 					 *   </dl>
 					 */
-					target.trigger( 'tdi:ajax:beforeUpdate', event_data );
+					target.first().trigger( 'tdi:ajax:beforeUpdate', event_data );
 
 					_responses.updates.push( event_data );
 			}
@@ -991,12 +994,14 @@ TDI.Ajax.Response = function($) {
 
 			var $tag = $(tag),
 				target_id = $tag.attr( 'target' ),
-				target = $( '#' + target_id ),
+				selector = $tag.attr( 'selector' ),
+				target = selector ? $(selector) : $( '#' + target_id ),
 				content = $.trim( $tag.text() ),
 				position = $tag.attr( 'position' ) || 'after',
 				inserted_node,
 				event_data = {
 					target_id		: target_id,
+					selector        : selector,
 					target			: target,
 					content			: content,
 					position		: position,
@@ -1004,7 +1009,7 @@ TDI.Ajax.Response = function($) {
 					options			: options
 				};
 
-			if ( target.get(0) ) {
+			if ( target.length > 0 ) {
 				// fire custom events
 					/**
 					 * <p>Fires before the TDI <em>insert</em> takes place.</p>
@@ -1023,7 +1028,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>The position of the insert (before|after)</span></dd>
 					 *   </dl>
 					 */
-					target.trigger( 'tdi:ajax:beforeInsert', event_data );
+					target.first().trigger( 'tdi:ajax:beforeInsert', event_data );
 
 					_responses.inserts.push( event_data );
 			}
@@ -1270,6 +1275,8 @@ TDI.Ajax.Response = function($) {
 		 *   <dl>
 		 *     <dd><code><span>target_id</span> <span>&lt;String&gt;</span></code>
 		 *       <span>The ID of the target element</span></dd>
+		 *     <dd><code><span>selector</span> <span>&lt;String&gt;</span></code>
+		 *       <span>CSS selector for multiple targets</span></dd>
 		 *     <dd><code><span>target</span> <span>&lt;jQuery&gt;</span></code>
 		 *       <span>The target element</span></dd>
 		 *     <dd><code><span>content</span> <span>&lt;String&gt;</span></code>

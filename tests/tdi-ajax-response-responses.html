@@ -6,7 +6,7 @@
 	<script src="qunit/qunit.js"></script>
 	
 	<script src="jquery.js"></script>
-	<script src="../build/minify/js/tdi-bundle.min.js"></script>
+	<script src="../build/minify/js/tdi-bundle.js"></script>
 	
 	<script src="tdi-ajax-response-responses-tests.js"></script>
 </head>
@@ -26,8 +26,25 @@
 			<div id="update-add-class"></div>
 			<div id="update-remove-class" class="cls-remove">This should not be overwriten.</div>
 			<div id="update-empty-the-content">This content will be emptied.</div>
+
+			<div id="update-multiple-1" class="cls-remove"></div>
+			<div id="update-multiple-2" class="cls-remove"></div>
+			<div id="update-multiple-3" class="update-multiple cls-remove"></div>
+			<div id="update-multiple-4" class="update-multiple cls-remove"></div>
+			<div id="update-multiple-5" class="update-multiple-replace"></div>
+			<div id="update-multiple-6" class="update-multiple-replace"></div>
+			<div id="update-multiple-7" class="update-multiple-append">This is the first text.</div>
+			<div id="update-multiple-8" class="update-multiple-append">This is the first text.</div>
+			<div id="update-multiple-9" class="update-multiple-prepend">This is the last text.</div>
+			<div id="update-multiple-10" class="update-multiple-prepend">This is the last text.</div>
 		</div>
 		<div id="inserts"></div>
+		<div id="inserts-multiple-default-1" class="inserts-multiple-default"></div>
+		<div id="inserts-multiple-default-2" class="inserts-multiple-default"></div>
+		<div id="inserts-multiple-after-1" class="inserts-multiple-after"></div>
+		<div id="inserts-multiple-after-2" class="inserts-multiple-after"></div>
+		<div id="inserts-multiple-before-1" class="inserts-multiple-before"></div>
+		<div id="inserts-multiple-before-2" class="inserts-multiple-before"></div>
 		<div id="style"></div>
 	</div>
 </body>
