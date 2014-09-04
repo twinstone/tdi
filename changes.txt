@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.7.7
+=============================
+
+==== Overview ====
+  * Allow to specify request method for all elements - FIXES #TDI-21
+
 CHANGES AFTER VERSION 1.7.5
 =============================
 

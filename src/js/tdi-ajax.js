@@ -234,6 +234,8 @@ TDI.Ajax = function($) {
 			 *   <dd><code><span>href</span></code> <span>The target URL of the Ajax call</span></dd>
 			 *   <dd><code><span>action</span></code> <span>The same as <strong>href</strong but used at Form elements</span></dd>
 			 *   <dd><code><span>data-ajax-url</span></code> <span>The target URL of the Ajax call. Used if the Ajax URL should be different than the one defined by <strong>href</strong> or <strong>action</strong> attributes, or if the HTML element does not have URL attributes (select, input, ...)</span></dd>
+			 *   <dd><code><span>method</span></code> <span>The HTTP method to be used for the Ajax request. Only for Form elements. <strong>Forms with &lt;input type="file"&gt; elements will have forced POST method!</strong></dd>
+			 *   <dd><code><span>data-ajax-method</span></code> <span>The HTTP method to be used for the Ajax request. The same as <strong>method</strong> but applicable for all elements. If used on Form element, it has precedence before <strong>method</strong> attribute (except Forms with file fields which have always POST method). Defaults to GET.</dd>
 			 *   <dd><code><span>data-related-element</span></code> <span>A selector pointing to a related element. This element(s) gets notified when the Ajax call starts/ends.</span></dd>
 			 *   <dd class="parameter_deprecated"><code><span>rel</span></code> <span>(deprecated; use <strong>data-related-element</strong> instead) The same as <strong>data-related-element</strong></span></dd>
 			 *   <dd><code><span>data-related-ancestor</span></code> <span>A selector pointing to a related parent element. This element gets notified when the Ajax call starts/ends</span></dd>
@@ -262,8 +264,10 @@ TDI.Ajax = function($) {
 					related = $elm.closest( $elm.data( 'related-ancestor' ) || '' ).add( $( $elm.data( 'related-element' ) || '' ) ).add( $( $elm.attr( 'rel' ) || '' ) ).add( $( $elm.data( '_submitButton' ) || '' ) ),
 					triggerGroup = $( $elm.data( 'trigger-group' ) || '' ),
 					url = $elm.data( 'ajax-url' ) || $elm.attr( 'href' ) || $elm.attr( 'action' ),
+					method = $elm.data( 'ajax-method' ) || $elm.attr( 'method' );
 					xhrFields = $elm.data( 'ajax-xhr-fields' ) || {},
 					data = {};
+
 				// if the URL is empty, try to use $elm.value
 					if ( (url === "" || url === undefined) && value ) {
 						url = value;
@@ -325,6 +329,7 @@ TDI.Ajax = function($) {
 						}
 					},
 					data : data,
+					method : method,
 					trigger : $elm,
 					xhrFields : xhrFields
 				};
@@ -335,15 +340,7 @@ TDI.Ajax = function($) {
 						$elm.find( 'input.submit-action' ).remove();
 					};
 					
-					if ($elm.find("input[type=file]").length > 0) {
-						TDI.Ajax.Request.sendForm( $elm[0], _options );
-					}
-					else {
-						_options.data = $elm.serialize(); // safe to overwrite
-						_options.method = $elm.attr('method');
-
-						TDI.Ajax.Request.send( url, _options );
-					}
+					TDI.Ajax.Request.sendForm( $elm, _options );
 				}
 				else {
 					TDI.Ajax.Request.send( url, _options );
@@ -412,13 +409,17 @@ TDI.Ajax.Request = function($) {
 		send : function( url, options ) {
 			options = options || {};
 			options.url = TDI.Ajax.Request.ajaxifyUrl( url );
+			options.xhrFields = options.xhrFields || {};
+			options.method = options.method || 'GET';
+			options.async = !options.sync;
+			options.data = options.data || '';
 
 			$.ajax( {
 				url			: options.url,
-				xhrFields   : options.xhrFields || {},
-				type		: options.method || 'GET',
-				async       : !options.sync,
-				data		: options.data || '',
+				xhrFields   : options.xhrFields,
+				type		: options.method,
+				async       : options.async,
+				data		: options.data,
 				dataType	: 'xml',
 				beforeSend	: function( xhr, settings ) {
 					var res = options.beforeStart && options.beforeStart( xhr, settings, options );
@@ -497,6 +498,18 @@ TDI.Ajax.Request = function($) {
 				$submitButton = $form.data( '_submitButton' ),
 				url = $form.data( 'ajax-url' ) || $form.attr( 'action' );
 
+			// send in iframe or through ajax
+				if ($form.find("input[type=file]").length > 0) {
+					options.method = "post";
+				}
+				else {
+					options.data = $form.serialize(); // safe to overwrite
+					options.method = options.method || $form.attr('method');
+
+					TDI.Ajax.Request.send( url, options );
+					return;
+				}
+
 			// onStart
 				options.url = TDI.Ajax.Request.ajaxifyUrl( url );
 				var res = options.beforeStart && options.beforeStart( $form, options );
@@ -558,7 +571,7 @@ TDI.Ajax.Request = function($) {
 						} );
 
 					$form.attr( 'action', options.url );
-					$form.attr( 'method', 'post' );
+					$form.attr( 'method', options.method || 'post' );
 					$form.attr( 'target', iframeName );
 					$form.attr( 'enctype', 'multipart/form-data' );
 

@@ -188,13 +188,13 @@ module( 'TDI.Ajax.Request' );
 		}, 1000 );
 	} );
 	
-	asyncTest( 'TDI.Ajax.Request.sendForm', function() {
+	asyncTest( 'TDI.Ajax.send', function() {
 		expect(1);
 		
 		var $form = $( '#tdi-ajax-send-form-action' );
-		TDI.Ajax.Request.sendForm( $form, {
-			end : function() {
-				equals( $form.attr( 'method' ), 'post', 'The form method should be POST.' );
+		TDI.Ajax.send( $form, {
+			end : function(xhr, textStatus, options) {
+				equals( options.method, 'get', 'The form method should be GET.' );
 				
 				start();
 			}
@@ -202,13 +202,56 @@ module( 'TDI.Ajax.Request' );
 	} );
 	
 	asyncTest( 'TDI.Ajax.Request.sendForm: file field', function() {
-		expect(1);
+		expect(2);
 		
 		var $form = $( '#tdi-ajax-send-form-with-file' );
 		
 		TDI.Ajax.Request.sendForm( $form, {
 			end : function() {
+				equals( $form.attr( 'method' ), 'post', 'The form method should be POST.' );
 				equals( $form.attr( 'enctype' ), 'multipart/form-data', 'The form enctype should be set to multipart.' );
+				
+				start();
+			}
+		} );
+	} );
+	
+	asyncTest( 'TDI.Ajax.send - form with forced method', function() {
+		expect(1);
+		
+		var $form = $( '#tdi-ajax-send-form-action-forced-method' );
+		TDI.Ajax.send( $form, {
+			end : function(xhr, textStatus, options) {
+				equals( options.method, 'post', 'The form method should be POST.' );
+				
+				start();
+			}
+		} );
+	} );
+	
+	asyncTest( 'TDI.Ajax.Request.sendForm: file field; ignore forced method', function() {
+		expect(2);
+		
+		var $form = $( '#tdi-ajax-send-form-with-file-forced-method' );
+		
+		TDI.Ajax.Request.sendForm( $form, {
+			end : function() {
+				equals( $form.attr( 'method' ), 'post', 'The form method should be still POST.' );
+				equals( $form.attr( 'enctype' ), 'multipart/form-data', 'The form enctype should be set to multipart.' );
+				
+				start();
+			}
+		} );
+	} );
+		
+	asyncTest( 'TDI.Ajax.Request.send: with method', function() {
+		expect(1);
+		
+		var $link = $( '#tdi-ajax-send-with-method' );
+		
+		TDI.Ajax.send( $link, {
+			end : function(xhr, textStatus, options) {
+				equals( options.method.toLowerCase(), 'post', 'The request method should be POST.' );
 				
 				start();
 			}
