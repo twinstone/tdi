@@ -102,22 +102,9 @@ task doc(overwrite: true) << {
 	   	from("$projectDir/src/js") {include "*.js"}
 	}
 	exec {
-		executable pythonBin
-		args += yuidocBin
-		args += "$bundleDir/temp/doc-in"
-		args += "--showprivate"
-		args += "--parseroutdir"
-		args += "$bundleDir/temp/doc-out"
-		args += "--outputdir"
-		args += "$projectDir/doc"
-		args += "--template"
-		args += yuidocTemplate
-		args += "--version"
+		executable "yuidoc.cmd"
+		args += "--project-version"
 		args += "$version"
-		args += "--project"
-		args += "Twinstone TDI"
-		args += "--projecturl"
-		args += projectUrl
 	}
 }
 
