@@ -272,6 +272,7 @@ TDI.Ajax = function($) {
 					value = $elm.val(),
 					confirm = $elm.data( 'confirm' ),
 					related = $elm.closest( $elm.data( 'related-ancestor' ) || '' ).add( $( $elm.data( 'related-element' ) || '' ) ).add( $( $elm.attr( 'rel' ) || '' ) ).add( $( $elm.data( '_submitButton' ) || '' ) ),
+					involvedElms = $elm.add(related),
 					triggerGroup = $( $elm.data( 'trigger-group' ) || '' ),
 					url = $elm.data( 'ajax-url' ) || $elm.attr( 'href' ) || $elm.attr( 'action' ),
 					method = $elm.data( 'ajax-method' ) || $elm.attr( 'method' );
@@ -305,7 +306,7 @@ TDI.Ajax = function($) {
 					beforeStart : function() {
 						var res = callbacks.beforeStart && callbacks.beforeStart.apply( this, arguments );
 						if ( typeof res === 'undefined' || res === true ) {
-							$elm.add( related ).addClass( 'loading' );
+							involvedElms.addClass( 'loading' );
 							triggerGroup.each( function() {
 								var $trigger = $(this);
 								if ( !$trigger.hasClass( 'disabled' ) && !$trigger.prop( 'disabled' ) ) {
@@ -324,7 +325,7 @@ TDI.Ajax = function($) {
 					beforeEnd : function() {
 						var res = callbacks.beforeEnd && callbacks.beforeEnd.apply( this, arguments );
 						if ( typeof res === 'undefined' || res === true ) {
-							$elm.add( related ).removeClass( 'loading' );
+							involvedElms.removeClass( 'loading' );
 							triggerGroup.each( function( i, $trigger ) {
 								var $trigger = $(this);
 								if ( $trigger.data( '_disabled' ) === true ) {
@@ -341,6 +342,7 @@ TDI.Ajax = function($) {
 					data : data,
 					method : method,
 					trigger : $elm,
+					involvedElms : involvedElms,
 					xhrFields : xhrFields
 				};
 
@@ -691,7 +693,7 @@ TDI.Ajax.Response = function($) {
 			 *       <span>The Ajax settings</span></dd>
 			 *   </dl>
 			 */
-			$(document).trigger( 'tdi:ajax:start', [{
+			$(options.involvedElms || document).trigger( 'tdi:ajax:start', [{
 				xhr : xhr,
 				options : options,
 				settings : settings
@@ -756,7 +758,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(document).trigger( 'tdi:ajax:updatesDone', [{
+					$(options.involvedElms || document).trigger( 'tdi:ajax:updatesDone', [{
 						updates : _responses.updates,
 						options : options
 					}] );
@@ -772,7 +774,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(document).trigger( 'tdi:ajax:insertsDone', [{
+					$(options.involvedElms || document).trigger( 'tdi:ajax:insertsDone', [{
 						inserts : _responses.inserts,
 						options : options
 					}] );
@@ -788,7 +790,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(document).trigger( 'tdi:ajax:scriptsDone', [{
+					$(options.involvedElms || document).trigger( 'tdi:ajax:scriptsDone', [{
 						scripts : _responses.scripts,
 						options : options
 					}] );
@@ -804,7 +806,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(document).trigger( 'tdi:ajax:stylesDone', [{
+					$(options.involvedElms || document).trigger( 'tdi:ajax:stylesDone', [{
 						styles : _responses.styles,
 						options : options
 					}] );
@@ -820,7 +822,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(document).trigger( 'tdi:ajax:popupsDone', [{
+					$(options.involvedElms || document).trigger( 'tdi:ajax:popupsDone', [{
 						popups : _responses.popups,
 						options : options
 					}] );
@@ -836,7 +838,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(document).trigger( 'tdi:ajax:unknownsDone', [{
+					$(options.involvedElms || document).trigger( 'tdi:ajax:unknownsDone', [{
 						unknowns : _responses.unknowns,
 						options : options
 					}] );
@@ -852,7 +854,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(document).trigger( 'tdi:ajax:done', [{
+					$(options.involvedElms || document).trigger( 'tdi:ajax:done', [{
 						responses : _responses,
 						options : options
 					}] );
@@ -886,7 +888,7 @@ TDI.Ajax.Response = function($) {
 			 *       <span>Additional request options</span></dd>
 			 *   </dl>
 			 */
-			$(document).trigger( 'tdi:ajax:error', [{
+			$(options.involvedElms || document).trigger( 'tdi:ajax:error', [{
 				status : xhr ? xhr.status : 'N/A',
 				message : error || 'Invalid Ajax response. The response must be a valid XML.',
 				xhr : xhr,
@@ -911,7 +913,7 @@ TDI.Ajax.Response = function($) {
 			 *       <span>Additional request options</span></dd>
 			 *   </dl>
 			 */
-			$(document).trigger( 'tdi:ajax:end', [{
+			$(options.involvedElms || document).trigger( 'tdi:ajax:end', [{
 				options : options
 			}] );
 		}

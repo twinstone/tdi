@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.7.8
+=============================
+
+==== Overview ====
+  * Trigger custom events on related elements - FIXES #TDI-25
+
 CHANGES AFTER VERSION 1.7.7
 =============================
 
