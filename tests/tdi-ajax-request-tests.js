@@ -1,7 +1,7 @@
 module( 'TDI.Ajax.Request' );
 	
 	test( 'TDI.Ajax.Request.ajaxifyUrl', function() {
-		expect(8);
+		expect(14);
 		
 		var urls = [
 			[ 'http://example.com', 'http://example.com?_infuse=1' ],
@@ -11,16 +11,30 @@ module( 'TDI.Ajax.Request' );
 			[ 'http://example.com?param1=value1&param2=value2', 'http://example.com?_infuse=1&param1=value1&param2=value2' ],
 			[ 'http://example.com?param1=value1#hash', 'http://example.com?_infuse=1&param1=value1#hash' ],
 			[ 'http://example.com?param1=value1&param2=value2#hash', 'http://example.com?_infuse=1&param1=value1&param2=value2#hash' ],
-			[ '#hash', '?_infuse=1#hash' ]
+
+			[ '', '?_infuse=1' ],
+			[ '#hash', '?_infuse=1#hash' ],
+			[ '?#hash', '?_infuse=1#hash' ],
+			[ '?param=value', '?_infuse=1&param=value' ],
+			[ '?param1=value1&param2=value2', '?_infuse=1&param1=value1&param2=value2' ],
+			[ '?param1=value1#hash', '?_infuse=1&param1=value1#hash' ],
+			[ '?param1=value1&param2=value2#hash', '?_infuse=1&param1=value1&param2=value2#hash' ]
 		];
-		equals( TDI.Ajax.Request.ajaxifyUrl( urls[0][0] ).replace(/&_ts=\d+/, ""), urls[0][1].replace(/&_ts=\d+/, ""), 'URL without parameters and a hash.' );
-		equals( TDI.Ajax.Request.ajaxifyUrl( urls[1][0] ).replace(/&_ts=\d+/, ""), urls[1][1].replace(/&_ts=\d+/, ""), 'URL with a hash.' );
-		equals( TDI.Ajax.Request.ajaxifyUrl( urls[2][0] ).replace(/&_ts=\d+/, ""), urls[2][1].replace(/&_ts=\d+/, ""), 'URL with queryString sign and a hash.' );
-		equals( TDI.Ajax.Request.ajaxifyUrl( urls[3][0] ).replace(/&_ts=\d+/, ""), urls[3][1].replace(/&_ts=\d+/, ""), 'URL with 1 parameter.' );
-		equals( TDI.Ajax.Request.ajaxifyUrl( urls[4][0] ).replace(/&_ts=\d+/, ""), urls[4][1].replace(/&_ts=\d+/, ""), 'URL with multiple parameters.' );
-		equals( TDI.Ajax.Request.ajaxifyUrl( urls[5][0] ).replace(/&_ts=\d+/, ""), urls[5][1].replace(/&_ts=\d+/, ""), 'URL with 1 parameter and a hash.' );
-		equals( TDI.Ajax.Request.ajaxifyUrl( urls[6][0] ).replace(/&_ts=\d+/, ""), urls[6][1].replace(/&_ts=\d+/, ""), 'URL with multiple parameters and a hash.' );
-		equals( TDI.Ajax.Request.ajaxifyUrl( urls[7][0] ).replace(/&_ts=\d+/, ""), urls[7][1].replace(/&_ts=\d+/, ""), 'URL with multiple parameters and a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[0][0] ).replace(/&_ts=\d+/, ""), urls[0][1].replace(/&_ts=\d+/, ""), 'Absolute URL without parameters and a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[1][0] ).replace(/&_ts=\d+/, ""), urls[1][1].replace(/&_ts=\d+/, ""), 'Absolute URL with a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[2][0] ).replace(/&_ts=\d+/, ""), urls[2][1].replace(/&_ts=\d+/, ""), 'Absolute URL with queryString sign and a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[3][0] ).replace(/&_ts=\d+/, ""), urls[3][1].replace(/&_ts=\d+/, ""), 'Absolute URL with 1 parameter.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[4][0] ).replace(/&_ts=\d+/, ""), urls[4][1].replace(/&_ts=\d+/, ""), 'Absolute URL with multiple parameters.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[5][0] ).replace(/&_ts=\d+/, ""), urls[5][1].replace(/&_ts=\d+/, ""), 'Absolute URL with 1 parameter and a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[6][0] ).replace(/&_ts=\d+/, ""), urls[6][1].replace(/&_ts=\d+/, ""), 'Absolute URL with multiple parameters and a hash.' );
+
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[7][0] ).replace(/&_ts=\d+/, ""), urls[7][1].replace(/&_ts=\d+/, ""), 'Relative URL without parameters and a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[8][0] ).replace(/&_ts=\d+/, ""), urls[8][1].replace(/&_ts=\d+/, ""), 'Relative URL with a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[9][0] ).replace(/&_ts=\d+/, ""), urls[9][1].replace(/&_ts=\d+/, ""), 'Relative URL with queryString sign and a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[10][0] ).replace(/&_ts=\d+/, ""), urls[10][1].replace(/&_ts=\d+/, ""), 'Relative URL with 1 parameter.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[11][0] ).replace(/&_ts=\d+/, ""), urls[11][1].replace(/&_ts=\d+/, ""), 'Relative URL with multiple parameters.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[12][0] ).replace(/&_ts=\d+/, ""), urls[12][1].replace(/&_ts=\d+/, ""), 'Relative URL with 1 parameter and a hash.' );
+		equals( TDI.Ajax.Request.ajaxifyUrl( urls[13][0] ).replace(/&_ts=\d+/, ""), urls[13][1].replace(/&_ts=\d+/, ""), 'Relative URL with multiple parameters and a hash.' );
 	} );
 	
 	asyncTest( 'TDI.Ajax.Request.send: beforeStart/start/beforeEnd/end callbacks', function() {

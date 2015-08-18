@@ -203,7 +203,12 @@ TDI.Ajax = function($) {
 		 * @param {Event} evt The event object
 		 */
 		function _onFieldChange( evt ) {
-			TDI.Ajax.send( $(this).data( 'ajax-url' ) ? this : this.form );
+			if ( $(this).data( 'ajax-url' ) ) {
+				TDI.Ajax.send( this );
+			}
+			else {
+				$( this.form ).submit();
+			}
 		}
 
 		/**
@@ -214,9 +219,14 @@ TDI.Ajax = function($) {
 		 * @param {Event} evt The event object
 		 */
 		function _onFieldSubmit( evt ) {
-			if ( evt.keyCode === 13 && $(this).data( 'ajax-url' ) ) {
+			if ( evt.keyCode === 13 ) {
 				evt.preventDefault();
-				TDI.Ajax.send( this );
+				if ( $(this).data( 'ajax-url' ) ) {
+					TDI.Ajax.send( this );
+				}
+				else {
+					$( this.form ).submit();
+				}
 			}
 		}
 
@@ -591,13 +601,13 @@ TDI.Ajax.Request = function($) {
 		 */
 		ajaxifyUrl : function( url ) {
 			var p = '_infuse=1&_ts='+(new Date()).getTime();
-			if ( url.indexOf( '?#' ) > 0 ) {
+			if ( url.indexOf( '?#' ) >= 0 ) {
 				return url.replace( /\?#/, '?'+p+'#' );
 			}
 			else if ( url.indexOf( '&#' ) > 0 ) {
 				return url.replace( /&#/, '&'+p+'#' );
 			}
-			else if ( url.indexOf( '?' ) > 0 ) {
+			else if ( url.indexOf( '?' ) >= 0 ) {
 				return url.replace( /\?/, '?'+p+'&' );
 			}
 			else if ( url.indexOf( '#' ) >= 0 ) {
