@@ -1,6 +1,3 @@
-/.gradle
 /build
-/bin
 /.idea/
 /node_modules/
-*.sublime*

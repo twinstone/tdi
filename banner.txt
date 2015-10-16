@@ -1,6 +1,6 @@
 /*!
- * Twinstone TDI (${projectUrl})
- * Version: ${productVersion}
+ * Twinstone TDI (<%= projectUrl %>)
+ * Version: <%= productVersion %>
  *
  * Copyright 2013 Etnetera a.s. http://www.etnetera.cz
  *

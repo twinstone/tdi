@@ -1,9 +1,0 @@
-{
-    "name": "Twinstone TDI",
-    "description": "TDI description",
-    "url": "http://example.com/",
-    "options": {
-    	"paths": "src",
-        "outdir": "doc"
-    }
-}

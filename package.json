@@ -1,0 +1,33 @@
+{
+  "name": "twinstone-tdi",
+  "version": "1.8.0",
+  "description": "Turbocharged Direct Infusion",
+  "homepage": "https://www.twinstone.org/projects/tdi",
+  "directories": {
+    "doc": "doc",
+    "example": "example",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twinstone/tdi.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/twinstone/tdi/issues"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-rimraf": "^0.2.0",
+    "gulp-template": "^3.0.0",
+    "gulp-uglify": "^1.4.2",
+    "gulp-yuidoc": "^0.1.2",
+    "run-sequence": "^1.1.4"
+  }
+}
