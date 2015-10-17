@@ -255,6 +255,7 @@ TDI.Ajax = function($) {
 			 * </dl>
 			 * @method send
 			 * @static
+			 * @return {jqXHR} xhr The jqXHR object or null if the iframe method was used to send a form
 			 * @param {(String|jQuery|HTMLElement)} elm The element which is used as a trigger for the Ajax call.
 			 * @param {Object} callbacks An optional set of callbacks:
 			 *   <dl>
@@ -296,10 +297,10 @@ TDI.Ajax = function($) {
 
 				// check for obstacles
 					if ( $elm.is( '[disabled], .disabled' ) ) {
-						return false;
+						return;
 					}
 					if ( confirm && !window.confirm( confirm ) ) {
-						return false;
+						return;
 					}
 
 				var _options = {
@@ -352,10 +353,10 @@ TDI.Ajax = function($) {
 						$elm.find( 'input.submit-action' ).remove();
 					};
 					
-					TDI.Ajax.Request.sendForm( $elm, _options );
+					return TDI.Ajax.Request.sendForm( $elm, _options );
 				}
 				else {
-					TDI.Ajax.Request.send( url, _options );
+					return TDI.Ajax.Request.send( url, _options );
 				}
 			}
 		};
@@ -469,6 +470,7 @@ TDI.Ajax.Request = function($) {
 		 * <p>Submits a form using an Iframe (fake Ajax call).</p>
 		 * @method sendForm
 		 * @static
+		 * @return {jqXHR} xhr The jqXHR object or null if the iframe method is used
 		 * @param {String|jQuery|HTMLElement} form The form element which will be sent.
 		 * @param {Object} options Aditional request options:
 		 *   <dl>
@@ -519,8 +521,7 @@ TDI.Ajax.Request = function($) {
 					options.data = $form.serialize(); // safe to overwrite
 					options.method = options.method || $form.attr('method');
 
-					TDI.Ajax.Request.send( url, options );
-					return;
+					return TDI.Ajax.Request.send( url, options );
 				}
 
 			// onStart
@@ -593,6 +594,8 @@ TDI.Ajax.Request = function($) {
 				Needs to be the normal DOM method, jQuery submit() causes endless recursion of submit handlers.
 			*/
 				$form[0].submit();
+
+			return null;
 		},
 
 		/**
