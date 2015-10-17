@@ -375,6 +375,7 @@ TDI.Ajax.Request = function($) {
 		 * <p>Sends the Ajax request and calls the needed callback methods.</p>
 		 * @method send
 		 * @static
+		 * @return {jqXHR} xhr The jqXHR object
 		 * @param {String} url The request URL.
 		 * @param {Object} options Aditional request options:
 		 *   <dl>
@@ -426,7 +427,7 @@ TDI.Ajax.Request = function($) {
 			options.async = !options.sync;
 			options.data = options.data || '';
 
-			$.ajax( {
+			return $.ajax( {
 				url			: options.url,
 				xhrFields   : options.xhrFields,
 				type		: options.method,
