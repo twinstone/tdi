@@ -15,6 +15,7 @@
 </head>
 <body>
 	<h1>TDI Tests</h1>
+	<p class="warn"><strong>Execute `gulp build` before running the tests!</strong></p>
 	<p class="warn"><strong>You need to allow popups in order to the test to run properly!</strong></p>
 	<ul id="tests">
 		<?php

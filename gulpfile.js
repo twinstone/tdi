@@ -63,7 +63,7 @@
 	});
 
 	gulp.task('build', [], function () {
-		runSequence('clean', ['bundle', 'minify'], 'doc');
+		runSequence('clean', 'bundle', 'minify', 'doc');
 	});
 	gulp.task('default', ['build']);
 }());
