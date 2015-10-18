@@ -58,7 +58,6 @@
 
 	gulp.task('doc', function () {
 		return gulp.src(srcFolder + "js/*.js")
-			.pipe(yuidoc({projectName : 'Lorem ipsum'}, {projectName : 'Lorem ipsum'}))
 			.pipe(gulp.dest(docFolder));
 	});
 
