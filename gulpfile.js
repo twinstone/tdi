@@ -56,6 +56,16 @@
 			.pipe(gulp.dest(buildFolder));
 	});
 
+	gulp.task('release', ['bundle', 'minify'], function () {
+		return gulp.src([buildFolder + bundleName + '.js', buildFolder + bundleName + '.min.js'])
+			.pipe(function () {
+				return rename(function (path) {
+					path.basename = path.basename.replace(bundleName, bundleName + '-' + packageJson.version);
+				});
+			}())
+			.pipe(gulp.dest(buildFolder));
+	});
+
 	gulp.task('doc', function () {
 		return gulp.src(srcFolder + "js/*.js")
 			.pipe(yuidoc())
