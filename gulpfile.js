@@ -58,6 +58,7 @@
 
 	gulp.task('doc', function () {
 		return gulp.src(srcFolder + "js/*.js")
+			.pipe(yuidoc())
 			.pipe(gulp.dest(docFolder));
 	});
 
