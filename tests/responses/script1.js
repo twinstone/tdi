@@ -1,5 +1,5 @@
-test( 'TDI.Ajax.Response: external script', function() {
-	expect(1);
+/*QUnit.test( 'TDI.Ajax.Response: external script', function( assert ) {
+	assert.expect(1);
 	
-	ok( true, 'External script loaded.' );
-} );
+	assert.ok( true, 'External script loaded.' );
+} );*/

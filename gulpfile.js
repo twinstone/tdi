@@ -11,12 +11,14 @@
 	var uglify      = require('gulp-uglify');
 	var rename      = require('gulp-rename');
 	var yuidoc      = require('gulp-yuidoc');
+	var qunit       = require('gulp-qunit');
 
 	var packageJson = require('./package.json');
 	var rootFolder  = './';
 	var srcFolder   = rootFolder + 'src/';
 	var buildFolder = rootFolder + 'build/';
 	var docFolder   = rootFolder + 'doc/';
+	var testFolder  = rootFolder + 'tests/';
 	var bundleName  = 'tdi-bundle';
 
 	gulp.task('clean', function () {
@@ -72,7 +74,12 @@
 			.pipe(gulp.dest(docFolder));
 	});
 
-	gulp.task('build', [], function () {
+	gulp.task('test', function () {
+		return gulp.src(testFolder + '*.html')
+			.pipe(qunit({timeout : 10}));
+	});
+
+	gulp.task('build', ['test'], function () {
 		runSequence('clean', 'bundle', 'minify', 'doc');
 	});
 	gulp.task('default', ['build']);

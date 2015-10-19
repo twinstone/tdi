@@ -1,11 +1,13 @@
-module( 'TDI.Ajax.Response' );
-	asyncTest( 'TDI.Ajax.Response: events and XML', function() {
-		expect(2);
+QUnit.module( 'TDI.Ajax.Response' );
+
+	QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
+		var done = assert.async();
+		assert.expect(2);
 		
 		// bind the error event
 			$(document)
 				.bind( 'tdi:ajax:error', function() {
-					ok( true, 'tdi:ajax:error triggered.' );
+					assert.ok( true, 'tdi:ajax:error triggered.' );
 				} );
 				
 		// send a request to a non-existing document to cause tdi:ajax:error event
@@ -14,7 +16,7 @@ module( 'TDI.Ajax.Response' );
 			TDI.Ajax.Request.send( 'responses/invalid.xml' );
 			
 		setTimeout( function() {
-			start();
+			done();
 		}, 2000 );
 	} );
 	

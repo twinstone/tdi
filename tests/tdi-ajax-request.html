@@ -2,20 +2,11 @@
 <html>
 <head>
 	<title>TDI Ajax Request - QUnit Test suite</title>
-	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
-	<script src="qunit/qunit.js"></script>
-	
-	<script src="jquery.js"></script>
-	<script src="../build/tdi-bundle.min.js"></script>
-	
-	<script src="tdi-ajax-request-tests.js"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.19.0.css">
 </head>
 <body>
-	<h1 id="qunit-header">TDI Ajax Request - QUnit Test Suite</h1>
-	<h2 id="qunit-banner"></h2>
-	<div id="qunit-testrunner-toolbar"></div>
-	<h2 id="qunit-userAgent"></h2>
-	<ol id="qunit-tests"></ol>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
 	
 	<div style="display: none;">
 		<form id="tdi-ajax-send-form-action" action="responses/empty.xml" class="infuse" method="get">
@@ -34,5 +25,11 @@
 		</form>
 		<a href="responses/empty.xml" id="tdi-ajax-send-with-method" data-ajax-method="post"></a>
 	</div>
+
+	<script src="http://code.jquery.com/qunit/qunit-1.19.0.js"></script>
+	<script src="jquery.js"></script>
+	<script src="../build/tdi-bundle.min.js"></script>
+
+	<script src="tdi-ajax-request-tests.js"></script>
 </body>
 </html>

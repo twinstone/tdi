@@ -20,22 +20,22 @@
 	<insert selector=".inserts-multiple-before" position="before">&lt;div class="inserted-multiple-before"&gt;Inserted before&lt;/div&gt;</insert>
 	
 	<script>
-		test( 'TDI.Ajax.Response: inline script', function() {
-			expect(1);
-			
-			ok( true, 'Inline script executed.' );
-		} );
+		/*QUnit.test( 'TDI.Ajax.Response: inline script', function( assert ) {
+			assert.expect(1);
+
+			assert.ok( true, 'Inline script executed.' );
+		} );*/
 	</script>
 	<script src="responses/script1.js"></script>
 	<script src="responses/script2.js" id="script2">
 		if ( window._TDI_TEST_SCRIPT_EXTERNAL_2 = true ) {
-			test( 'TDI.Ajax.Response: external script with inline script', function() {
-				expect(3);
-				
-				ok( true, 'External script loaded and inline script executed.' );
-				equals( $( '#script2' ).length, 1, 'External script with ID.' );
-				equals( $( '#script2_inline' ).length, 1, 'Inline script with ID.' );
-			} );
+			/*QUnit.test( 'TDI.Ajax.Response: external script with inline script', function( assert ) {
+				assert.expect(3);
+
+				assert.ok( true, 'External script loaded and inline script executed.' );
+				assert.equals( $( '#script2' ).length, 1, 'External script with ID.' );
+				assert.equals( $( '#script2_inline' ).length, 1, 'Inline script with ID.' );
+			} );*/
 		}
 	</script>
 	
