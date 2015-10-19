@@ -1,4 +1,4 @@
 # tdi
-Turbocharged Direct Infusion
+Turbocharged DOM Infusion
 
 https://www.twinstone.org/projects/tdi
