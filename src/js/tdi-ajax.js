@@ -116,8 +116,6 @@ TDI.Ajax = function($) {
 			$(this).trigger( 'tdi:ajax:beforeLinkClick', {
 				link : $(this)
 			} );
-
-			return false;
 		}
 
 		/**
@@ -152,8 +150,6 @@ TDI.Ajax = function($) {
 			$(this).trigger( 'tdi:ajax:beforeFormSubmit', {
 				form : $(this)
 			} );
-
-			return false;
 		}
 
 		/**
