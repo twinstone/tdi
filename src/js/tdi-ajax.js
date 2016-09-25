@@ -888,7 +888,7 @@ TDI.Ajax.Response = function($) {
 			 *       <span>Additional request options</span></dd>
 			 *   </dl>
 			 */
-			$(options.involvedElms || document).trigger( 'tdi:ajax:error', [{
+			$(document).trigger( 'tdi:ajax:error', [{
 				status : xhr ? xhr.status : 'N/A',
 				message : error || 'Invalid Ajax response. The response must be a valid XML.',
 				xhr : xhr,
