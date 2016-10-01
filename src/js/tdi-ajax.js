@@ -374,7 +374,7 @@ TDI.Ajax.Request = function($) {
 		 * @static
 		 * @return {jqXHR} xhr The jqXHR object
 		 * @param {String} url The request URL.
-		 * @param {Object} options Aditional request options:
+		 * @param {Object} options jQuery.ajax() settings. Aditional options:
 		 *   <dl>
 		 *     <dd><code><span>method</span> <span>&lt;String&gt;</span></code>
 		 *       <span>The HTTP method used to send the request. Defaults to <em>get</em>.</span></dd>
@@ -420,46 +420,42 @@ TDI.Ajax.Request = function($) {
 			options = options || {};
 			options.url = TDI.Ajax.Request.ajaxifyUrl( url );
 			options.xhrFields = options.xhrFields || {};
-			options.method = options.method || 'GET';
+			options.type = options.type || options.method || 'GET';
 			options.async = !options.sync;
 			options.data = options.data || '';
+			options.dataType = options.dataType || 'xml';
 
-			return $.ajax( {
-				url			: options.url,
-				xhrFields   : options.xhrFields,
-				type		: options.method,
-				async       : options.async,
-				data		: options.data,
-				dataType	: 'xml',
-				beforeSend	: function( xhr, settings ) {
-					var res = options.beforeStart && options.beforeStart( xhr, settings, options );
-					if ( typeof res === 'undefined' || res === true ) {
-						$(document).trigger( 'tdi:ajax:_start', { xhr : xhr, settings : settings, options : options } );
-						// TDI.Ajax.Response._start( xhr, settings, options );
-						options.start && options.start( xhr, settings, options );
-						return true;
-					}
-					return false;
-				},
-				success		: function( data, textStatus, xhr ) {
-					$(document).trigger( 'tdi:ajax:_success', { data : data, textStatus : textStatus, xhr : xhr, options : options } );
-					// TDI.Ajax.Response._success( data, textStatus, xhr, options );
-					options.success && options.success( data, textStatus, xhr, options );
-				},
-				error		: function( xhr, textStatus, error ) {
-					$(document).trigger( 'tdi:ajax:_error', { xhr : xhr, textStatus : textStatus, error : error, options : options } );
-					// TDI.Ajax.Response._error( xhr, textStatus, error, options );
-					options.error && options.error( xhr, textStatus, error, options );
-				},
-				complete	: function( xhr, textStatus ) {
-					var res = options.beforeEnd && options.beforeEnd( xhr, textStatus, options );
-					if ( typeof res === 'undefined' || res === true ) {
-						$(document).trigger( 'tdi:ajax:_end', { xhr : xhr, textStatus : textStatus, options : options } );
-						// TDI.Ajax.Response._end( xhr, textStatus, options );
-						options.end && options.end( xhr, textStatus, options );
-					}
+			var jqSettings = $.extend( {}, options );
+			jqSettings.beforeSend = function( xhr, settings ) {
+				var res = options.beforeStart && options.beforeStart( xhr, settings, options );
+				if ( typeof res === 'undefined' || res === true ) {
+					$(document).trigger( 'tdi:ajax:_start', { xhr : xhr, settings : settings, options : options } );
+					// TDI.Ajax.Response._start( xhr, settings, options );
+					options.start && options.start( xhr, settings, options );
+					return true;
 				}
-			} );
+				return false;
+			};
+			jqSettings.success = function( data, textStatus, xhr ) {
+				$(document).trigger( 'tdi:ajax:_success', { data : data, textStatus : textStatus, xhr : xhr, options : options } );
+				// TDI.Ajax.Response._success( data, textStatus, xhr, options );
+				options.success && options.success( data, textStatus, xhr, options );
+			};
+			jqSettings.error = function( xhr, textStatus, error ) {
+				$(document).trigger( 'tdi:ajax:_error', { xhr : xhr, textStatus : textStatus, error : error, options : options } );
+				// TDI.Ajax.Response._error( xhr, textStatus, error, options );
+				options.error && options.error( xhr, textStatus, error, options );
+			};
+			jqSettings.complete = function( xhr, textStatus ) {
+				var res = options.beforeEnd && options.beforeEnd( xhr, textStatus, options );
+				if ( typeof res === 'undefined' || res === true ) {
+					$(document).trigger( 'tdi:ajax:_end', { xhr : xhr, textStatus : textStatus, options : options } );
+					// TDI.Ajax.Response._end( xhr, textStatus, options );
+					options.end && options.end( xhr, textStatus, options );
+				}
+			};
+
+			return $.ajax( jqSettings );
 		},
 
 		/**

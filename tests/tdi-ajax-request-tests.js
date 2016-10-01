@@ -96,6 +96,34 @@ QUnit.test( 'TDI.Ajax.Request.send: prevent end', function( assert ) {
 	}, 1000 );
 } );
 
+QUnit.test( 'TDI.Ajax.Request.send: passing jQuery.ajax() settings', function( assert ) {
+	var done = assert.async();
+	assert.expect(4);
+
+	TDI.Ajax.Request.send( 'responses/empty.xml', {
+		headers : {
+			'X-Requested-With' : 'TDIRequest'
+		},
+		password : 'pwd',
+		processData : false,
+		type : 'POST',
+		beforeStart : function( xhr, settings, options ) {
+			assert.equal( settings.type, 'POST', 'Method is POST' );
+			assert.equal( settings.headers['X-Requested-With'], 'TDIRequest', 'Headers are overwritten' );
+			assert.equal( settings.password, 'pwd', 'Password is set to "pwd"' );
+			assert.equal( settings.processData, false, 'The processData is overwritten to false' );
+			return false;
+		},
+		end : function() {
+			done();
+		}
+	} );
+
+	setTimeout( function() {
+		done();
+	}, 1000 );
+} );
+
 QUnit.test( 'TDI.Ajax.Request.send: default options', function( assert ) {
 	var done = assert.async();
 	assert.expect(3);
