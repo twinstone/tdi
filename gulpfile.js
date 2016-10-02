@@ -13,16 +13,24 @@
 	var yuidoc      = require('gulp-yuidoc');
 	var qunit       = require('gulp-qunit');
 
-	var packageJson = require('./package.json');
-	var rootFolder  = './';
-	var srcFolder   = rootFolder + 'src/';
-	var buildFolder = rootFolder + 'build/';
-	var docFolder   = rootFolder + 'doc/';
-	var testFolder  = rootFolder + 'tests/';
-	var bundleName  = 'tdi-bundle';
+	var packageJson    = require('./package.json');
+	var rootFolder     = './';
+	var srcFolder      = rootFolder + 'src/';
+	var buildFolder    = rootFolder + 'build/';
+	var docFolder      = rootFolder + 'doc/';
+	var docThemeFolder = rootFolder + 'docthemes';
+	var testFolder     = rootFolder + 'tests/';
+	var bundleName     = 'tdi-bundle';
 
-	gulp.task('clean', function () {
-		return gulp.src([buildFolder, docFolder], {read : false})
+	gulp.task('clean', ['cleanBuild', 'cleanDoc']);
+
+	gulp.task('cleanBuild', function () {
+		return gulp.src(buildFolder, {read: false})
+			.pipe(rimraf());
+	});
+
+	gulp.task('cleanDoc', function () {
+		return gulp.src(docFolder, {read: false})
 			.pipe(rimraf());
 	});
 
@@ -37,8 +45,8 @@
 		return gulp.src(files)
 			.pipe(concat(bundleName + '.js'))
 			.pipe(template({
-				projectUrl     : packageJson.homepage,
-				productVersion : packageJson.version
+				projectUrl    : packageJson.homepage,
+				productVersion: packageJson.version
 			}))
 			.pipe(gulp.dest(buildFolder));
 	});
@@ -46,8 +54,8 @@
 	gulp.task('minify', function () {
 		return gulp.src(buildFolder + bundleName + '.js')
 			.pipe(uglify({
-				output : {
-					comments : /^!/i
+				output: {
+					comments: /^!/i
 				}
 			}))
 			.pipe(function () {
@@ -68,19 +76,28 @@
 			.pipe(gulp.dest(buildFolder));
 	});
 
-	gulp.task('doc', function () {
+	gulp.task('copyDocTheme', function () {
+		return gulp.src(docThemeFolder + '/default/**/*')
+			.pipe(gulp.dest(docFolder));
+	});
+
+	gulp.task('doc', ['cleanDoc', 'copyDocTheme'], function () {
 		return gulp.src(srcFolder + "js/*.js")
 			.pipe(yuidoc())
 			.pipe(gulp.dest(docFolder));
 	});
 
-	gulp.task('test', function () {
+	gulp.task('test', ['prepare'], function () {
 		return gulp.src(testFolder + '*.html')
-			.pipe(qunit({timeout : 10}));
+			.pipe(qunit({timeout: 10}));
+	});
+
+	gulp.task('prepare', function () {
+		runSequence('cleanBuild', 'bundle', 'minify');
 	});
 
 	gulp.task('build', ['test'], function () {
-		runSequence('clean', 'bundle', 'minify', 'doc');
+		runSequence('doc');
 	});
 	gulp.task('default', ['build']);
 }());

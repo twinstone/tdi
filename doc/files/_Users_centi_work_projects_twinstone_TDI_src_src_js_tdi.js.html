@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TDI</title>
+    <title>/Users/centi/work/projects/twinstone/TDI/src/src/js/tdi.js</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -90,70 +90,72 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>TDI Module</h1>
-<div class="box clearfix meta">
-    
+                        <h1 class="file-heading">File: /Users/centi/work/projects/twinstone/TDI/src/src/js/tdi.js</h1>
 
-    
+<div class="file">
+    <pre class="code prettyprint linenums">
+/*
+ * Copyright 2013 Etnetera a.s. http://www.etnetera.cz
+ * 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-    
-        <div class="foundat">
-            Defined in: <a href="../files/_Users_centi_work_projects_twinstone_TDI_src_src_js_tdi-tools.js.html#l17"><code>&#x2F;Users&#x2F;centi&#x2F;work&#x2F;projects&#x2F;twinstone&#x2F;TDI&#x2F;src&#x2F;src&#x2F;js&#x2F;tdi-tools.js:17</code></a>
-        </div>
-    
+(function() {
+	function versionsCompare(a, b) {
+		var pa = a.split(&#x27;.&#x27;);
+		var pb = b.split(&#x27;.&#x27;);
+		for (var i = 0; i &lt; 3; i++) {
+			var na = Number(pa[i]);
+			var nb = Number(pb[i]);
+			if (na &gt; nb) return 1;
+			if (nb &gt; na) return -1;
+			if (!isNaN(na) &amp;&amp; isNaN(nb)) return 1;
+			if (isNaN(na) &amp;&amp; !isNaN(nb)) return -1;
+		}
+		return 0;
+	}
 
-    
-</div>
+	if ( typeof jQuery == &#x27;undefined&#x27; ) {
+		throw( &#x27;Missing dependency: jQuery!&#x27; );
+	}
+	else {
+		if (versionsCompare(jQuery.fn.jquery, &quot;1.10.2&quot;) &lt; 0) {
+			try {
+				console.log( &#x27;Recomended version of jQuery is 1.10.2 or higher.&#x27; );
+				console.log( &#x27;See: https://github.com/twinstone/tdi/issues/8&#x27; );
+				console.log( &#x27;See: https://bugs.jquery.com/ticket/13936&#x27; );
+			}
+			catch(e) {}
+		}
+	}
+} ());
 
+/**
+ * &lt;p&gt;Javascript library which enables the communication between the UI and the application, using
+ * the &lt;a href=&quot;http://wbase.etn/doku.php?id=ice:eris:infusion_js:ajax:protokol&quot;&gt;Infusion AJAX protocol&lt;/a&gt;.&lt;/p&gt;
+ * Minimum jQuery version required for TDI is 1.10.2.
+ * @module TDI
+ */
+var TDI = function($) {
 
+	// PRIVATE STUFF -----------------------------------------------------------
 
-<div class="box intro">
-    <p><p>Javascript library which enables the communication between the UI and the application, using
-the <a href="http://wbase.etn/doku.php?id=ice:eris:infusion_js:ajax:protokol">Infusion AJAX protocol</a>.</p>
-Minimum jQuery version required for TDI is 1.10.2.</p>
+	// PUBLIC STUFF ------------------------------------------------------------
+		return {};
 
-</div>
+}(jQuery);
 
-
-
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-        
-            <p>This module provides the following classes:</p>
-
-            <ul class="module-classes">
-            
-                <li class="module-class">
-                    <a href="../classes/TDI.Ajax.html">
-                        TDI.Ajax
-                    </a>
-                </li>
-            
-                <li class="module-class">
-                    <a href="../classes/TDI.Ajax.Request.html">
-                        TDI.Ajax.Request
-                    </a>
-                </li>
-            
-                <li class="module-class">
-                    <a href="../classes/TDI.Ajax.Response.html">
-                        TDI.Ajax.Response
-                    </a>
-                </li>
-            
-                <li class="module-class">
-                    <a href="../classes/TDI.Tools.html">
-                        TDI.Tools
-                    </a>
-                </li>
-            
-            </ul>
-        
-    </div>
-
-    <div class="yui3-u-1-2">
-        
-    </div>
+    </pre>
 </div>
 
                     </div>
