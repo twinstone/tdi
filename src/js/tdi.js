@@ -14,14 +14,40 @@
  * limitations under the License.
  */
 
-if ( typeof jQuery == 'undefined' ) {
-	throw( 'Missing dependency: jQuery!' );
-}
+(function() {
+	function versionsCompare(a, b) {
+		var pa = a.split('.');
+		var pb = b.split('.');
+		for (var i = 0; i < 3; i++) {
+			var na = Number(pa[i]);
+			var nb = Number(pb[i]);
+			if (na > nb) return 1;
+			if (nb > na) return -1;
+			if (!isNaN(na) && isNaN(nb)) return 1;
+			if (isNaN(na) && !isNaN(nb)) return -1;
+		}
+		return 0;
+	}
+
+	if ( typeof jQuery == 'undefined' ) {
+		throw( 'Missing dependency: jQuery!' );
+	}
+	else {
+		if (versionsCompare(jQuery.fn.jquery, "1.10.2") < 0) {
+			try {
+				console.log( 'Recomended version of jQuery is 1.10.2 or higher.' );
+				console.log( 'See: https://github.com/twinstone/tdi/issues/8' );
+				console.log( 'See: https://bugs.jquery.com/ticket/13936' );
+			}
+			catch(e) {}
+		}
+	}
+} ());
 
 /**
  * <p>Javascript library which enables the communication between the UI and the application, using
  * the <a href="http://wbase.etn/doku.php?id=ice:eris:infusion_js:ajax:protokol">Infusion AJAX protocol</a>.</p>
- * Minimum jQuery version required for TDI is 1.7.0.
+ * Minimum jQuery version required for TDI is 1.10.2.
  * @module TDI
  */
 var TDI = function($) {
