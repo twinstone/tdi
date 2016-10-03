@@ -35,7 +35,7 @@
 	else {
 		if (versionsCompare(jQuery.fn.jquery, "1.10.2") < 0) {
 			try {
-				console.log( 'Recomended version of jQuery is 1.10.2 or higher.' );
+				console.log( 'Recommended version of jQuery is 1.10.2 or higher.' );
 				console.log( 'See: https://github.com/twinstone/tdi/issues/8' );
 				console.log( 'See: https://bugs.jquery.com/ticket/13936' );
 			}
