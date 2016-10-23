@@ -746,6 +746,14 @@ TDI.Ajax.Response = function($) {
 					_onBeforeScript( _scriptTags.shift(), options );
 
 				// fire the custom ajax:done events
+					var $involvedElms = $(options.involvedElms).filter(function(i, elm) {
+						return document.contains(elm);
+					});
+
+					if ($involvedElms.length === 0) {
+						$involvedElms = $(document);
+					}
+
 					/**
 					 * <p>Fires when all TDI &lt;update&gt;s are done.</p>
 					 * @event tdi:ajax:updatesDone
@@ -758,7 +766,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(options.involvedElms || document).trigger( 'tdi:ajax:updatesDone', [{
+					$involvedElms.trigger( 'tdi:ajax:updatesDone', [{
 						updates : _responses.updates,
 						options : options
 					}] );
@@ -774,7 +782,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(options.involvedElms || document).trigger( 'tdi:ajax:insertsDone', [{
+					$involvedElms.trigger( 'tdi:ajax:insertsDone', [{
 						inserts : _responses.inserts,
 						options : options
 					}] );
@@ -790,7 +798,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(options.involvedElms || document).trigger( 'tdi:ajax:scriptsDone', [{
+					$involvedElms.trigger( 'tdi:ajax:scriptsDone', [{
 						scripts : _responses.scripts,
 						options : options
 					}] );
@@ -806,7 +814,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(options.involvedElms || document).trigger( 'tdi:ajax:stylesDone', [{
+					$involvedElms.trigger( 'tdi:ajax:stylesDone', [{
 						styles : _responses.styles,
 						options : options
 					}] );
@@ -822,7 +830,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(options.involvedElms || document).trigger( 'tdi:ajax:popupsDone', [{
+					$involvedElms.trigger( 'tdi:ajax:popupsDone', [{
 						popups : _responses.popups,
 						options : options
 					}] );
@@ -838,7 +846,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(options.involvedElms || document).trigger( 'tdi:ajax:unknownsDone', [{
+					$involvedElms.trigger( 'tdi:ajax:unknownsDone', [{
 						unknowns : _responses.unknowns,
 						options : options
 					}] );
@@ -854,7 +862,7 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Additional request options</span></dd>
 					 *   </dl>
 					 */
-					$(options.involvedElms || document).trigger( 'tdi:ajax:done', [{
+					$involvedElms.trigger( 'tdi:ajax:done', [{
 						responses : _responses,
 						options : options
 					}] );

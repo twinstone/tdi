@@ -4,7 +4,7 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 	var done = assert.async();
 	var requests = 2;
 	var requestsDone = 0;
-	assert.expect(48);
+	assert.expect(50);
 
 	// bind the events
 		$(document)
