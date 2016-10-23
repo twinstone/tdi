@@ -10,7 +10,7 @@ QUnit.test( 'TDI.Ajax UI: Sending the name and value of the submit button in a h
 	$( '#submit4' ).click();
 	assert.equal( $( '#button-form2 .submit-action' ).val(), 'submit4-value', 'After the first button, there should be a hidden field with value="submit4-value"' );
 } );
-	
+
 QUnit.test( 'TDI.Ajax UI: send the name=value of TDI enabled field', function( assert ) {
 	var done = assert.async();
 	var elms = [
@@ -130,6 +130,30 @@ QUnit.test( 'TDI.Ajax UI: Automatic TDI using elements found by CSS selectors', 
 
 	setTimeout( function() {
 		assert.equal( num, handlers.length, 'There should be exactly '+ handlers.length +' requests.' );
+		done();
+	}, 2000 );
+} );
+
+QUnit.test( 'TDI.Ajax UI: TDI should ignore clicks with ctrl/meta key', function( assert ) {
+	var done = assert.async();
+
+	var handlers = [
+		function() { $( '#ajaxlink' ).trigger($.Event('click', {ctrlKey : true})); },
+		function() { $( '#ajaxlink' ).trigger($.Event('click', {metaKey : true})); },
+		function() { $( '#ajaxlink' ).trigger($.Event('click', {ctrlKey : true, metaKey : true})); }
+	];
+
+	var num = 0;
+	$(document).bind( 'tdi:ajax:start', function( evt, data ) {
+		num++;
+	} );
+
+	for ( var i = 0, l = handlers.length; i < l; i++ ) {
+		handlers[i]();
+	}
+
+	setTimeout( function() {
+		assert.equal( num, 0, 'No request should be made.' );
 		done();
 	}, 2000 );
 } );

@@ -101,6 +101,10 @@ TDI.Ajax = function($) {
 		 * @param {Event} evt The event object
 		 */
 		function _onBeforeLinkClick( evt ) {
+			if (evt.ctrlKey || evt.metaKey) {
+				return;
+			}
+
 			evt.preventDefault();
 
 			/**
