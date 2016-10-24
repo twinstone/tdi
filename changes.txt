@@ -1,3 +1,13 @@
+CHANGES AFTER VERSION 1.8.2
+=============================
+
+==== Overview ====
+  * Do not trigger the error event on involved elements - fixes #7
+  * Allow passing jQuery.ajax() settings - fixes #9
+  * Ignore link clicks with ctrl/meta key - fixes #10
+  * Trigger events correctly, even if involved elements were removed from DOM - fixes #6
+  * Send forms using XHR2 FormData if possible - fixes #11
+
 CHANGES AFTER VERSION 1.7.8
 =============================
 
