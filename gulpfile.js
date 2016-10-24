@@ -96,8 +96,6 @@
 		runSequence('cleanBuild', 'bundle', 'minify');
 	});
 
-	gulp.task('build', ['test'], function () {
-		runSequence('doc');
-	});
+	gulp.task('build', ['test']);
 	gulp.task('default', ['build']);
 }());
