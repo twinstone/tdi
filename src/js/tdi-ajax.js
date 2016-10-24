@@ -369,6 +369,11 @@ TDI.Ajax = function($) {
  * @namespace TDI.Ajax
  */
 TDI.Ajax.Request = function($) {
+	var HAS_XHR2_SUPPORT = function () {
+		var xhr = new XMLHttpRequest();
+		return !! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload));
+	}();
+	var HAS_FORMDATA_SUPPORT = !! window.FormData;
 
 	return {
 
@@ -510,14 +515,25 @@ TDI.Ajax.Request = function($) {
 				url = $form.data( 'ajax-url' ) || $form.attr( 'action' );
 
 			// send in iframe or through ajax
+				options.method = options.method || $form.attr('method');
 				if ($form.find("input[type=file]").length > 0) {
 					options.method = "post";
 				}
-				else {
-					options.data = $form.serialize(); // safe to overwrite
-					options.method = options.method || $form.attr('method');
+
+				// send in iframe or through ajax
+				if (HAS_XHR2_SUPPORT && HAS_FORMDATA_SUPPORT) {
+					options.data = new FormData($form.get(0));
+					options.processData = false;
+					options.contentType = false;
 
 					return TDI.Ajax.Request.send( url, options );
+				}
+				else {
+					if ($form.find("input[type=file]").length === 0) {
+						options.data = $form.serialize(); // safe to overwrite
+
+						return TDI.Ajax.Request.send( url, options );
+					}
 				}
 
 			// onStart
@@ -747,7 +763,7 @@ TDI.Ajax.Response = function($) {
 
 				// fire the custom ajax:done events
 					var $involvedElms = $(options.involvedElms).filter(function(i, elm) {
-						return document.contains(elm);
+						return document.body ? document.body.contains(elm) : document.contains(elm);
 					});
 
 					if ($involvedElms.length === 0) {
