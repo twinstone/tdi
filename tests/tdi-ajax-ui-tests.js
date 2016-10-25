@@ -138,9 +138,14 @@ QUnit.test( 'TDI.Ajax UI: TDI should ignore clicks with ctrl/meta key', function
 	var done = assert.async();
 
 	var handlers = [
-		function() { $( '#ajaxlink' ).trigger($.Event('click', {ctrlKey : true})); },
-		function() { $( '#ajaxlink' ).trigger($.Event('click', {metaKey : true})); },
-		function() { $( '#ajaxlink' ).trigger($.Event('click', {ctrlKey : true, metaKey : true})); }
+		function() { $( '#ajaxlink' ).trigger({type : 'click', ctrlKey : true}); },
+		function() { $( '#ajaxlink' ).trigger({type : 'click', metaKey : true}); },
+		function() { $( '#ajaxlink' ).trigger({type : 'click', shiftKey : true}); },
+		function() { $( '#ajaxlink' ).trigger({type : 'click', ctrlKey : true, metaKey : true}); },
+		function() { $( '#ajaxlink' ).trigger({type : 'click', ctrlKey : true, shiftKey : true}); },
+		function() { $( '#ajaxlink' ).trigger({type : 'click', metaKey : true, shiftKey : true}); },
+		function() { $( '#ajaxlink' ).trigger({type : 'click', ctrlKey : true, metaKey : true, shiftKey : true}); },
+		function() { $( '#ajaxlink' ).trigger({type : 'click', button : 1}); }
 	];
 
 	var num = 0;

@@ -101,7 +101,7 @@ TDI.Ajax = function($) {
 		 * @param {Event} evt The event object
 		 */
 		function _onBeforeLinkClick( evt ) {
-			if (evt.ctrlKey || evt.metaKey) {
+			if (evt.ctrlKey || evt.metaKey || evt.shiftKey || (evt.button && evt.button === 1)) {
 				return;
 			}
 
