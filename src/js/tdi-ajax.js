@@ -63,7 +63,7 @@ TDI.Ajax = function($) {
 			.delegate( _delegateSelectors.fieldChange, 'change', _onFieldChange )
 			.delegate( _delegateSelectors.fieldSubmit, 'keydown', _onFieldSubmit );
 
-		$(window).unload( _unbindUI );
+		$(window).on( 'unload', _unbindUI );
 
 		$.event.special[ 'tdi:ajax:beforeLinkClick' ] = {
 			_default : _onLinkClick
