@@ -2,7 +2,7 @@ QUnit.module( 'TDI.Ajax.Response' );
 
 QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 	var done = assert.async();
-	assert.expect(163);
+	assert.expect(173);
 
 	// bind the events
 	$(document)
@@ -72,6 +72,17 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 			assert.equal( u10.selector, '.update-multiple-prepend', 'Update10: selector' );
 			assert.equal( u10.target.length, 2, 'Update10: targets' );
 			assert.equal( u10.content, 'Update prepend' );
+
+			assert.ok(u1.tag instanceof $);
+			assert.ok(u2.tag instanceof $);
+			assert.ok(u3.tag instanceof $);
+			assert.ok(u4.tag instanceof $);
+			assert.ok(u5.tag instanceof $);
+			assert.ok(u6.tag instanceof $);
+			assert.ok(u7.tag instanceof $);
+			assert.ok(u8.tag instanceof $);
+			assert.ok(u9.tag instanceof $);
+			assert.ok(u10.tag instanceof $);
 
 			// check the markup
 			assert.equal( $( '#update-default' ).text(), 'Update default', 'The target was updated and has the correct contents.' );

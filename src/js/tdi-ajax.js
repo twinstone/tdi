@@ -976,7 +976,8 @@ TDI.Ajax.Response = function($) {
 					prepend			: prepend,
 					class_add		: class_add,
 					class_remove	: class_remove,
-					options			: options
+					options			: options,
+					tag					: $tag,
 				};
 
 			if ( target.length > 0 ) {
@@ -1008,6 +1009,8 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Space separated list of class names to add</span></dd>
 					 *     <dd><code><span>class_remove</span> <span>&lt;String&gt;</span></code>
 					 *       <span>Space separates list of class names to remove</span></dd>
+					 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+					 *       <span>The XML tag</span></dd>
 					 *   </dl>
 					 */
 					target.first().trigger( 'tdi:ajax:beforeUpdate', event_data );
