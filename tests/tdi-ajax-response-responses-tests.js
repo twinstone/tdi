@@ -2,7 +2,7 @@ QUnit.module( 'TDI.Ajax.Response' );
 
 QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 	var done = assert.async();
-	assert.expect(173);
+	assert.expect(179);
 
 	// bind the events
 	$(document)
@@ -159,6 +159,13 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 			assert.equal( i6.content, '<div class="inserted-multiple-before">Inserted before</div>', 'Insert6: content' );
 			assert.equal( i6.position, 'before', 'Insert6: position' );
 			assert.equal( i6.inserted_node.length, 2, 'Insert6: inserted nodes' );
+
+			assert.ok(i1.tag instanceof $);
+			assert.ok(i2.tag instanceof $);
+			assert.ok(i3.tag instanceof $);
+			assert.ok(i4.tag instanceof $);
+			assert.ok(i5.tag instanceof $);
+			assert.ok(i6.tag instanceof $);
 
 			// check the markup
 			assert.equal( $( '#inserted-after-default' ).length, 1, 'Inserted after (default)' );

@@ -1045,7 +1045,8 @@ TDI.Ajax.Response = function($) {
 					content			: content,
 					position		: position,
 					inserted_node	: inserted_node,
-					options			: options
+					options			: options,
+          tag					: $tag,
 				};
 
 			if ( target.length > 0 ) {
@@ -1065,6 +1066,8 @@ TDI.Ajax.Response = function($) {
 					 *       <span>The contents</span></dd>
 					 *     <dd><code><span>position</span> <span>&lt;String&gt;</span></code>
 					 *       <span>The position of the insert (before|after)</span></dd>
+					 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+					 *       <span>The XML tag</span></dd>
 					 *   </dl>
 					 */
 					target.first().trigger( 'tdi:ajax:beforeInsert', event_data );
