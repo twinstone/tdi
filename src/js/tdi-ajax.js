@@ -1287,7 +1287,8 @@ TDI.Ajax.Response = function($) {
 				attributes = tag.attributes,
 				event_data = {
 					_name : name,
-					contents : $.trim( $tag.text() )
+					contents : $.trim( $tag.text() ),
+					tag : $tag,
 				};
 
 			for (var i = 0, l = attributes.length; i < l; i++) {
@@ -1306,6 +1307,8 @@ TDI.Ajax.Response = function($) {
 				 *       <span>Instruction contents</dd>
 				 *     <dd><code><span>ATTRS_NAME</span> <span>&lt;String&gt;</span></code>
 				 *       <span>Other attributes</dd>
+				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+				 *       <span>The XML tag</span></dd>
 				 *   </dl>
 				 */
 				$.event.special[ 'tdi:ajax:before' + beforeName ] = {
