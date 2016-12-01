@@ -1141,7 +1141,8 @@ TDI.Ajax.Response = function($) {
 				event_data = {
 					style_src	: src,
 					style_id	: id,
-					options		: options
+					options		: options,
+					tag				: $tag,
 				};
 
 			// fire custom events
@@ -1156,6 +1157,8 @@ TDI.Ajax.Response = function($) {
 				 *       <span>Path to the external CSS file</span></dd>
 				 *     <dd><code><span>style_id</span> <span>&lt;String&gt;</span></code>
 				 *       <span>ID of the &lt;link&gt; tag</span></dd>
+				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+				 *       <span>The XML tag</span></dd>
 				 *   </dl>
 				 */
 				$(document).trigger( 'tdi:ajax:beforeStyle', event_data );

@@ -2,7 +2,7 @@ QUnit.module( 'TDI.Ajax.Response' );
 
 QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 	var done = assert.async();
-	assert.expect(182);
+	assert.expect(183);
 
 	// bind the events
 	$(document)
@@ -234,6 +234,8 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 
 			// check the markup
 			assert.equal( $( '#style1' ).length, 1, 'Style loaded.' );
+
+			assert.ok(data.styles[0].tag instanceof $);
 		} )
 		.bind( 'tdi:ajax:popupsDone', function( evt, data ) {
 			// 3 popups are expected
