@@ -2,7 +2,7 @@ QUnit.module( 'TDI.Ajax.Response' );
 
 QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 	var done = assert.async();
-	assert.expect(183);
+	assert.expect(186);
 
 	// bind the events
 	$(document)
@@ -250,6 +250,10 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 			assert.equal( p3.href, 'responses/popup3.html', 'Dialog: correct URL' );
 			assert.equal( p3.width, 300, 'Dialog: correct width' );
 			assert.equal( p3.height, 300, 'Dialog: correct height' );
+
+			assert.ok(p1.tag instanceof $);
+			assert.ok(p2.tag instanceof $);
+			assert.ok(p3.tag instanceof $);
 
 			p1.popup.close();
 			p2.popup.close();

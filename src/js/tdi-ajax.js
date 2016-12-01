@@ -1239,7 +1239,8 @@ TDI.Ajax.Response = function($) {
 					mode	: mode,
 					width	: parseInt(width),
 					height	: parseInt(height),
-					options	: options
+					options	: options,
+					tag			: $tag,
 				};
 
 			if ( href ) {
@@ -1259,6 +1260,8 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Width of the popup. Available only for <em>dialog</em> mode</span></dd>
 					 *     <dd><code><span>height</span> <span>&lt;Integer&gt;</span></code>
 					 *       <span>Height of the popup. Available only for <em>dialog</em> mode</span></dd>
+					 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+					 *       <span>The XML tag</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:beforePopup', event_data );
