@@ -1096,7 +1096,8 @@ TDI.Ajax.Response = function($) {
 					script_src	: src,
 					script_data	: contents,
 					script_id	: id,
-					options		: options
+					options		: options,
+					tag				: $tag,
 				};
 
 			// fire custom events
@@ -1113,6 +1114,8 @@ TDI.Ajax.Response = function($) {
 				 *       <span>Inline Javascript code</span></dd>
 				 *     <dd><code><span>script_id</span> <span>&lt;String&gt;</span></code>
 				 *       <span>ID of the &lt;script&gt; tag</span></dd>
+				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+				 *       <span>The XML tag</span></dd>
 				 *   </dl>
 				 */
 				$(document).trigger( 'tdi:ajax:beforeScript', event_data );

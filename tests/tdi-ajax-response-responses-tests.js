@@ -2,7 +2,7 @@ QUnit.module( 'TDI.Ajax.Response' );
 
 QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 	var done = assert.async();
-	assert.expect(179);
+	assert.expect(182);
 
 	// bind the events
 	$(document)
@@ -221,6 +221,11 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 				assert.ok( s3.script_node, "Script 3 tag exists" );
 				assert.ok( s3.script_node_inline, "Script 3 inline tag exists" );
 			}, 200);
+
+			assert.ok(s1.tag instanceof $);
+			assert.ok(s2.tag instanceof $);
+			assert.ok(s3.tag instanceof $);
+
 		} )
 		.bind( 'tdi:ajax:stylesDone', function( evt, data ) {
 			// check the API data (expect 1 style)
