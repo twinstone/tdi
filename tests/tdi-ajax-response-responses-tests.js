@@ -2,7 +2,7 @@ QUnit.module( 'TDI.Ajax.Response' );
 
 QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 	var done = assert.async();
-	assert.expect(163);
+	assert.expect(191);
 
 	// bind the events
 	$(document)
@@ -72,6 +72,17 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 			assert.equal( u10.selector, '.update-multiple-prepend', 'Update10: selector' );
 			assert.equal( u10.target.length, 2, 'Update10: targets' );
 			assert.equal( u10.content, 'Update prepend' );
+
+			assert.ok(u1.tag instanceof $);
+			assert.ok(u2.tag instanceof $);
+			assert.ok(u3.tag instanceof $);
+			assert.ok(u4.tag instanceof $);
+			assert.ok(u5.tag instanceof $);
+			assert.ok(u6.tag instanceof $);
+			assert.ok(u7.tag instanceof $);
+			assert.ok(u8.tag instanceof $);
+			assert.ok(u9.tag instanceof $);
+			assert.ok(u10.tag instanceof $);
 
 			// check the markup
 			assert.equal( $( '#update-default' ).text(), 'Update default', 'The target was updated and has the correct contents.' );
@@ -149,6 +160,13 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 			assert.equal( i6.position, 'before', 'Insert6: position' );
 			assert.equal( i6.inserted_node.length, 2, 'Insert6: inserted nodes' );
 
+			assert.ok(i1.tag instanceof $);
+			assert.ok(i2.tag instanceof $);
+			assert.ok(i3.tag instanceof $);
+			assert.ok(i4.tag instanceof $);
+			assert.ok(i5.tag instanceof $);
+			assert.ok(i6.tag instanceof $);
+
 			// check the markup
 			assert.equal( $( '#inserted-after-default' ).length, 1, 'Inserted after (default)' );
 			assert.equal( $( '#inserted-after' ).length, 1, 'Inserted after' );
@@ -203,6 +221,11 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 				assert.ok( s3.script_node, "Script 3 tag exists" );
 				assert.ok( s3.script_node_inline, "Script 3 inline tag exists" );
 			}, 200);
+
+			assert.ok(s1.tag instanceof $);
+			assert.ok(s2.tag instanceof $);
+			assert.ok(s3.tag instanceof $);
+
 		} )
 		.bind( 'tdi:ajax:stylesDone', function( evt, data ) {
 			// check the API data (expect 1 style)
@@ -211,6 +234,8 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 
 			// check the markup
 			assert.equal( $( '#style1' ).length, 1, 'Style loaded.' );
+
+			assert.ok(data.styles[0].tag instanceof $);
 		} )
 		.bind( 'tdi:ajax:popupsDone', function( evt, data ) {
 			// 3 popups are expected
@@ -225,6 +250,10 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 			assert.equal( p3.href, 'responses/popup3.html', 'Dialog: correct URL' );
 			assert.equal( p3.width, 300, 'Dialog: correct width' );
 			assert.equal( p3.height, 300, 'Dialog: correct height' );
+
+			assert.ok(p1.tag instanceof $);
+			assert.ok(p2.tag instanceof $);
+			assert.ok(p3.tag instanceof $);
 
 			p1.popup.close();
 			p2.popup.close();
@@ -260,6 +289,12 @@ QUnit.test( 'TDI.Ajax.Response: events and XML', function( assert ) {
 			assert.equal( u5._name, 'dialog', 'Dialog: correct instruction name' );
 			assert.equal( u5.action, 'close', 'Dialog: correct action' );
 			assert.equal( u5.id, 'dialog3', 'Dialog: correct id' );
+
+			assert.ok(u1.tag instanceof $);
+			assert.ok(u2.tag instanceof $);
+			assert.ok(u3.tag instanceof $);
+			assert.ok(u4.tag instanceof $);
+			assert.ok(u5.tag instanceof $);
 		} )
 		.bind( 'tdi:ajax:done', function( evt, data ) {
 			var r = data.responses;

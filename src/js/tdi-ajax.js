@@ -976,7 +976,8 @@ TDI.Ajax.Response = function($) {
 					prepend			: prepend,
 					class_add		: class_add,
 					class_remove	: class_remove,
-					options			: options
+					options			: options,
+					tag					: $tag,
 				};
 
 			if ( target.length > 0 ) {
@@ -1008,6 +1009,8 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Space separated list of class names to add</span></dd>
 					 *     <dd><code><span>class_remove</span> <span>&lt;String&gt;</span></code>
 					 *       <span>Space separates list of class names to remove</span></dd>
+					 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+					 *       <span>The XML tag</span></dd>
 					 *   </dl>
 					 */
 					target.first().trigger( 'tdi:ajax:beforeUpdate', event_data );
@@ -1042,7 +1045,8 @@ TDI.Ajax.Response = function($) {
 					content			: content,
 					position		: position,
 					inserted_node	: inserted_node,
-					options			: options
+					options			: options,
+          tag					: $tag,
 				};
 
 			if ( target.length > 0 ) {
@@ -1062,6 +1066,8 @@ TDI.Ajax.Response = function($) {
 					 *       <span>The contents</span></dd>
 					 *     <dd><code><span>position</span> <span>&lt;String&gt;</span></code>
 					 *       <span>The position of the insert (before|after)</span></dd>
+					 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+					 *       <span>The XML tag</span></dd>
 					 *   </dl>
 					 */
 					target.first().trigger( 'tdi:ajax:beforeInsert', event_data );
@@ -1090,7 +1096,8 @@ TDI.Ajax.Response = function($) {
 					script_src	: src,
 					script_data	: contents,
 					script_id	: id,
-					options		: options
+					options		: options,
+					tag				: $tag,
 				};
 
 			// fire custom events
@@ -1107,6 +1114,8 @@ TDI.Ajax.Response = function($) {
 				 *       <span>Inline Javascript code</span></dd>
 				 *     <dd><code><span>script_id</span> <span>&lt;String&gt;</span></code>
 				 *       <span>ID of the &lt;script&gt; tag</span></dd>
+				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+				 *       <span>The XML tag</span></dd>
 				 *   </dl>
 				 */
 				$(document).trigger( 'tdi:ajax:beforeScript', event_data );
@@ -1132,7 +1141,8 @@ TDI.Ajax.Response = function($) {
 				event_data = {
 					style_src	: src,
 					style_id	: id,
-					options		: options
+					options		: options,
+					tag				: $tag,
 				};
 
 			// fire custom events
@@ -1147,6 +1157,8 @@ TDI.Ajax.Response = function($) {
 				 *       <span>Path to the external CSS file</span></dd>
 				 *     <dd><code><span>style_id</span> <span>&lt;String&gt;</span></code>
 				 *       <span>ID of the &lt;link&gt; tag</span></dd>
+				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+				 *       <span>The XML tag</span></dd>
 				 *   </dl>
 				 */
 				$(document).trigger( 'tdi:ajax:beforeStyle', event_data );
@@ -1227,7 +1239,8 @@ TDI.Ajax.Response = function($) {
 					mode	: mode,
 					width	: parseInt(width),
 					height	: parseInt(height),
-					options	: options
+					options	: options,
+					tag			: $tag,
 				};
 
 			if ( href ) {
@@ -1247,6 +1260,8 @@ TDI.Ajax.Response = function($) {
 					 *       <span>Width of the popup. Available only for <em>dialog</em> mode</span></dd>
 					 *     <dd><code><span>height</span> <span>&lt;Integer&gt;</span></code>
 					 *       <span>Height of the popup. Available only for <em>dialog</em> mode</span></dd>
+					 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+					 *       <span>The XML tag</span></dd>
 					 *   </dl>
 					 */
 					$(document).trigger( 'tdi:ajax:beforePopup', event_data );
@@ -1272,7 +1287,8 @@ TDI.Ajax.Response = function($) {
 				attributes = tag.attributes,
 				event_data = {
 					_name : name,
-					contents : $.trim( $tag.text() )
+					contents : $.trim( $tag.text() ),
+					tag : $tag,
 				};
 
 			for (var i = 0, l = attributes.length; i < l; i++) {
@@ -1291,6 +1307,8 @@ TDI.Ajax.Response = function($) {
 				 *       <span>Instruction contents</dd>
 				 *     <dd><code><span>ATTRS_NAME</span> <span>&lt;String&gt;</span></code>
 				 *       <span>Other attributes</dd>
+				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
+				 *       <span>The XML tag</span></dd>
 				 *   </dl>
 				 */
 				$.event.special[ 'tdi:ajax:before' + beforeName ] = {
