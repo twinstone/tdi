@@ -57,11 +57,11 @@ TDI.Ajax = function($) {
 	 */
 	function _bindUI() {
 		$(document)
-			.delegate( _delegateSelectors.formSubmit, 'submit', _onBeforeFormSubmit )
-			.delegate( _delegateSelectors.linkClick, 'click', _onBeforeLinkClick )
-			.delegate( _delegateSelectors.formButtonActivate, 'click', _onFormButtonActivate )
-			.delegate( _delegateSelectors.fieldChange, 'change', _onFieldChange )
-			.delegate( _delegateSelectors.fieldSubmit, 'keydown', _onFieldSubmit );
+			.on( 'submit', _delegateSelectors.formSubmit, _onBeforeFormSubmit )
+			.on( 'click', _delegateSelectors.linkClick, _onBeforeLinkClick )
+			.on( 'click', _delegateSelectors.formButtonActivate, _onFormButtonActivate )
+			.on( 'change', _delegateSelectors.fieldChange, _onFieldChange )
+			.on( 'keydown', _delegateSelectors.fieldSubmit, _onFieldSubmit );
 
 		$(window).on( 'unload', _unbindUI );
 
@@ -86,11 +86,11 @@ TDI.Ajax = function($) {
 	 */
 	function _unbindUI( evt ) {
 		$(document)
-			.undelegate( _delegateSelectors.linkClick, 'click', _onLinkClick )
-			.undelegate( _delegateSelectors.formSubmit, 'submit', _onBeforeFormSubmit )
-			.undelegate( _delegateSelectors.formButtonActivate, 'click', _onFormButtonActivate )
-			.undelegate( _delegateSelectors.fieldChange, 'change', _onFieldChange )
-			.undelegate( _delegateSelectors.fieldSubmit, 'keydown', _onFieldSubmit );
+			.off( 'click', _delegateSelectors.linkClick, _onLinkClick )
+			.off( 'submit', _delegateSelectors.formSubmit, _onBeforeFormSubmit )
+			.off( 'click', _delegateSelectors.formButtonActivate, _onFormButtonActivate )
+			.off( 'change', _delegateSelectors.fieldChange, _onFieldChange )
+			.off( 'keydown', _delegateSelectors.fieldSubmit, _onFieldSubmit );
 	}
 
 	// EVENT HANDLERS ------------------------------------------------------------
@@ -591,7 +591,7 @@ TDI.Ajax.Request = function($) {
 							options.end && options.end( $form, options, xml );
 
 							setTimeout( function() {
-								$(iframe).unbind().remove();
+								$(iframe).off().remove();
 								$form.removeAttr( 'target' );
 							}, 10000 );
 						} );
@@ -647,16 +647,16 @@ TDI.Ajax.Request = function($) {
  */
 TDI.Ajax.Response = function($) {
 	// Listen for ajax internal events
-		$(document).bind( 'tdi:ajax:_start', function( evt, data ) {
+		$(document).on( 'tdi:ajax:_start', function( evt, data ) {
 			_start( data.xhr, data.settings, data.options );
 		} );
-		$(document).bind( 'tdi:ajax:_success', function( evt, data ) {
+		$(document).on( 'tdi:ajax:_success', function( evt, data ) {
 			_success( data.data, data.textStatus, data.xhr, data.options );
 		} );
-		$(document).bind( 'tdi:ajax:_error', function( evt, data ) {
+		$(document).on( 'tdi:ajax:_error', function( evt, data ) {
 			_error( data.xhr, data.textStatus, data.error, data.options );
 		} );
-		$(document).bind( 'tdi:ajax:_end', function( evt, data ) {
+		$(document).on( 'tdi:ajax:_end', function( evt, data ) {
 			_end( data.xhr, data.textStatus, data.options );
 		} );
 
@@ -1355,7 +1355,7 @@ TDI.Ajax.Response = function($) {
 
 			// update the target element
 				if ( data.replace === 'true' ) {
-					data.target.find( '*' ).andSelf().unbind(); // detach all event handlers from the target and its child nodes
+					data.target.find( '*' ).andSelf().off(); // detach all event handlers from the target and its child nodes
 					data.target.replaceWith( data.content );
 				}
 				else if ( data.append === 'true' ) {
@@ -1365,7 +1365,7 @@ TDI.Ajax.Response = function($) {
 					data.target.prepend( data.content );
 				}
 				else {
-					data.target.find( '*' ).unbind(); // detach all event handlers from the targets child nodes
+					data.target.find( '*' ).off(); // detach all event handlers from the targets child nodes
 					data.target.html( data.content );
 				}
 
