@@ -958,7 +958,7 @@ TDI.Ajax.Response = function($) {
 			var $tag = $(tag),
 				target_id = $tag.attr( 'target' ),
 				selector = $tag.attr( 'selector' ),
-				target = selector ? $(selector) : $( '#' + target_id ),
+				target = selector ? $(selector) : $( document.getElementById( target_id ) ),
 				content = $.trim( $tag.text() ),
 				replace = $tag.attr( 'replace' ),
 				append = $tag.attr( 'append' ),
@@ -977,7 +977,7 @@ TDI.Ajax.Response = function($) {
 					class_add		: class_add,
 					class_remove	: class_remove,
 					options			: options,
-					tag					: $tag,
+					tag				: $tag
 				};
 
 			if ( target.length > 0 ) {
@@ -1034,7 +1034,7 @@ TDI.Ajax.Response = function($) {
 			var $tag = $(tag),
 				target_id = $tag.attr( 'target' ),
 				selector = $tag.attr( 'selector' ),
-				target = selector ? $(selector) : $( '#' + target_id ),
+				target = selector ? $(selector) : $( document.getElementById( target_id ) ),
 				content = $.trim( $tag.text() ),
 				position = $tag.attr( 'position' ) || 'after',
 				inserted_node,
@@ -1046,7 +1046,7 @@ TDI.Ajax.Response = function($) {
 					position		: position,
 					inserted_node	: inserted_node,
 					options			: options,
-          tag					: $tag,
+					tag				: $tag
 				};
 
 			if ( target.length > 0 ) {
@@ -1509,7 +1509,7 @@ TDI.Ajax.Response = function($) {
 
 			// if there is an 'src' attribute, load the script first and when fully loaded, execute the script contents
 				if ( data.script_src ) {
-					if ( data.script_id && $( '#'+data.script_id ).length > 0 ) {
+					if ( data.script_id && document.getElementById( data.script_id ) ) {
 						download = false;
 					}
 					if ( download ) {
@@ -1541,7 +1541,7 @@ TDI.Ajax.Response = function($) {
 		 */
 		function _onStyleDefault( evt, data ) {
 			var download = true;
-			if ( data.style_id && $( '#'+data.style_id ).length > 0 ) {
+			if ( data.style_id && document.getElementById( data.style_id ) ) {
 				download = false;
 			}
 			if ( download ) {
