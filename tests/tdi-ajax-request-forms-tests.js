@@ -139,4 +139,35 @@ QUnit.test( 'TDI.Ajax.Request.send: with method', function( assert ) {
 		}
 	} );
 } );
-	
+
+QUnit.test( 'Forms with GET method should not use FormData', function( assert ) {
+	var done = assert.async();
+
+	var $form = $( '#tdi-ajax-send-form-action' );
+	TDI.Ajax.send( $form, {
+		end : function(xhr, textStatus, options) {
+			assert.notOk( options.data instanceof FormData, 'Ajax data should not be FormData' );
+			assert.equal( options.data, 'name=value&name2=value2', 'Field values should be in Ajax data formatted as a query string' );
+
+			done();
+		}
+	} );
+} );
+
+QUnit.test( 'Forms with upload should use FormData', function( assert ) {
+	var done = assert.async();
+
+	var $form = $( '#tdi-ajax-send-form-with-file' );
+	TDI.Ajax.send( $form, {
+		end : function(xhr, textStatus, options) {
+			assert.ok( options.data instanceof FormData, 'Ajax data should be FormData' );
+
+			// can't verify contents of FormData instance, because of a bug in PhantomJS.
+			// see: https://github.com/ariya/phantomjs/issues/14211
+			//assert.ok( options.data.has('name'), 'Field should be in data' );
+			//assert.ok( options.data.has('file'), 'File field should be in data' );
+
+			done();
+		}
+	} );
+} );

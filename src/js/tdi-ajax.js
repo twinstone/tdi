@@ -520,8 +520,8 @@ TDI.Ajax.Request = function($) {
 					options.method = "post";
 				}
 
-				// send in iframe or through ajax
-				if (HAS_XHR2_SUPPORT && HAS_FORMDATA_SUPPORT) {
+				// send POST forms using Ajax and FormData if possible
+				if (options.method === "post" && HAS_XHR2_SUPPORT && HAS_FORMDATA_SUPPORT) {
 					options.data = new FormData($form.get(0));
 					options.processData = false;
 					options.contentType = false;
@@ -529,6 +529,7 @@ TDI.Ajax.Request = function($) {
 					return TDI.Ajax.Request.send( url, options );
 				}
 				else {
+					// send forms without file uploads using Ajax
 					if ($form.find("input[type=file]").length === 0) {
 						options.data = $form.serialize(); // safe to overwrite
 
