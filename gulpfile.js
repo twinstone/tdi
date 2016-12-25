@@ -12,6 +12,9 @@
 	var rename      = require('gulp-rename');
 	var yuidoc      = require('gulp-yuidoc');
 	var qunit       = require('gulp-qunit');
+	var jshint      = require('gulp-jshint');
+	var jscs        = require('gulp-jscs');
+	var stylish     = require('gulp-jscs-stylish');
 
 	var packageJson    = require('./package.json');
 	var rootFolder     = './';
@@ -25,12 +28,12 @@
 	gulp.task('clean', ['cleanBuild', 'cleanDoc']);
 
 	gulp.task('cleanBuild', function () {
-		return gulp.src(buildFolder, {read: false})
+		return gulp.src(buildFolder, {read : false})
 			.pipe(rimraf());
 	});
 
 	gulp.task('cleanDoc', function () {
-		return gulp.src(docFolder, {read: false})
+		return gulp.src(docFolder, {read : false})
 			.pipe(rimraf());
 	});
 
@@ -45,8 +48,8 @@
 		return gulp.src(files)
 			.pipe(concat(bundleName + '.js'))
 			.pipe(template({
-				projectUrl    : packageJson.homepage,
-				productVersion: packageJson.version
+				projectUrl     : packageJson.homepage,
+				productVersion : packageJson.version
 			}))
 			.pipe(gulp.dest(buildFolder));
 	});
@@ -54,8 +57,8 @@
 	gulp.task('minify', function () {
 		return gulp.src(buildFolder + bundleName + '.js')
 			.pipe(uglify({
-				output: {
-					comments: /^!/i
+				output : {
+					comments : /^!/i
 				}
 			}))
 			.pipe(function () {
@@ -89,11 +92,23 @@
 
 	gulp.task('test', ['prepare'], function () {
 		return gulp.src(testFolder + '*.html')
-			.pipe(qunit({timeout: 10}));
+			.pipe(qunit({timeout : 10}));
 	});
 
 	gulp.task('prepare', function () {
 		runSequence('cleanBuild', 'bundle', 'minify');
+	});
+
+	gulp.task('lint', ['jscs'], function () {
+		return gulp.src(['./src/**/*.js', './tests/**/*.js'])
+			.pipe(jshint())
+			.pipe(jshint.reporter('jshint-stylish'));
+	});
+
+	gulp.task('jscs', function () {
+		return gulp.src(['./src/**/*.js', './tests/**/*-tests.js'])
+			.pipe(jscs())
+			.pipe(stylish());
 	});
 
 	gulp.task('build', ['test']);

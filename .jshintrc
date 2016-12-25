@@ -1,0 +1,14 @@
+{
+	"browser": true,
+	"devel": true,
+	"jquery": true,
+	"qunit": true,
+	"eqeqeq": true,
+	"latedef": "nofunc",
+	"newcap": true,
+	"quotmark": "single",
+	"strict": true,
+	"undef": true,
+	"unused": "vars",
+	"multistr": true
+}

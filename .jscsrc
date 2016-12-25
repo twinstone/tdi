@@ -6,12 +6,12 @@
 		"beforeOpeningRoundBrace": true
 	},
 	"disallowSpacesInsideBrackets": true,
-	"disallowEmptyBlocks": true,
+	"disallowEmptyBlocks": { "allExcept": ["comments"] },
 	"disallowSpacesInCallExpression": true,
 	"disallowSpacesInsideArrayBrackets": true,
 	"disallowSpacesInsideParentheses": true,
-	"disallowQuotedKeysInObjects": true,
-	"disallowSpaceAfterObjectKeys": true,
+	"disallowQuotedKeysInObjects": { "allExcept": ["reserved"] },
+	"disallowSpaceAfterObjectKeys": { "allExcept": ["aligned"] },
 	"requireSpaceBeforeObjectValues": true,
 	"disallowSpaceAfterPrefixUnaryOperators": true,
 	"disallowSpaceBeforePostfixUnaryOperators": true,
@@ -20,13 +20,11 @@
 	],
 	"disallowMixedSpacesAndTabs": true,
 	"disallowTrailingWhitespace": true,
-	"requireTrailingComma": { "ignoreSingleLine": true },
+	"requireTrailingComma": { "ignoreSingleLine": true, "ignoreSingleValue": true },
 	"requireSpaceAfterComma": true,
 	"disallowYodaConditions": true,
 	"disallowKeywords": [ "with" ],
-	"disallowKeywordsOnNewLine": ["else"],
 	"disallowMultipleLineBreaks": true,
-	"disallowMultipleLineStrings": true,
 	"disallowMultipleVarDecl": true,
 	"disallowSpaceBeforeComma": true,
 	"disallowSpaceBeforeSemicolon": true,
@@ -39,7 +37,7 @@
 		"allExcept": ["shorthand"]
 	},
 	"requireSpacesInConditionalExpression": true,
-	"requireBlocksOnNewline": 1,
+	"requireBlocksOnNewline": true,
 	"requireCommaBeforeLineBreak": true,
 	"requireSpaceBeforeBinaryOperators": true,
 	"requireSpaceAfterBinaryOperators": true,
@@ -47,12 +45,17 @@
 	"requireDollarBeforejQueryAssignment": true,
 	"requireLineFeedAtFileEnd": true,
 	"requireCapitalizedConstructors": true,
-	"requireDotNotation": true,
+	"requireDotNotation": { "allExcept": [ "keywords" ] },
 	"requireSpacesInForStatement": true,
-	"requireSpacesInsideObjectBrackets": "all",
 	"requireSpaceBetweenArguments": true,
 	"requireCurlyBraces": [
-		"do"
+		"if",
+		"else",
+		"for",
+		"while",
+		"do",
+		"try",
+		"catch"
 	],
 	"requireSpaceAfterKeywords": [
 		"if",
@@ -72,14 +75,11 @@
 	},
 	"requirePaddingNewLinesAfterBlocks": true,
 	"requireSemicolons": true,
-	"requireShorthandArrowFunctions": true,
-	"requireSpacesInsideImportedObjectBraces": true,
-	"safeContextKeyword": "_this",
 	"validateLineBreaks": "LF",
 	"validateQuoteMarks": { "mark": "'", "escape": true, "ignoreJSX": true },
-	"validateIndentation": 2,
+	"validateIndentation": "\t",
 	"maximumLineLength": {
-		"value": 100,
-		"allExcept": ["urlComments"]
+		"value": 120,
+		"allExcept": ["comments"]
 	}
 }
