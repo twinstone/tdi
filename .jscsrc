@@ -79,7 +79,7 @@
 	"validateQuoteMarks": { "mark": "'", "escape": true, "ignoreJSX": true },
 	"validateIndentation": "\t",
 	"maximumLineLength": {
-		"value": 120,
+		"value": 160,
 		"allExcept": ["comments"]
 	}
 }
