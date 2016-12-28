@@ -748,9 +748,11 @@
 		var i;
 		var customHandlers;
 		var customDefault;
+		var customPostDispatch;
 		var _infusionInstructions;
 		var _scriptTags;
 		var _responses;
+		var _scriptsDone;
 
 		// Listen for ajax internal events
 		$(document).on('tdi:ajax:_start', function (evt, data) {
@@ -793,6 +795,140 @@
 			unknowns: [],
 		};
 
+		// EVENTS
+		function _onUpdatesDone($involvedElms, updates, options) {
+			/**
+			 * <p>Fires when all TDI &lt;update&gt;s are done.</p>
+			 * @event tdi:ajax:updatesDone
+			 * @param {Event} evt The event object
+			 * @param {Object} data The event data:
+			 *   <dl>
+			 *     <dd><code><span>updates</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>The list of all updates</span></dd>
+			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>Additional request options</span></dd>
+			 *   </dl>
+			 */
+			$involvedElms.trigger('tdi:ajax:updatesDone', [{
+				updates: updates,
+				options: options,
+			}]);
+		}
+
+		function _onInsertsDone($involvedElms, inserts, options) {
+			/**
+			 * <p>Fires when all TDI &lt;insert&gt;s are done.</p>
+			 * @event tdi:ajax:insertsDone
+			 * @param {Event} evt The event object
+			 * @param {Object} data The event data:
+			 *   <dl>
+			 *     <dd><code><span>inserts</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>The list of all inserts</span></dd>
+			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>Additional request options</span></dd>
+			 *   </dl>
+			 */
+			$involvedElms.trigger('tdi:ajax:insertsDone', [{
+				inserts: inserts,
+				options: options,
+			}]);
+		}
+
+		function _onScriptsDone($involvedElms, scripts, options) {
+			/**
+			 * <p>Fires when all TDI &lt;script&gt;s are done.</p>
+			 * @event tdi:ajax:scriptsDone
+			 * @param {Event} evt The event object
+			 * @param {Object} data The event data:
+			 *   <dl>
+			 *     <dd><code><span>scripts</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>The list of all scripts</span></dd>
+			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>Additional request options</span></dd>
+			 *   </dl>
+			 */
+			$involvedElms.trigger('tdi:ajax:scriptsDone', [{
+				scripts: scripts,
+				options: options,
+			}]);
+		}
+
+		function _onStylesDone($involvedElms, styles, options) {
+			/**
+			 * <p>Fires when all TDI &lt;style&gt;s are done.</p>
+			 * @event tdi:ajax:stylesDone
+			 * @param {Event} evt The event object
+			 * @param {Object} data The event data:
+			 *   <dl>
+			 *     <dd><code><span>styles</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>The list of all styles</span></dd>
+			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>Additional request options</span></dd>
+			 *   </dl>
+			 */
+			$involvedElms.trigger('tdi:ajax:stylesDone', [{
+				styles: styles,
+				options: options,
+			}]);
+		}
+
+		function _onPopupsDone($involvedElms, popups, options) {
+			/**
+			 * <p>Fires when all TDI &lt;popup&gt;s are done.</p>
+			 * @event tdi:ajax:popupsDone
+			 * @param {Event} evt The event object
+			 * @param {Object} data The event data:
+			 *   <dl>
+			 *     <dd><code><span>popups</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>The list of all popups</span></dd>
+			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>Additional request options</span></dd>
+			 *   </dl>
+			 */
+			$involvedElms.trigger('tdi:ajax:popupsDone', [{
+				popups: popups,
+				options: options,
+			}]);
+		}
+
+		function _onUnknownsDone($involvedElms, unknowns, options) {
+			/**
+			 * <p>Fires when all &lt;unknown&gt; TDI instructions are done.</p>
+			 * @event tdi:ajax:unknownsDone
+			 * @param {Event} evt The event object
+			 * @param {Object} data The event data:
+			 *   <dl>
+			 *     <dd><code><span>instructions</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>The list of all unknown instructions</span></dd>
+			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>Additional request options</span></dd>
+			 *   </dl>
+			 */
+			$involvedElms.trigger('tdi:ajax:unknownsDone', [{
+				unknowns: unknowns,
+				options: options,
+			}]);
+		}
+
+		function _onAllResponsesDone($involvedElms, responses, options) {
+			/**
+			 * <p>Fires when all TDI actions are done.</p>
+			 * @event tdi:ajax:done
+			 * @param {Event} evt The event object
+			 * @param {Object} data The event data:
+			 *   <dl>
+			 *     <dd><code><span>responses</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>The list of all TDI actions</span></dd>
+			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
+			 *       <span>Additional request options</span></dd>
+			 *   </dl>
+			 */
+			$involvedElms.trigger('tdi:ajax:done', [{
+				responses: responses,
+				options: options,
+			}]);
+		}
+
 		// CALLBACKS -----------------------------------------------------------------
 		/**
 		 * <p>The default <em>start</em> callback.</p>
@@ -803,6 +939,8 @@
 		 * @param {Object} options Additional request options
 		 */
 		function _start(xhr, settings, options) {
+			_scriptsDone = false;
+
 			// xhr.setRequestHeader( 'X-Requested-Format', 'xml' );
 			/**
 			 * <p>Fires when the TDI request has started.</p>
@@ -842,6 +980,7 @@
 
 			var $xml = $(xml);
 			var status = $xml.find('status');
+			var _scriptsDoneInterval;
 
 			// check for status
 			if (status.text().toLowerCase() !== 'ok') {
@@ -853,10 +992,10 @@
 				var instruction = this.tagName.toLowerCase();
 
 				switch (instruction) {
-					case 'Script':
+					case 'script':
 						/*
-							Collect all script tags to a list, so they can be downloaded
-							and executed in the preserved order
+						 Collect all script tags to a list, so they can be downloaded
+						 and executed in the preserved order
 						 */
 						_scriptTags.push(this);
 						break;
@@ -872,9 +1011,6 @@
 				}
 			});
 
-			// download and execute the list of script tags
-			_onBeforeScript(_scriptTags.shift(), options);
-
 			// fire the custom ajax:done events
 			var $involvedElms = $(options.involvedElms).filter(function (i, elm) {
 				return document.body ? document.body.contains(elm) : document.contains(elm);
@@ -884,118 +1020,27 @@
 				$involvedElms = $(document);
 			}
 
-			/**
-			 * <p>Fires when all TDI &lt;update&gt;s are done.</p>
-			 * @event tdi:ajax:updatesDone
-			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>updates</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all updates</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
-			 */
-			$involvedElms.trigger('tdi:ajax:updatesDone', [{
-				updates: _responses.updates,
-				options: options,
-			}]);
-			/**
-			 * <p>Fires when all TDI &lt;insert&gt;s are done.</p>
-			 * @event tdi:ajax:insertsDone
-			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>inserts</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all inserts</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
-			 */
-			$involvedElms.trigger('tdi:ajax:insertsDone', [{
-				inserts: _responses.inserts,
-				options: options,
-			}]);
-			/**
-			 * <p>Fires when all TDI &lt;script&gt;s are done.</p>
-			 * @event tdi:ajax:scriptsDone
-			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>scripts</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all scripts</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
-			 */
-			$involvedElms.trigger('tdi:ajax:scriptsDone', [{
-				scripts: _responses.scripts,
-				options: options,
-			}]);
-			/**
-			 * <p>Fires when all TDI &lt;style&gt;s are done.</p>
-			 * @event tdi:ajax:stylesDone
-			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>styles</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all styles</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
-			 */
-			$involvedElms.trigger('tdi:ajax:stylesDone', [{
-				styles: _responses.styles,
-				options: options,
-			}]);
-			/**
-			 * <p>Fires when all TDI &lt;popup&gt;s are done.</p>
-			 * @event tdi:ajax:popupsDone
-			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>popups</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all popups</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
-			 */
-			$involvedElms.trigger('tdi:ajax:popupsDone', [{
-				popups: _responses.popups,
-				options: options,
-			}]);
-			/**
-			 * <p>Fires when all &lt;unknown&gt; TDI instructions are done.</p>
-			 * @event tdi:ajax:unknownsDone
-			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>instructions</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all unknown instructions</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
-			 */
-			$involvedElms.trigger('tdi:ajax:unknownsDone', [{
-				unknowns: _responses.unknowns,
-				options: options,
-			}]);
-			/**
-			 * <p>Fires when all TDI actions are done.</p>
-			 * @event tdi:ajax:done
-			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>responses</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all TDI actions</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
-			 */
-			$involvedElms.trigger('tdi:ajax:done', [{
-				responses: _responses,
-				options: options,
-			}]);
+			_onUpdatesDone($involvedElms, _responses.updates, options);
+			_onInsertsDone($involvedElms, _responses.inserts, options);
+			_onStylesDone($involvedElms, _responses.styles, options);
+			_onPopupsDone($involvedElms, _responses.popups, options);
+			_onUnknownsDone($involvedElms, _responses.unknowns, options);
+
+			if (_scriptTags.length) {
+				_scriptsDoneInterval = window.setInterval(function () {
+					if (_scriptsDone) {
+						window.clearInterval(_scriptsDoneInterval);
+						_onScriptsDone($involvedElms, _responses.scripts, options);
+						_onAllResponsesDone($involvedElms, _responses, options);
+					}
+				}, 100);
+
+				// download and execute the list of script tags
+				_onBeforeScript(_scriptTags.shift(), options);
+			}
+			else {
+				_onAllResponsesDone($involvedElms, _responses, options);
+			}
 		}
 
 		/**
@@ -1220,6 +1265,8 @@
 				tag: $tag,
 			};
 
+			_responses.scripts.push(eventData);
+
 			// fire custom events
 			/**
 			 * <p>Fires before the TDI <em>script</em> takes place.</p>
@@ -1239,8 +1286,6 @@
 			 *   </dl>
 			 */
 			$(document).trigger('tdi:ajax:beforeScript', eventData);
-
-			_responses.scripts.push(eventData);
 		}
 
 		/**
@@ -1634,7 +1679,12 @@
 				$(document).trigger('tdi:ajax:script', data);
 
 				// process next script
-				_onBeforeScript(scripts.shift());
+				if (scripts.length) {
+					_onBeforeScript(scripts.shift());
+				}
+				else {
+					_scriptsDone = true;
+				}
 			};
 
 			// if there is an 'src' attribute, load the script first and when fully loaded, execute the script contents
@@ -1838,9 +1888,21 @@
 			}
 		};
 
+		customPostDispatch = function (evt) {
+			switch (evt.type) {
+				case 'tdi:ajax:beforeScript':
+					/*
+					 If this event was prevented, trigger the scriptsDone event immediately
+					 */
+					_scriptsDone = true;
+					break;
+			}
+		};
+
 		for (i in customHandlers) {
 			$.event.special[i] = {
-				_default: customDefault
+				_default: customDefault,
+				postDispatch: customPostDispatch,
 			};
 		}
 
