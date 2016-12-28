@@ -111,6 +111,8 @@
 			.pipe(stylish());
 	});
 
-	gulp.task('build', ['test']);
+	gulp.task('build', function () {
+		runSequence('lint', 'test');
+	});
 	gulp.task('default', ['build']);
 }());
