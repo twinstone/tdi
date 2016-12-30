@@ -99,16 +99,13 @@
 		runSequence('cleanBuild', 'bundle', 'minify');
 	});
 
-	gulp.task('lint', ['jscs'], function () {
-		return gulp.src(['./src/**/*.js', './tests/**/*.js'])
+	gulp.task('lint', function () {
+		return gulp.src(['./src/**/*.js', './tests/*.js'])
 			.pipe(jshint())
-			.pipe(jshint.reporter('jshint-stylish'));
-	});
-
-	gulp.task('jscs', function () {
-		return gulp.src(['./src/**/*.js', './tests/**/*-tests.js'])
 			.pipe(jscs())
-			.pipe(stylish());
+			.pipe(stylish.combineWithHintResults())
+			.pipe(jshint.reporter('jshint-stylish'))
+			.pipe(jshint.reporter('fail' ));
 	});
 
 	gulp.task('build', function () {
