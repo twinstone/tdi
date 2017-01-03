@@ -101,8 +101,8 @@
 			.pipe(qunit({timeout: 10}));
 	});
 
-	gulp.task('prepare', function () {
-		return runSequence('cleanBuild', 'bundle', 'minify');
+	gulp.task('prepare', function (callback) {
+		runSequence('cleanBuild', 'bundle', 'minify', callback);
 	});
 
 	gulp.task('lint', function () {
