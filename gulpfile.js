@@ -102,7 +102,7 @@
 	});
 
 	gulp.task('prepare', function () {
-		runSequence('cleanBuild', 'bundle', 'minify');
+		return runSequence('cleanBuild', 'bundle', 'minify');
 	});
 
 	gulp.task('lint', function () {
