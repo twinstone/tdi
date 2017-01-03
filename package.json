@@ -22,6 +22,7 @@
     "url": "https://github.com/twinstone/tdi/issues"
   },
   "devDependencies": {
+    "eol": "^0.5.1",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-jscs": "^4.0.0",
