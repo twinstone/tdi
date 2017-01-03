@@ -1,9 +1,14 @@
+
+console.log('1-------------');
+console.log(TDI);
+console.log('1-------------');
+
 (function (TDI) {
 	'use strict';
 
-	console.log('-------------');
+	console.log('2-------------');
 	console.log(TDI);
-	console.log('-------------');
+	console.log('2-------------');
 
 	QUnit.module('TDI.Ajax.Request Forms Old');
 
