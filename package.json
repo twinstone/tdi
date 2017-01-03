@@ -9,7 +9,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp test",
+    "lint": "gulp lint"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
     "url": "https://github.com/twinstone/tdi/issues"
   },
   "devDependencies": {
+    "eol": "^0.5.1",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-jscs": "^4.0.0",
@@ -34,6 +36,12 @@
     "gulp-yuidoc": "^0.1.2",
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
-    "run-sequence": "^1.1.4"
-  }
+    "precommit-hook": "^3.0.0",
+    "run-sequence": "^1.1.4",
+    "through2": "^2.0.3"
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ]
 }

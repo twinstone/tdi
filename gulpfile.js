@@ -3,37 +3,39 @@
 
 	/* global require: true */
 
-	var gulp        = require('gulp');
+	var gulp = require('gulp');
+	var through = require('through2');
 	var runSequence = require('run-sequence');
-	var rimraf      = require('gulp-rimraf');
-	var concat      = require('gulp-concat');
-	var template    = require('gulp-template');
-	var uglify      = require('gulp-uglify');
-	var rename      = require('gulp-rename');
-	var yuidoc      = require('gulp-yuidoc');
-	var qunit       = require('gulp-qunit');
-	var jshint      = require('gulp-jshint');
-	var jscs        = require('gulp-jscs');
-	var stylish     = require('gulp-jscs-stylish');
+	var rimraf = require('gulp-rimraf');
+	var concat = require('gulp-concat');
+	var template = require('gulp-template');
+	var uglify = require('gulp-uglify');
+	var rename = require('gulp-rename');
+	var yuidoc = require('gulp-yuidoc');
+	var qunit = require('gulp-qunit');
+	var jshint = require('gulp-jshint');
+	var jscs = require('gulp-jscs');
+	var stylish = require('gulp-jscs-stylish');
+	var eol = require('eol');
 
-	var packageJson    = require('./package.json');
-	var rootFolder     = './';
-	var srcFolder      = rootFolder + 'src/';
-	var buildFolder    = rootFolder + 'build/';
-	var docFolder      = rootFolder + 'doc/';
+	var packageJson = require('./package.json');
+	var rootFolder = './';
+	var srcFolder = rootFolder + 'src/';
+	var buildFolder = rootFolder + 'build/';
+	var docFolder = rootFolder + 'doc/';
 	var docThemeFolder = rootFolder + 'docthemes';
-	var testFolder     = rootFolder + 'tests/';
-	var bundleName     = 'tdi-bundle';
+	var testFolder = rootFolder + 'tests/';
+	var bundleName = 'tdi-bundle';
 
 	gulp.task('clean', ['cleanBuild', 'cleanDoc']);
 
 	gulp.task('cleanBuild', function () {
-		return gulp.src(buildFolder, {read : false})
+		return gulp.src(buildFolder, {read: false})
 			.pipe(rimraf());
 	});
 
 	gulp.task('cleanDoc', function () {
-		return gulp.src(docFolder, {read : false})
+		return gulp.src(docFolder, {read: false})
 			.pipe(rimraf());
 	});
 
@@ -46,10 +48,14 @@
 		files.push(srcFolder + 'js/tdi-tools.js');
 
 		return gulp.src(files)
+			.pipe(through.obj(function (file, enc, cb) {
+				file.contents = new Buffer(eol.lf(file.contents.toString()));
+				cb(null, file);
+			}))
 			.pipe(concat(bundleName + '.js'))
 			.pipe(template({
-				projectUrl     : packageJson.homepage,
-				productVersion : packageJson.version
+				projectUrl: packageJson.homepage,
+				productVersion: packageJson.version
 			}))
 			.pipe(gulp.dest(buildFolder));
 	});
@@ -57,8 +63,8 @@
 	gulp.task('minify', function () {
 		return gulp.src(buildFolder + bundleName + '.js')
 			.pipe(uglify({
-				output : {
-					comments : /^!/i
+				output: {
+					comments: /^!/i
 				}
 			}))
 			.pipe(function () {
@@ -92,25 +98,24 @@
 
 	gulp.task('test', ['prepare'], function () {
 		return gulp.src(testFolder + '*.html')
-			.pipe(qunit({timeout : 10}));
+			.pipe(qunit({timeout: 10}));
 	});
 
 	gulp.task('prepare', function () {
 		runSequence('cleanBuild', 'bundle', 'minify');
 	});
 
-	gulp.task('lint', ['jscs'], function () {
-		return gulp.src(['./src/**/*.js', './tests/**/*.js'])
+	gulp.task('lint', function () {
+		return gulp.src(['./src/**/*.js', './tests/*.js'])
 			.pipe(jshint())
-			.pipe(jshint.reporter('jshint-stylish'));
-	});
-
-	gulp.task('jscs', function () {
-		return gulp.src(['./src/**/*.js', './tests/**/*-tests.js'])
 			.pipe(jscs())
-			.pipe(stylish());
+			.pipe(stylish.combineWithHintResults())
+			.pipe(jshint.reporter('jshint-stylish'))
+			.pipe(jshint.reporter('fail'));
 	});
 
-	gulp.task('build', ['test']);
+	gulp.task('build', function () {
+		runSequence('lint', 'test');
+	});
 	gulp.task('default', ['build']);
 }());
