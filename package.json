@@ -37,7 +37,8 @@
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
     "precommit-hook": "^3.0.0",
-    "run-sequence": "^1.1.4"
+    "run-sequence": "^1.1.4",
+    "through2": "^2.0.3"
   },
   "pre-commit": [
     "lint",
