@@ -1,6 +1,10 @@
 (function (TDI) {
 	'use strict';
 
+	console.log('-------------');
+	console.log(TDI);
+	console.log('-------------');
+
 	QUnit.module('TDI.Ajax.Request Forms Old');
 
 	QUnit.test('TDI.Ajax.Request.sendForm: beforeStart/start/beforeEnd/end callbacks', function (assert) {
