@@ -17,7 +17,7 @@
 	var rootFolder     = './';
 	var srcFolder      = rootFolder + 'src/';
 	var buildFolder    = rootFolder + 'build/';
-	var docFolder      = rootFolder + 'doc/';
+	var docFolder      = rootFolder + 'docs/api/';
 	var docThemeFolder = rootFolder + 'docthemes';
 	var testFolder     = rootFolder + 'tests/';
 	var bundleName     = 'tdi-bundle';
