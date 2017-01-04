@@ -43,8 +43,8 @@ Inline Javascript code. It is invoked in the **window scope**!
 
 ## Events - Javascript API
 
-* [tdi:ajax:beforeScript](#)
-* [tdi:ajax:script](#)
+* [tdi:ajax:beforeScript](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:beforeScript)
+* [tdi:ajax:script](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:script)
 
 # Examples
 

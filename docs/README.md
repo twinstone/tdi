@@ -14,4 +14,4 @@
   * [popup](infusing-protocol-popup.md) - open popup window
   * [reload](infusing-protocol-reload.md) - reload the page
   * [redirect](infusing-protocol-redirect.md) - redirect to the URL
-* [API Reference](api-reference.md)
+* [API Reference](http://twinstone.github.io/tdi/docs/api/)

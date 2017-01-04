@@ -50,8 +50,8 @@ The new content, which is going to be used for the target HTML element update. T
 
 ## Events - Javascript API
 
-* [tdi:ajax:beforeInsert](#)
-* [tdi:ajax:insert](#)
+* [tdi:ajax:beforeInsert](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:beforeInsert)
+* [tdi:ajax:insert](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:insert)
 
 # Examples
 
