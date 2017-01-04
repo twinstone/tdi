@@ -1,11 +1,11 @@
 ## Documentation
 
 * [Download and Setup](download-and-setup.md)
-* [Web page integration](web-page-integration/README.md)
+* [Web page integration](web-page-integration)
   * [HTML](web-page-integration/web-page-integration-html.md)
   * [CSS](web-page-integration/web-page-integration-css.md)
   * [Javascript API](web-page-integration/web-page-integration-js.md)
-* [Infusing Protocol](infusing-protocol/README.md)
+* [Infusing Protocol](infusing-protocol)
   * [status](infusing-protocol/infusing-protocol-status.md)
   * [update](infusing-protocol/infusing-protocol-update.md) - refresh HTML element content
   * [insert](infusing-protocol/infusing-protocol-insert.md) - insert new content to the page
