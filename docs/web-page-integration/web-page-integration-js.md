@@ -10,14 +10,14 @@ API is separated into two parts:
 ## API methods
 
 * **[TDI.Ajax.send(elm, callbacks)](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.html#method_send)** - Simulates usual TDI behaviour - sending a request using TDI element
-  * **`elm`** - HTML element, which contains TDI info (see. [Web Page Integration](web-page-integration.md))
-  * `callbacks` - can contain different callback functions (see [API reference](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.html#method_send))
+  * **`elm`** - HTML element, which contains TDI info (see. [Web Page Integration](README.md))
+  * `callbacks` - can contain different callback functions
 * **[TDI.Ajax.Request.send(url, options)](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Request.html#method_send)** - Sends a TDI request to the specified URL
   * **`url`** - target of a TDI request
-  * `options` - can contain further setings (see [API reference](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Request.html#method_send))
+  * `options` - can contain further setings
 * **[TDI.Ajax.Request.sendForm(form, options)](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Request.html#method_sendForm)** - Sends a TDI form using hidden `<iframe>` tag. Used when the browser does not support `FormData` and the form cannot be sent using `XHR`.
   * **`form`** - HTML form
-  * `options` - can contain further setings (see [API reference](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Request.html#method_sendForm))
+  * `options` - can contain further setings
 * **[TDI.Ajax.Request.ajaxifyUrl(url)](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Request.html#method_ajaxifyUrl)** - Marks the URL for TDI usage - a GET parameter `_infuse=1` is added to the request
   * **`url`** - The URL to mark
 
@@ -46,7 +46,7 @@ TDI uses so-called Custom events for notifications about TDI process flow. Event
   * [`tdi:ajax:error`](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:error)
   * [`tdi:ajax:end`](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:end)
   * [`tdi:ajax:done`](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:done)
-* **protocol** - informs about separate server instructions (see [Infusing Protocol](infusing-protocol.md))
+* **protocol** - informs about separate server instructions (see [Infusing Protocol](../infusing-protocol/README.md))
   * [all other events from TDI.Ajax.Response](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html) - all before* actions allow suspending of the default action
 
 ### Events usage

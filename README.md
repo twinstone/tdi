@@ -24,8 +24,8 @@ As a result, TDI allows you to have just one concise piece of JavaScript at the 
 ## Documentation
 
 * [Download and Setup](docs/download-and-setup.md)
-* [Web page integration](docs/web-page-integration.md)
-* [Infusing Protocol](docs/infusing-protocol.md)
+* [Web page integration](docs/web-page-integration/README.md)
+* [Infusing Protocol](docs/infusing-protocol/README.md)
 * [API Reference](http://twinstone.github.io/tdi/docs/api/)
 
 ## Supported browsers
