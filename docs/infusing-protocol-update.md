@@ -25,7 +25,7 @@ Update some HTML element content on the page.
 | class-remove  | string value (CSS class)  |  | CSS class (or whitespace separated CSS class list), which should be removed from the target HTML element.  |
 | **html/text contents**  | string value  |  | The new content, which is going to be used for the target HTML element update. The content should be escaped or wrapped in CDATA block.  |
 
-<sup>*</sup> Both `target` and `selector` attributes are used to select the target element of this instruction. Only one of them is **required**. When both are present, attribute `selector` has precedence.
+<sup>\*</sup> Both `target` and `selector` attributes are used to select the target element of this instruction. Only one of them is **required**. When both are present, attribute `selector` has precedence.
 
 ## Events - Javascript API
 
