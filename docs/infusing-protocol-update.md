@@ -84,3 +84,37 @@ The new content, which is going to be used for the target HTML element update. T
 
 * [tdi:ajax:beforeUpdate](#)
 * [tdi:ajax:update](#)
+
+# Examples
+
+```html
+<!-- Source markup -->
+<ul id="todo-list">
+</ul>
+```
+
+```xml
+<update target="todo-list" class-add="highlight">
+<![CDATA[
+    <li>Take out trash</li>
+    <li>Remember the milk</li>
+    <li>Visit grandma</li>
+]]>
+</update>
+```
+
+```xml
+<update target="todo-list" append="true">
+<![CDATA[
+    <li>Complete the TODO list</li>
+]]>
+</update>
+```
+
+```xml
+<update target="todo-list" replace="true">
+<![CDATA[
+    <p>Hooray! Nothing to do.</p>
+]]>
+</update>
+```
