@@ -1,6 +1,6 @@
 {
   "name": "twinstone-tdi",
-  "version": "1.9.0-pre1",
+  "version": "1.9.0-pre2",
   "description": "Turbocharged Direct Infusion",
   "homepage": "https://www.twinstone.org/projects/tdi",
   "directories": {
@@ -9,7 +9,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp test",
+    "lint": "gulp lint"
   },
   "repository": {
     "type": "git",
@@ -21,14 +22,26 @@
     "url": "https://github.com/twinstone/tdi/issues"
   },
   "devDependencies": {
+    "eol": "^0.5.1",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
+    "gulp-jscs": "^4.0.0",
+    "gulp-jscs-stylish": "^1.4.0",
+    "gulp-jshint": "^2.0.4",
     "gulp-qunit": "^1.5.0",
     "gulp-rename": "^1.2.2",
     "gulp-rimraf": "^0.2.0",
     "gulp-template": "^3.0.0",
     "gulp-uglify": "^1.4.2",
     "gulp-yuidoc": "^0.1.2",
-    "run-sequence": "^1.1.4"
-  }
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
+    "precommit-hook": "^3.0.0",
+    "run-sequence": "^1.1.4",
+    "through2": "^2.0.3"
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ]
 }

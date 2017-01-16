@@ -10,6 +10,8 @@ CHANGES AFTER VERSION 1.8.2
   * Treat update/insert target attribute as ID - fixes #14
   * Replace deprecated event methods with on/off methods - fixes #18
   * Do not use FormData with GET forms - fixes #25
+  * Use style guides - fixes #24
+  * Sequential script instructions - fixes #15
 
 CHANGES AFTER VERSION 1.7.8
 =============================
