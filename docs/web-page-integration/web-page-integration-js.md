@@ -63,9 +63,26 @@ $(document).on("tdi:ajax:start", function(evt, data) {
 Some events allow preventing the default behaviour:
 
 ```javascript
+$(document).on('tdi:ajax:beforeLinkClick', 'a',  function(evt, data) {
+    evt.preventDefault();
+
+    // Set custom HTTP headers and then send the request manually
+    TDI.Ajax.send(evt.target, {
+        beforeStart : function(xhr, settings, ajaxOptions) {
+            xhr.setRequestHeader('X-Foo', 'Bar');
+            return true; // allow the TDI sending process to go on
+        }
+    });
+});
+```
+
+```javascript
 $(document).on("tdi:ajax:beforeFormSubmit", function(evt, data) {
-    // do something
+    evt.preventDefault(); // prevent the default action, eg. submiting the form
     
-    evt.preventDefault(); // prevent the default action, eg. submiting the form  
+    // process form data
+    // set http headers
+    // send form some other way
+    // ...
 });
 ```
