@@ -2,21 +2,19 @@
   "name": "twinstone-tdi",
   "version": "1.9.0-pre2",
   "description": "Turbocharged Direct Infusion",
-  "homepage": "https://www.twinstone.org/projects/tdi",
-  "directories": {
-    "doc": "doc",
-    "example": "example",
-    "test": "tests"
-  },
+  "homepage": "https://github.com/twinstone/tdi",
+  "main": "./build/tdi-bundle.min.js",
   "scripts": {
     "test": "gulp test",
-    "lint": "gulp lint"
+    "lint": "gulp lint",
+	"build": "gulp build",
+	"prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/twinstone/tdi.git"
   },
-  "author": "",
+  "author": "Ivan Čentéš, Etnetera a.s.",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/twinstone/tdi/issues"
