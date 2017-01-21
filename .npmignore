@@ -5,3 +5,12 @@ docthemes
 example
 node_modules
 .idea
+.editorconfig
+.jscsrc
+.jshintrc
+.travis.yml
+_config.yml
+banner.txt
+gulpfile.js
+wf.bmml
+wf.png
