@@ -1,8 +1,5 @@
 src
 tests
-docs
-docthemes
-example
 node_modules
 .idea
 .editorconfig
@@ -14,3 +11,4 @@ banner.txt
 gulpfile.js
 wf.bmml
 wf.png
+README-jsdoc.md
