@@ -23,7 +23,7 @@ URL where to redirect to.
 
 ## Events - Javascript API
 
-* [tdi:ajax:beforeRedirect](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:beforeRedirect)
+* [tdi:ajax:beforeRedirect](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:beforeRedirect)
 
 # Examples
 

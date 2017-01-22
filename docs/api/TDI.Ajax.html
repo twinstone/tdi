@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Index</title>
+	<title>Documentation Namespace: Ajax</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -72,105 +72,313 @@
 		<div id="main">
 			
 
+	<h1 class="page-title">Namespace: Ajax</h1>
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="TDI.html">TDI</a>.</span>
+        
+        Ajax
+        </h2>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Basic Ajax functionality for the TDI library.
+Used to bind DOM events to desired HTML elements
+and send the TDI request when the events fire.</p>
+<p>Requires TDI global object.</p></div>
+        
+
+        
+<dl class="details">
+    
+
 	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
 	
 
 
 
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Namespaces</h3>
+
+        <dl>
+            <dt><a href="namespaces.html#TDI.Ajax.Request"><a href="TDI.Ajax.Request.html">Request</a></a></dt>
+            <dd></dd>
+        
+            <dt><a href="namespaces.html#TDI.Ajax.Response"><a href="TDI.Ajax.Response.html">Response</a></a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<hr>
+<dt>
+    <h4 class="name" id=".send"><span class="type-signature">&lt;static> </span>send(elm, callbacks)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Universal method for sending a TDI.Ajax call. It is called internaly for all Ajax enabled
+elements (like Links, Forms, Selects, Inputs). This method may be used in other scripts as <code>TDI.Ajax.send( elm );</code> where the <code>elm</code> parameter points to the element, which would trigger the Ajax call if it was Ajax enabled.</p>
+
+<dl>
+  <dt>There are some HTML attributes of the element, which are used to configure the call:</dt>
+  <dd><code><span>href</span></code> <span>The target URL of the Ajax call</span></dd>
+  <dd><code><span>action</span></code> <span>The same as <strong>href</strong but used at Form elements</span></dd>
+  <dd><code><span>data-ajax-url</span></code> <span>The target URL of the Ajax call. Used if the Ajax URL should be different than the one defined by <strong>href</strong> or <strong>action</strong> attributes, or if the HTML element does not have URL attributes (select, input, ...)</span></dd>
+  <dd><code><span>method</span></code> <span>The HTTP method to be used for the Ajax request. Only for Form elements. <strong>Forms with &lt;input type=&quot;file&quot;&gt; elements will have forced POST method!</strong></dd>
+  <dd><code><span>data-ajax-method</span></code> <span>The HTTP method to be used for the Ajax request. The same as <strong>method</strong> but applicable for all elements. If used on Form element, it has precedence before <strong>method</strong> attribute (except Forms with file fields which have always POST method). Defaults to GET.</dd>
+  <dd><code><span>data-related-element</span></code> <span>A selector pointing to a related element. This element(s) gets notified when the Ajax call starts/ends.</span></dd>
+  <dd class="parameter_deprecated"><code><span>rel</span></code> <span>(deprecated; use <strong>data-related-element</strong> instead) The same as <strong>data-related-element</strong></span></dd>
+  <dd><code><span>data-related-ancestor</span></code> <span>A selector pointing to a related parent element. This element gets notified when the Ajax call starts/ends</span></dd>
+  <dd><code><span>data-confirm</span></code> <span>A confirmation message. Use when the user should be able to stop the Ajax call</span></dd>
+  <dd><code><span>disabled</span></code> <span>The Ajax call does not start if the element has the <strong>disabled</strong> atribute set</span></dd>
+  <dd><code><span>class=&quot;disabled&quot;</span></code> <span>The Ajax call does not start if the element has a <strong>disabled</strong> class name</span></dd>
+</dl>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>elm</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">jQuery</span>
+|
+
+<span class="param-type">HTMLElement</span>
 
 
 
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The element which is used as a trigger for the Ajax call.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callbacks</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
 
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>An optional set of callbacks:
+  <dl>
+    <dd><code><span>beforeStart</span> <span>&lt;Function&gt;</span></code> <span>If it returns false, the AJAX call and the default <code>start</code> callback will not be executed.</span></dd>
+    <dd><code><span>start</span> <span>&lt;Function&gt;</span></code></dd>
+    <dd><code><span>beforeEnd</span> <span>&lt;Function&gt;</span></code> <span>If it returns false, the default <code>end</code> callback will not be executed.</span></dd>
+    <dd><code><span>end</span> <span>&lt;Function&gt;</span></code></dd>
+  </dl></p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
 
 
 
 	
+
 	
 
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>xhr The jqXHR object or null if the iframe method was used to send a form</p>
+</div>
 
 
 
-
-    <section class="readme-section">
-        <article><h1>TDI - Javascript API</h1><h2>Parts</h2><ul>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.html">TDI.Ajax</a></strong></li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html">TDI.Ajax.Request</a></strong></li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html">TDI.Ajax.Response</a></strong></li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Tools.html">TDI.Tools</a></strong></li>
-</ul>
-<h2>API methods</h2><ul>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.html#.send__anchor">TDI.Ajax.send(elm, callbacks)</a></strong> - Simulates usual TDI behaviour - sending a request using TDI element<ul>
-<li><strong><code>elm</code></strong> - HTML element, which contains TDI info (see. <a href="README.md">Web Page Integration</a>)</li>
-<li><code>callbacks</code> - can contain different callback functions</li>
-</ul>
-</li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.send__anchor">TDI.Ajax.Request.send(url, options)</a></strong> - Sends a TDI request to the specified URL<ul>
-<li><strong><code>url</code></strong> - target of a TDI request</li>
-<li><code>options</code> - can contain further setings</li>
-</ul>
-</li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.sendForm__anchor">TDI.Ajax.Request.sendForm(form, options)</a></strong> - Sends a TDI form using hidden <code>&lt;iframe&gt;</code> tag. Used when the browser does not support <code>FormData</code> and the form cannot be sent using <code>XHR</code>.<ul>
-<li><strong><code>form</code></strong> - HTML form</li>
-<li><code>options</code> - can contain further setings</li>
-</ul>
-</li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.ajaxifyUrl__anchor">TDI.Ajax.Request.ajaxifyUrl(url)</a></strong> - Marks the URL for TDI usage - a GET parameter <code>_infuse=1</code> is added to the request<ul>
-<li><strong><code>url</code></strong> - The URL to mark</li>
-</ul>
-</li>
-</ul>
-<h3>Examples of usage</h3><pre class="prettyprint source lang-javascript"><code>TDI.Ajax.send($(&quot;#buy-link&quot;), {
-    end : function() {
-        alert(&quot;Thank you.&quot;);  
-    }
-});
-
-TDI.Ajax.Request.send(&quot;/path/to/action&quot;, {
-    method : &quot;POST&quot;
-});
-`</code></pre><h2>API events</h2><p>TDI uses so-called Custom events for notifications about TDI process flow. Events in TDI can be separated into two groups:</p>
-<ul>
-<li><strong>process</strong>  - informs about the flow and state of TDI process<ul>
-<li><a href="http://twinstone.github.io/tdi/docs/api/TDI.html#.event:tdi:ajax:beforeLinkClick"><code>tdi:ajax:beforeLinkClick</code></a> - allows suspending default action (sending a  TDI request)</li>
-<li><a href="http://twinstone.github.io/tdi/docs/api/TDI.html#.event:tdi:ajax:beforeFormSubmit"><code>tdi:ajax:beforeFormSubmit</code></a> - allows suspending default action (sending a form)</li>
-<li><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.event:tdi:ajax:start"><code>tdi:ajax:start</code></a></li>
-<li><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.event:tdi:ajax:error"><code>tdi:ajax:error</code></a></li>
-<li><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.event:tdi:ajax:end"><code>tdi:ajax:end</code></a></li>
-<li><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:done"><code>tdi:ajax:done</code></a></li>
-</ul>
-</li>
-<li><strong>protocol</strong> - informs about separate server instructions (see <a href="../infusing-protocol/README.md">Infusing Protocol</a>)<ul>
-<li><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#toc2__anchor">all other events from TDI.Ajax.Response</a> - all before* actions allow suspending of the default action</li>
-</ul>
-</li>
-</ul>
-<h3>Events usage</h3><pre class="prettyprint source lang-javascript"><code>$(document).on(&quot;tdi:ajax:start&quot;, function(evt, data) {
-    // evt - Event object
-    // data - Additional data  
-});</code></pre><h3>Preventing of the default action</h3><p>Some events allow preventing the default behaviour:</p>
-<pre class="prettyprint source lang-javascript"><code>$(document).on('tdi:ajax:beforeLinkClick', 'a',  function(evt, data) {
-    evt.preventDefault();
-
-    // Set custom HTTP headers and then send the request manually
-    TDI.Ajax.send(evt.target, {
-        beforeStart : function(xhr, settings, ajaxOptions) {
-            xhr.setRequestHeader('X-Foo', 'Bar');
-            return true; // allow the TDI sending process to go on
-        }
-    });
-});</code></pre><pre class="prettyprint source lang-javascript"><code>$(document).on(&quot;tdi:ajax:beforeFormSubmit&quot;, function(evt, data) {
-    evt.preventDefault(); // prevent the default action, eg. submiting the form
-
-    // process form data
-    // set http headers
-    // send form some other way
-    // ...
-});</code></pre></article>
-    </section>
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">jqXHR</span>
 
 
 
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

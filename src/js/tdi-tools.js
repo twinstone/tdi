@@ -20,14 +20,15 @@
 	/**
 	 * <p>A set of tools for the TDI library.</p>
 	 * <p>Requires TDI global object.</p>
-	 * @class Tools
-	 * @namespace TDI
+	 * @namespace Tools
+	 * @memberOf TDI
 	 */
 	TDI.Tools = {
 		/**
 		 * <p>Loads an external javascript file. It uses a 'script tag' technique instead of AJAX,
-		 * so the loaded javascript file is debugable in tools like Firebug.</p>
-		 * @method getScript
+		 * so the loaded javascript file is debuggable in tools like Firebug.</p>
+		 * @function getScript
+		 * @memberOf TDI.Tools
 		 * @param {String} url URL of the external javascript file
 		 * @param {Object} options Additional options
 		 *   <dl>
@@ -81,7 +82,8 @@
 		/**
 		 * <p>Loads an external CSS file. It uses AJAX to load the CSS data to provide
 		 * the <em>complete</em> event.</p>
-		 * @method getStyle
+		 * @function getStyle
+		 * @memberOf TDI.Tools
 		 * @param {String} url URL of the external CSS file
 		 * @param {Object} options Additional options
 		 *   <dl>

@@ -62,7 +62,7 @@
 	 * using the Infusion AJAX protocol, see:
 	 * https://wiki.twinstone.org/display/TDI/Infusing+Protocol.</p>
 	 * Minimum jQuery version required for TDI is 1.10.2.
-	 * @module TDI
+	 * @namespace TDI
 	 */
 	window.TDI = (function () {
 		// PRIVATE STUFF -----------------------------------------------------------

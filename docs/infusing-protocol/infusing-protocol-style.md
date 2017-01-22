@@ -28,8 +28,8 @@ ID of the stylesheet. In case there is another stylesheet with the same ID on th
 
 ## Events - Javascript API
 
-* [tdi:ajax:beforeStyle](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:beforeStyle)
-* [tdi:ajax:style](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:style)
+* [tdi:ajax:beforeStyle](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:beforeStyle)
+* [tdi:ajax:style](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:style)
 
 # Examples
 

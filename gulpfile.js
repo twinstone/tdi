@@ -11,19 +11,18 @@
 	var template = require('gulp-template');
 	var uglify = require('gulp-uglify');
 	var rename = require('gulp-rename');
-	var yuidoc = require('gulp-yuidoc');
 	var qunit = require('gulp-qunit');
 	var jshint = require('gulp-jshint');
 	var jscs = require('gulp-jscs');
 	var stylish = require('gulp-jscs-stylish');
 	var eol = require('eol');
+	var jsdoc = require('gulp-jsdoc3');
 
 	var packageJson = require('./package.json');
 	var rootFolder = './';
 	var srcFolder = rootFolder + 'src/';
 	var buildFolder = rootFolder + 'build/';
-	var docFolder = rootFolder + 'doc/api/';
-	var docThemeFolder = rootFolder + 'docthemes';
+	var docApiFolder = rootFolder + 'docs/api/';
 	var testFolder = rootFolder + 'tests/';
 	var bundleName = 'tdi-bundle';
 
@@ -35,8 +34,23 @@
 	});
 
 	gulp.task('cleanDoc', function () {
-		return gulp.src(docFolder, {read: false})
+		return gulp.src(docApiFolder, {read: false})
 			.pipe(rimraf());
+	});
+
+	gulp.task('doc', ['cleanDoc'], function () {
+		return gulp.src(["./README-jsdoc.md", srcFolder + "js/*.js"], {read: false})
+			.pipe(jsdoc({
+				"tags": {
+					"allowUnknownTags": true
+				},
+				"opts": {
+					"destination": docApiFolder
+				},
+				"plugins": [
+					"plugins/markdown"
+				]
+			}));
 	});
 
 	gulp.task('bundle', [], function () {
@@ -85,17 +99,6 @@
 			.pipe(gulp.dest(buildFolder));
 	});
 
-	gulp.task('copyDocTheme', function () {
-		return gulp.src(docThemeFolder + '/default/**/*')
-			.pipe(gulp.dest(docFolder));
-	});
-
-	gulp.task('doc', ['cleanDoc', 'copyDocTheme'], function () {
-		return gulp.src(srcFolder + "js/*.js")
-			.pipe(yuidoc())
-			.pipe(gulp.dest(docFolder));
-	});
-
 	gulp.task('test', ['prepare'], function () {
 		return gulp.src(testFolder + '*.html')
 			.pipe(qunit({timeout: 10}));
@@ -115,7 +118,7 @@
 	});
 
 	gulp.task('build', function () {
-		runSequence('lint', 'test');
+		runSequence('lint', 'test', 'doc');
 	});
 	gulp.task('default', ['build']);
 }());

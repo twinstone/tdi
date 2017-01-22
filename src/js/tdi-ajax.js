@@ -22,8 +22,8 @@
 	 * Used to bind DOM events to desired HTML elements
 	 * and send the TDI request when the events fire.</p>
 	 * <p>Requires TDI global object.</p>
-	 * @class Ajax
-	 * @namespace TDI
+	 * @namespace Ajax
+	 * @memberOf TDI
 	 */
 	TDI.Ajax = (function () {
 
@@ -79,7 +79,7 @@
 		 *   <li><code>onchange</code> - ajax enabled form fields</li>
 		 *   <li><code>onunload</code> - window</li>
 		 * </ul>
-		 * @method _bindUI
+		 * @function _bindUI
 		 * @private
 		 */
 		function _bindUI() {
@@ -108,7 +108,7 @@
 		 *   <li><code>onchange</code></li>
 		 *   <li><code>onunload</code></li>
 		 * </ul>
-		 * @method _unbindUI
+		 * @function _unbindUI
 		 * @private
 		 */
 		function _unbindUI(evt) {
@@ -123,7 +123,8 @@
 		// EVENT HANDLERS ------------------------------------------------------------
 		/**
 		 * <p>The link onclick event handler. Used to trigger the preventable <code>tdi:ajax:beforeLinkClick</code> event.</p>
-		 * @method _onBeforeLinkClick
+		 * @function _onBeforeLinkClick
+		 * @fires TDI#tdi:ajax:beforeLinkClick
 		 * @private
 		 * @param {Event} evt The event object
 		 */
@@ -140,11 +141,10 @@
 			 * <p>Fires before the link is clicked (before the link action is executed).</p>
 			 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>_onLinkClick</code>).</p>
 			 * @event tdi:ajax:beforeLinkClick
+			 * @memberOf TDI
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>link</span> <span>&lt;jQuery&gt;</span></code> <span>The link object</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {jQuery} link The link object
 			 */
 			$target.trigger('tdi:ajax:beforeLinkClick', {
 				link: $target
@@ -153,7 +153,7 @@
 
 		/**
 		 * <p>The link onclick event handler.</p>
-		 * @method _onLinkClick
+		 * @function _onLinkClick
 		 * @private
 		 * @param {Event} evt The event object
 		 */
@@ -163,7 +163,8 @@
 
 		/**
 		 * <p>The form onsubmit event handler. Used to trigger the preventable <code>tdi:ajax:beforeFormSubmit</code> event.</p>
-		 * @method _onBeforeFormSubmit
+		 * @function _onBeforeFormSubmit
+		 * @fires TDI#tdi:ajax:beforeFormSubmit
 		 * @private
 		 * @param {Event} evt The event object
 		 */
@@ -176,11 +177,10 @@
 			 * <p>Fires before the form is submited.</p>
 			 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>_onFormSubmit</code>).</p>
 			 * @event tdi:ajax:beforeFormSubmit
+			 * @memberOf TDI
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>form</span> <span>&lt;jQuery&gt;</span></code> <span>The form object</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {jQuery} form The form object
 			 */
 			$target.trigger('tdi:ajax:beforeFormSubmit', {
 				form: $target
@@ -189,7 +189,7 @@
 
 		/**
 		 * <p>The form onsubmit event default method.</p>
-		 * @method _onFormSubmit
+		 * @function _onFormSubmit
 		 * @private
 		 * @param {Event} evt The event object
 		 */
@@ -200,7 +200,7 @@
 		/**
 		 * <p>Saves the <code>name</code> and <code>value</code> of the submit button which the user used to
 		 * submit the form.</p>
-		 * @method _onFormButtonActivate
+		 * @function _onFormButtonActivate
 		 * @private
 		 * @param {Event} evt The event object
 		 */
@@ -230,7 +230,7 @@
 		 * <p>The field onchange event handler. If the field has the <code>data-ajax-url</code> attribute
 		 * it is used as the trigger element. Otherwise, the fields form is considered to be the trigger
 		 * element.</p>
-		 * @method _onFieldChange
+		 * @function _onFieldChange
 		 * @private
 		 * @param {Event} evt The event object
 		 */
@@ -248,7 +248,7 @@
 		/**
 		 * <p>The field onkeydown event handler. If the field has the <code>data-ajax-url</code> attribute,
 		 * a TDI ajax request is sent when Enter is pressed.</p>
-		 * @method _onFieldSubmit
+		 * @function _onFieldSubmit
 		 * @private
 		 * @param {Event} evt The event object
 		 */
@@ -289,7 +289,8 @@
 			 *   <dd><code><span>disabled</span></code> <span>The Ajax call does not start if the element has the <strong>disabled</strong> atribute set</span></dd>
 			 *   <dd><code><span>class="disabled"</span></code> <span>The Ajax call does not start if the element has a <strong>disabled</strong> class name</span></dd>
 			 * </dl>
-			 * @method send
+			 * @function send
+			 * @memberOf TDI.Ajax
 			 * @static
 			 * @return {jqXHR} xhr The jqXHR object or null if the iframe method was used to send a form
 			 * @param {(String|jQuery|HTMLElement)} elm The element which is used as a trigger for the Ajax call.
@@ -418,8 +419,8 @@
 
 	/**
 	 * <p>The Request API for the TDI Ajax. Provides methods to send TDI requests.</p>
-	 * @class Request
-	 * @namespace TDI.Ajax
+	 * @namespace Request
+	 * @memberOf TDI.Ajax
 	 */
 	TDI.Ajax.Request = (function () {
 		var HAS_XHR2_SUPPORT = (function () {
@@ -433,7 +434,8 @@
 
 			/**
 			 * <p>Sends the Ajax request and calls the needed callback methods.</p>
-			 * @method send
+			 * @function send
+			 * @memberOf TDI.Ajax.Request
 			 * @static
 			 * @return {jqXHR} xhr The jqXHR object
 			 * @param {String} url The request URL.
@@ -554,7 +556,8 @@
 
 			/**
 			 * <p>Submits a form using an Iframe (fake Ajax call).</p>
-			 * @method sendForm
+			 * @function sendForm
+			 * @memberOf TDI.Ajax.Request
 			 * @static
 			 * @return {jqXHR} xhr The jqXHR object or null if the iframe method is used
 			 * @param {String|jQuery|HTMLElement} form The form element which will be sent.
@@ -712,7 +715,8 @@
 
 			/**
 			 * <p>Modifies the URL and adds an Ajax (tdi) flag.</p>
-			 * @method ajaxifyUrl
+			 * @function ajaxifyUrl
+			 * @memberOf TDI.Ajax.Request
 			 * @static
 			 * @param {String} url The URL to modify
 			 * @return {String} The modified URL
@@ -742,7 +746,8 @@
 	/**
 	 * <p>The Response API for the TDI AJAX. Provides a set of custom <em>tdi</em> events which can be used
 	 * to control or to react to the TDI responses.</p>
-	 * @class Response
+	 * @namespace Response
+	 * @memberOf TDI.Ajax
 	 */
 	TDI.Ajax.Response = (function () {
 		var i;
@@ -800,14 +805,11 @@
 			/**
 			 * <p>Fires when all TDI &lt;update&gt;s are done.</p>
 			 * @event tdi:ajax:updatesDone
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>updates</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all updates</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {Array} updates The list of all updates
+			 * @property {Object} options Additional request options
 			 */
 			$involvedElms.trigger('tdi:ajax:updatesDone', [{
 				updates: updates,
@@ -819,14 +821,11 @@
 			/**
 			 * <p>Fires when all TDI &lt;insert&gt;s are done.</p>
 			 * @event tdi:ajax:insertsDone
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>inserts</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all inserts</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {Array} inserts The list of all inserts
+			 * @property {Object} options Additional request options
 			 */
 			$involvedElms.trigger('tdi:ajax:insertsDone', [{
 				inserts: inserts,
@@ -838,14 +837,11 @@
 			/**
 			 * <p>Fires when all TDI &lt;script&gt;s are done.</p>
 			 * @event tdi:ajax:scriptsDone
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>scripts</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all scripts</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {Array} scripts The list of all scripts
+			 * @property {Object} options Additional request options
 			 */
 			$involvedElms.trigger('tdi:ajax:scriptsDone', [{
 				scripts: scripts,
@@ -857,14 +853,11 @@
 			/**
 			 * <p>Fires when all TDI &lt;style&gt;s are done.</p>
 			 * @event tdi:ajax:stylesDone
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>styles</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all styles</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {Array} styles The list of all styles
+			 * @property {Object} options Additional request options
 			 */
 			$involvedElms.trigger('tdi:ajax:stylesDone', [{
 				styles: styles,
@@ -876,14 +869,11 @@
 			/**
 			 * <p>Fires when all TDI &lt;popup&gt;s are done.</p>
 			 * @event tdi:ajax:popupsDone
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>popups</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all popups</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {Array} popups The list of all popups
+			 * @property {Object} options Additional request options
 			 */
 			$involvedElms.trigger('tdi:ajax:popupsDone', [{
 				popups: popups,
@@ -895,14 +885,11 @@
 			/**
 			 * <p>Fires when all &lt;unknown&gt; TDI instructions are done.</p>
 			 * @event tdi:ajax:unknownsDone
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>instructions</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all unknown instructions</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {Array} instructions The list of all unknown instructions
+			 * @property {Object} options Additional request options
 			 */
 			$involvedElms.trigger('tdi:ajax:unknownsDone', [{
 				unknowns: unknowns,
@@ -914,14 +901,11 @@
 			/**
 			 * <p>Fires when all TDI actions are done.</p>
 			 * @event tdi:ajax:done
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>responses</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The list of all TDI actions</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {Array} responses The list of all instructions
+			 * @property {Object} options Additional request options
 			 */
 			$involvedElms.trigger('tdi:ajax:done', [{
 				responses: responses,
@@ -932,7 +916,8 @@
 		// CALLBACKS -----------------------------------------------------------------
 		/**
 		 * <p>The default <em>start</em> callback.</p>
-		 * @method _start
+		 * @function _start
+		 * @fires TDI.Ajax.Request#tdi:ajax:start
 		 * @private
 		 * @param {jqXHR} xhr The jqXHR object
 		 * @param {Object} settings The Ajax settings
@@ -945,16 +930,12 @@
 			/**
 			 * <p>Fires when the TDI request has started.</p>
 			 * @event tdi:ajax:start
+			 * @memberOf TDI.Ajax.Request
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>xhr</span> <span>&lt;jqXHR&gt;</span></code>
-			 *       <span>The jqXHR object</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *     <dd><code><span>settings</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The Ajax settings</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {jqXHR} xhr The jqXHR object
+			 * @property {Object} options Additional request options
+			 * @property {Object} settings The Ajax settings
 			 */
 			$(options.involvedElms || document).trigger('tdi:ajax:start', [{
 				xhr: xhr,
@@ -965,7 +946,14 @@
 
 		/**
 		 * <p>The default <em>success</em> callback.</p>
-		 * @method _success
+		 * @function _success
+		 * @fires TDI.Ajax.Response#tdi:ajax:updatesDone
+		 * @fires TDI.Ajax.Response#tdi:ajax:insertsDone
+		 * @fires TDI.Ajax.Response#tdi:ajax:scriptsDone
+		 * @fires TDI.Ajax.Response#tdi:ajax:stylesDone
+		 * @fires TDI.Ajax.Response#tdi:ajax:popupsDone
+		 * @fires TDI.Ajax.Response#tdi:ajax:unknownsDone
+		 * @fires TDI.Ajax.Response#tdi:ajax:done
 		 * @private
 		 * @param {jQuery} xml The response XML document
 		 * @param {String} textStatus The status of the response
@@ -1045,7 +1033,8 @@
 
 		/**
 		 * <p>The default <em>error</em> callback.</p>
-		 * @method _error
+		 * @function _error
+		 * @fires TDI.Ajax.Request#tdi:ajax:error
 		 * @private
 		 * @param {jqXHR} xhr The jqXHR object
 		 * @param {String} textStatus The status of the response
@@ -1056,20 +1045,14 @@
 			/**
 			 * <p>Fires when the Ajax request ends with an error.</p>
 			 * @event tdi:ajax:error
+			 * @memberOf TDI.Ajax.Request
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>status</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The XHR status text (if available)</span></dd>
-			 *     <dd><code><span>message</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>The error message</span></dd>
-			 *     <dd><code><span>xhr</span> <span>&lt;jqXHR&gt;</span></code>
-			 *       <span>The jqXHR object (see jQuery documentation for jQuery.ajax())</span></dd>
-			 *     <dd><code><span>textStatus</span> <span>&lt;String&gt;</span></code>
-			 *       <span>The XHR text status (if available)</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {String} status The XHR status text (if available)
+			 * @property {String} message The error message
+			 * @property {jqXHR} xhr The jqXHR object (see jQuery documentation for jQuery.ajax())
+			 * @property {String} textStatus The XHR text status (if available)
+			 * @property {Object} options Additional request options
 			 */
 			$(document).trigger('tdi:ajax:error', [{
 				status: xhr ? xhr.status : 'N/A',
@@ -1082,19 +1065,18 @@
 
 		/**
 		 * <p>The default <em>end</em> callback.</p>
-		 * @method _end
+		 * @function _end
+		 * @fires TDI.Ajax.Request#tdi:ajax:end
 		 * @private
 		 */
 		function _end(xhr, textStatus, options) {
 			/**
 			 * <p>Fires when the TDI request has ended.</p>
 			 * @event tdi:ajax:end
+			 * @memberOf TDI.Ajax.Request
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>options</span> <span>&lt;Array&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {Object} options Additional request options
 			 */
 			$(options.involvedElms || document).trigger('tdi:ajax:end', [{
 				options: options
@@ -1106,7 +1088,8 @@
 		 * <p>The beforeUpdate callback. It takes the &lt;update&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default update action.</p>
 		 *
-		 * @method _onBeforeUpdate
+		 * @function _onBeforeUpdate
+		 * @fires TDI.Ajax.Request#tdi:ajax:beforeUpdate
 		 * @private
 		 * @param {XMLNode} tag The &lt;update&gt; xml tag
 		 * @param {Object} options Additional request options
@@ -1147,32 +1130,21 @@
 				 * <p>Fires before the TDI <em>update</em> takes place.</p>
 				 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onUpdateDefault</code>).</p>
 				 * @event tdi:ajax:beforeUpdate
+				 * @memberOf TDI.Ajax.Response
 				 * @param {Event} evt The event object
-				 * @param {Object} data The event data:
-				 *   <dl>
-				 *     <dd><code><span>target_id</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The ID of the update target</span></dd>
-				 *     <dd><code><span>selector</span> <span>&lt;String&gt;</span></code>
-				 *       <span>CSS selector for multiple targets</span></dd>
-				 *     <dd><code><span>target</span> <span>&lt;jQuery&gt;</span></code>
-				 *       <span>The update target</span></dd>
-				 *     <dd><code><span>content</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The update contents</span></dd>
-				 *     <dd><code><span>content_empty</span> <span>&lt;Boolean&gt;</span></code>
-				 *       <span>Indicates whether the contents are empty</span></dd>
-				 *     <dd><code><span>replace</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Indicates whether the contents will replace the whole target</span></dd>
-				 *     <dd><code><span>append</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Indicates whether the contents will be appended to the end of the target</span></dd>
-				 *     <dd><code><span>prepend</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Indicates whether the contents will be prepended to the beginning of the target</span></dd>
-				 *     <dd><code><span>class_add</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Space separated list of class names to add</span></dd>
-				 *     <dd><code><span>class_remove</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Space separates list of class names to remove</span></dd>
-				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
-				 *       <span>The XML tag</span></dd>
-				 *   </dl>
+				 * @param {Object} data The event properties
+				 * @property {String} target_id The ID of the update target
+				 * @property {String} selector CSS selector for multiple targets
+				 * @property {jQuery} target The update target
+				 * @property {String} content The update contents
+				 * @property {Boolean} content_empty Indicates whether the contents are empty
+				 * @property {Boolean} replace Indicates whether the contents will replace the whole target
+				 * @property {Boolean} append Indicates whether the contents will be appended to the end of the target
+				 * @property {Boolean} prepend Indicates whether the contents will be prepended to the beginning of the target
+				 * @property {String} class_add Space separated list of class names to add
+				 * @property {String} class_remove Space separated list of class names to remove
+				 * @property {Object} options Additional request options
+				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
 				target.first().trigger('tdi:ajax:beforeUpdate', eventData);
 
@@ -1184,7 +1156,8 @@
 		 * <p>The beforeInsert callback. It takes the &lt;insert&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default insert action.</p>
 		 *
-		 * @method _onBeforeInsert
+		 * @function _onBeforeInsert
+		 * @fires TDI.Ajax.Request#tdi:ajax:beforeInsert
 		 * @private
 		 * @param {XMLNode} tag The &lt;insert&gt; xml tag
 		 * @param {Object} options Additional request options
@@ -1218,20 +1191,16 @@
 				 * <p>Fires before the TDI <em>insert</em> takes place.</p>
 				 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onInsertDefault</code>).</p>
 				 * @event tdi:ajax:beforeInsert
+				 * @memberOf TDI.Ajax.Response
 				 * @param {Event} evt The event object
-				 * @param {Object} data The event data:
-				 *   <dl>
-				 *     <dd><code><span>target_id</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The ID of the update target</span></dd>
-				 *     <dd><code><span>target</span> <span>&lt;jQuery&gt;</span></code>
-				 *       <span>The update target</span></dd>
-				 *     <dd><code><span>content</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The contents</span></dd>
-				 *     <dd><code><span>position</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The position of the insert (before|after)</span></dd>
-				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
-				 *       <span>The XML tag</span></dd>
-				 *   </dl>
+				 * @param {Object} data The event properties
+				 * @property {String} target_id The ID of the insert target
+				 * @property {String} selector CSS selector for multiple targets
+				 * @property {jQuery} target The insert target
+				 * @property {String} content The insert contents
+				 * @property {String} position The position of the insert (before|after)
+				 * @property {Object} options Additional request options
+				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
 				target.first().trigger('tdi:ajax:beforeInsert', eventData);
 
@@ -1243,7 +1212,8 @@
 		 * <p>The beforeScript callback. It takes the &lt;script&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default script action.</p>
 		 *
-		 * @method _onBeforeScript
+		 * @function _onBeforeScript
+		 * @fires TDI.Ajax.Request#tdi:ajax:beforeScript
 		 * @private
 		 * @param {XMLNode} tag The &lt;script&gt; xml tag
 		 * @param {Object} options Additional request options
@@ -1272,18 +1242,14 @@
 			 * <p>Fires before the TDI <em>script</em> takes place.</p>
 			 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onScriptDefault</code>).</p>
 			 * @event tdi:ajax:beforeScript
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>script_src</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Path to the external Javascript file</span></dd>
-			 *     <dd><code><span>script_data</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Inline Javascript code</span></dd>
-			 *     <dd><code><span>script_id</span> <span>&lt;String&gt;</span></code>
-			 *       <span>ID of the &lt;script&gt; tag</span></dd>
-			 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
-			 *       <span>The XML tag</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {String} script_src Path to the external Javascript file
+			 * @property {String} script_data Inline Javascript code
+			 * @property {String} script_id ID of the &lt;script&gt; tag
+			 * @property {Object} options Additional request options
+			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
 			$(document).trigger('tdi:ajax:beforeScript', eventData);
 		}
@@ -1292,7 +1258,8 @@
 		 * <p>The beforeStyle callback. It takes the &lt;style&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default style action.</p>
 		 *
-		 * @method _onBeforeStyle
+		 * @function _onBeforeStyle
+		 * @fires TDI.Ajax.Request#tdi:ajax:beforeStyle
 		 * @private
 		 * @param {XMLNode} tag The &lt;style&gt; xml tag
 		 * @param {Object} options Additional request options
@@ -1317,16 +1284,13 @@
 			 * <p>Fires before the TDI <em>style</em> takes place.</p>
 			 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onStyleDefault</code>).</p>
 			 * @event tdi:ajax:beforeStyle
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>style_src</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Path to the external CSS file</span></dd>
-			 *     <dd><code><span>style_id</span> <span>&lt;String&gt;</span></code>
-			 *       <span>ID of the &lt;link&gt; tag</span></dd>
-			 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
-			 *       <span>The XML tag</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {String} style_src Path to the external CSS file
+			 * @property {String} style_id ID of the &lt;link&gt; tag
+			 * @property {Object} options Additional request options
+			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
 			$(document).trigger('tdi:ajax:beforeStyle', eventData);
 
@@ -1336,27 +1300,43 @@
 		/**
 		 * <p>The beforeReload callback. It just reloads the page.</p>
 		 *
-		 * @method _onBeforeReload
+		 * @function _onBeforeReload
+		 * @fires TDI.Ajax.Request#tdi:ajax:beforeReload
 		 * @private
 		 * @param {XMLNode} tag The &lt;reload&gt; xml tag
 		 * @param {Object} options Additional request options
 		 */
 		function _onBeforeReload(tag, options) {
+			if (!tag) {
+				return false;
+			}
+
+			var $tag = $(tag);
+			var eventData = {
+				options: options,
+				tag: $tag,
+			};
+
 			// fire custom events
 			/**
 			 * <p>Fires before the TDI <em>reload</em> takes place.</p>
 			 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onReloadDefault</code>).</p>
 			 * @event tdi:ajax:beforeReload
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
+			 * @param {Object} data The event properties
+			 * @property {Object} options Additional request options
+			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			$(document).trigger('tdi:ajax:beforeReload', {options: options});
+			$(document).trigger('tdi:ajax:beforeReload', eventData);
 		}
 
 		/**
 		 * <p>The before redirect callback. It takes the &lt;redirect&gt; xml node, gets its data and redirects
 		 * the page to the given URL.</p>
 		 *
-		 * @method _onBeforeRedirect
+		 * @function _onBeforeRedirect
+		 * @fires TDI.Ajax.Request#tdi:ajax:beforeRedirect
 		 * @private
 		 * @param {XMLNode} tag The &lt;redirect&gt; xml tag
 		 * @param {Object} options Additional request options
@@ -1367,22 +1347,26 @@
 			}
 
 			var $tag = $(tag);
-			var href = $tag.attr('href');
+			var eventData = {
+				href: $tag.attr('href'),
+				options: options,
+				tag: $tag,
+			};
 
-			if (href) {
+			if (eventData.href) {
 				// fire custom events
 				/**
 				 * <p>Fires before the TDI <em>redirect</em> takes place.</p>
 				 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onRedirectDefault</code>).</p>
 				 * @event tdi:ajax:beforeRedirect
+				 * @memberOf TDI.Ajax.Response
 				 * @param {Event} evt The event object
-				 * @param {Object} data The event data:
-				 *   <dl>
-				 *     <dd><code><span>href</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The URL to redirect to</span></dd>
-				 *   </dl>
+				 * @param {Object} data The event properties
+				 * @property {String} href The URL to redirect to
+				 * @property {Object} options Additional request options
+				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
-				$(document).trigger('tdi:ajax:beforeRedirect', {href: href, options: options});
+				$(document).trigger('tdi:ajax:beforeRedirect', eventData);
 			}
 		}
 
@@ -1390,7 +1374,8 @@
 		 * <p>The beforePopup callback. It takes the &lt;popup&gt; xml node, gets its data and triggers a custom event which
 		 * can stop the default popup action.</p>
 		 *
-		 * @method _onBeforePopup
+		 * @function _onBeforePopup
+		 * @fires TDI.Ajax.Request#tdi:ajax:beforePopup
 		 * @private
 		 * @param {XMLNode} tag The &lt;popup&gt; xml tag
 		 * @param {Object} options Additional request options
@@ -1420,20 +1405,15 @@
 				 * <p>Fires before the TDI <em>popup</em> takes place.</p>
 				 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onPopupDefault</code>).</p>
 				 * @event tdi:ajax:beforePopup
+				 * @memberOf TDI.Ajax.Response
 				 * @param {Event} evt The event object
-				 * @param {Object} data The event data:
-				 *   <dl>
-				 *     <dd><code><span>href</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The URL of the popup</span></dd>
-				 *     <dd><code><span>mode</span> <span>&lt;String&gt;</span></code>
-				 *       <span>The mode of the popup (popup|dialog)</span></dd>
-				 *     <dd><code><span>width</span> <span>&lt;Integer&gt;</span></code>
-				 *       <span>Width of the popup. Available only for <em>dialog</em> mode</span></dd>
-				 *     <dd><code><span>height</span> <span>&lt;Integer&gt;</span></code>
-				 *       <span>Height of the popup. Available only for <em>dialog</em> mode</span></dd>
-				 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
-				 *       <span>The XML tag</span></dd>
-				 *   </dl>
+				 * @param {Object} data The event properties
+				 * @property {String} href The URL of the popup
+				 * @property {String} mode The mode of the popup (popup|dialog)
+				 * @property {Number} width Width of the popup. Available only for <em>dialog</em> mode
+				 * @property {Number} height Height of the popup. Available only for <em>dialog</em> mode
+				 * @property {Object} options Additional request options
+				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
 				$(document).trigger('tdi:ajax:beforePopup', eventData);
 				_responses.popups.push(eventData);
@@ -1444,7 +1424,8 @@
 		 * <p>The beforeUnknown callback. It takes an unknown instruction xml node, gets its data and triggers a custom event which
 		 * can stop the default unknown action.</p>
 		 *
-		 * @method _onBeforeUnknown
+		 * @function _onBeforeUnknown
+		 * @fires TDI.Ajax.Request#tdi:ajax:beforeUnknown
 		 * @private
 		 * @param {XMLNode} tag The unknown instruction xml tag
 		 * @param {Object} options Additional request options
@@ -1461,6 +1442,7 @@
 			var eventData = {
 				_name: name,
 				contents: $.trim($tag.text()),
+				options: options,
 				tag: $tag,
 			};
 
@@ -1473,16 +1455,13 @@
 			 * <p>Fires before the TDI instruction takes place.</p>
 			 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onUnknownDefault</code>).</p>
 			 * @event tdi:ajax:beforeUnknown
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Instruction contents</dd>
-			 *     <dd><code><span>ATTRS_NAME</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Other attributes</dd>
-			 *     <dd><code><span>tag</span> <span>&lt;jQuery&gt;</span></code>
-			 *       <span>The XML tag</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {String} contents Instruction contents
+			 * @property {String} ATTRS_NAME Other attributes
+			 * @property {Object} options Additional request options
+			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
 			$.event.special['tdi:ajax:before' + beforeName] = {
 				_default: customDefault
@@ -1495,7 +1474,8 @@
 		// RESPONSES DEFAULTS
 		/**
 		 * <p>The update default response handler. Updates the specified target with new contents.</p>
-		 * @method _onUpdateDefault
+		 * @function _onUpdateDefault
+		 * @fires TDI.Ajax.Request#tdi:ajax:update
 		 * @private
 		 * @param {Object} evt The event object
 		 * @param {Object} data The update data object:
@@ -1546,37 +1526,29 @@
 			/**
 			 * <p>Fires after the TDI <em>update</em> takes place.</p>
 			 * @event tdi:ajax:update
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>target_id</span> <span>&lt;String&gt;</span></code>
-			 *       <span>The ID of the update target</span></dd>
-			 *     <dd><code><span>target</span> <span>&lt;jQuery&gt;</span></code>
-			 *       <span>The update target</span></dd>
-			 *     <dd><code><span>content</span> <span>&lt;String&gt;</span></code>
-			 *       <span>The update contents</span></dd>
-			 *     <dd><code><span>content_empty</span> <span>&lt;Boolean&gt;</span></code>
-			 *       <span>Indicates whether the contents are empty</span></dd>
-			 *     <dd><code><span>replace</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Indicates whether the contents will replace the whole target</span></dd>
-			 *     <dd><code><span>append</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Indicates whether the contents will be appended to the end of the target</span></dd>
-			 *     <dd><code><span>prepend</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Indicates whether the contents will be prepended to the beginning of the target</span></dd>
-			 *     <dd><code><span>class_add</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Space separated list of class names to add</span></dd>
-			 *     <dd><code><span>class_remove</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Space separates list of class names to remove</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {String} target_id The ID of the update target
+			 * @property {String} selector CSS selector for multiple targets
+			 * @property {jQuery} target The update target
+			 * @property {String} content The update contents
+			 * @property {Boolean} content_empty Indicates whether the contents are empty
+			 * @property {Boolean} replace Indicates whether the contents will replace the whole target
+			 * @property {Boolean} append Indicates whether the contents will be appended to the end of the target
+			 * @property {Boolean} prepend Indicates whether the contents will be prepended to the beginning of the target
+			 * @property {String} class_add Space separated list of class names to add
+			 * @property {String} class_remove Space separated list of class names to remove
+			 * @property {Object} options Additional request options
+			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
 			data.target.trigger('tdi:ajax:update', data);
 		}
 
 		/**
 		 * <p>The insert default response handler. Inserts the contents before/after the target.</p>
-		 * @method _onInsertDefault
+		 * @function _onInsertDefault
+		 * @fires TDI.Ajax.Request#tdi:ajax:insert
 		 * @private
 		 * @param {Object} evt The event object
 		 * @param {Object} data The insert data object:
@@ -1600,28 +1572,25 @@
 			/**
 			 * <p>Fires after the TDI <em>insert</em> takes place.</p>
 			 * @event tdi:ajax:insert
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>target_id</span> <span>&lt;String&gt;</span></code>
-			 *       <span>The ID of the update target</span></dd>
-			 *     <dd><code><span>target</span> <span>&lt;jQuery&gt;</span></code>
-			 *       <span>The update target</span></dd>
-			 *     <dd><code><span>content</span> <span>&lt;String&gt;</span></code>
-			 *       <span>The contents</span></dd>
-			 *     <dd><code><span>position</span> <span>&lt;String&gt;</span></code>
-			 *       <span>The position of the insert (before|after)</span></dd>
-			 *     <dd><code><span>inserted_node</span> <span>&lt;jQuery&gt;</span></code> Reference to the inserted HTML node</span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {String} target_id The ID of the insert target
+			 * @property {String} selector CSS selector for multiple targets
+			 * @property {jQuery} target The insert target
+			 * @property {String} content The insert contents
+			 * @property {String} position The position of the insert (before|after)
+			 * @property {jQuery} inserted_node Reference to the inserted HTML node
+			 * @property {Object} options Additional request options
+			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
 			data.target.trigger('tdi:ajax:insert', data);
 		}
 
 		/**
 		 * <p>The script default response handler. Loads and executes new scripts.</p>
-		 * @method _onScriptDefault
+		 * @function _onScriptDefault
+		 * @fires TDI.Ajax.Request#tdi:ajax:script
 		 * @private
 		 * @param {Object} evt The event object
 		 * @param {Object} data The script data object:
@@ -1661,20 +1630,16 @@
 				/**
 				 * <p>Fires after the TDI <em>script</em> takes place.</p>
 				 * @event tdi:ajax:script
+				 * @memberOf TDI.Ajax.Response
 				 * @param {Event} evt The event object
-				 * @param {Object} data The event data:
-				 *   <dl>
-				 *     <dd><code><span>script_src</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Path to the external Javascript file</span></dd>
-				 *     <dd><code><span>script_data</span> <span>&lt;String&gt;</span></code>
-				 *       <span>Inline Javascript code</span></dd>
-				 *     <dd><code><span>script_id</span> <span>&lt;String&gt;</span></code>
-				 *       <span>ID of the &lt;script&gt; tag</span></dd>
-				 *     <dd><code><span>script_node</span> <span>&lt;jQuery&gt;</span></code>
-				 *       <span>Reference to the inserted &lt;script&gt; node</span></dd>
-				 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
-				 *       <span>Additional request options</span></dd>
-				 *   </dl>
+				 * @param {Object} data The event properties
+				 * @property {String} script_src Path to the external Javascript file
+				 * @property {String} script_data Inline Javascript code
+				 * @property {String} script_id ID of the &lt;script&gt; tag
+				 * @property {jQuery} script_node Reference to the inserted &lt;script&gt;
+				 * @property {jQuery} script_node_inline Reference to the inserted inline &lt;script&gt;
+				 * @property {Object} options Additional request options
+				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
 				$(document).trigger('tdi:ajax:script', data);
 
@@ -1707,7 +1672,8 @@
 
 		/**
 		 * <p>The style default response handler. Loads external stylesheets.</p>
-		 * @method _onStyleDefault
+		 * @function _onStyleDefault
+		 * @fires TDI.Ajax.Request#tdi:ajax:style
 		 * @private
 		 * @param {Object} evt The event object
 		 * @param {Object} data The style data object:
@@ -1736,18 +1702,14 @@
 						/**
 						 * <p>Fires after the TDI <em>style</em> takes place.</p>
 						 * @event tdi:ajax:style
+						 * @memberOf TDI.Ajax.Response
 						 * @param {Event} evt The event object
-						 * @param {Object} data The event data:
-						 *   <dl>
-						 *     <dd><code><span>style_src</span> <span>&lt;String&gt;</span></code>
-						 *       <span>Path to the external CSS file</span></dd>
-						 *     <dd><code><span>style_id</span> <span>&lt;String&gt;</span></code>
-						 *       <span>ID of the &lt;link&gt; tag</span></dd>
-						 *     <dd><code><span>style_node</span> <span>&lt;jQuery&gt;</span></code>
-						 *       <span>Reference to the inserted &lt;link&gt; node</span></dd>
-						 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
-						 *       <span>Additional request options</span></dd>
-						 *   </dl>
+						 * @param {Object} data The event properties
+						 * @property {String} style_src Path to the external CSS file
+						 * @property {String} style_id ID of the &lt;link&gt; tag
+						 * @property {jQuery} style_node Reference to the inserted &lt;link&gt; node
+						 * @property {Object} options Additional request options
+						 * @property {jQuery} tag The raw XML tag of the instruction
 						 */
 						$(document).trigger('tdi:ajax:style', data);
 					},
@@ -1757,7 +1719,7 @@
 
 		/**
 		 * <p>The reload default response handler. Reloads the page.</p>
-		 * @method _onReloadDefault
+		 * @function _onReloadDefault
 		 * @private
 		 * @param {Object} data The reload data object
 		 *   <dl>
@@ -1771,7 +1733,7 @@
 
 		/**
 		 * <p>The redirect default response handler. Redirects the page to a given URL.</p>
-		 * @method _onRedirectDefault
+		 * @function _onRedirectDefault
 		 * @private
 		 * @param {Object} evt The event object
 		 * @param {Object} data The redirect data object:
@@ -1788,7 +1750,8 @@
 
 		/**
 		 * <p>The popup default response handler.</p>
-		 * @method _onPopupDefault
+		 * @function _onPopupDefault
+		 * @fires TDI.Ajax.Request#tdi:ajax:popup
 		 * @private
 		 * @param {Object} evt The event object
 		 * @param {Object} data The popup data object:
@@ -1818,29 +1781,24 @@
 			/**
 			 * <p>Fires after the TDI <em>popup</em> takes place.</p>
 			 * @event tdi:ajax:popup
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>href</span> <span>&lt;String&gt;</span></code>
-			 *       <span>The URL of the popup</span></dd>
-			 *     <dd><code><span>mode</span> <span>&lt;String&gt;</span></code>
-			 *       <span>The mode of the popup (popup|dialog)</span></dd>
-			 *     <dd><code><span>width</span> <span>&lt;Integer&gt;</span></code>
-			 *       <span>Width of the popup. Available only for <em>dialog</em> mode</span></dd>
-			 *     <dd><code><span>height</span> <span>&lt;Integer&gt;</span></code>
-			 *       <span>Height of the popup. Available only for <em>dialog</em> mode</span></dd>
-			 *     <dd><code><span>popup</span> <span>&lt;window&gt;</span></code>
-			 *       <span>Reference to the opened <em>window</em></span></dd>
-			 *     <dd><code><span>options</span> <span>&lt;Object&gt;</span></code>
-			 *       <span>Additional request options</span></dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {String} href The URL of the popup
+			 * @property {String} mode The mode of the popup (popup|dialog)
+			 * @property {Number} width Width of the popup. Available only for <em>dialog</em> mode
+			 * @property {Number} height Height of the popup. Available only for <em>dialog</em> mode
+			 * @property {Window} popup Reference to the opened <em>window</em>
+			 * @property {Object} options Additional request options
+			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
 			$(document).trigger('tdi:ajax:popup', data);
 		}
 
 		/**
 		 * <p>The unknown instruction default response handler.</p>
-		 * @method _onUnknownDefault
+		 * @function _onUnknownDefault
+		 * @fires TDI.Ajax.Request#tdi:ajax:unknown
 		 * @private
 		 * @param {Object} evt The event object
 		 * @param {Object} data The dialog data object:
@@ -1856,14 +1814,13 @@
 			/**
 			 * <p>Fires after the TDI unknown instruction takes place.</p>
 			 * @event tdi:ajax:unknown
+			 * @memberOf TDI.Ajax.Response
 			 * @param {Event} evt The event object
-			 * @param {Object} data The event data:
-			 *   <dl>
-			 *     <dd><code><span>contents</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Instruction contents</dd>
-			 *     <dd><code><span>ATTRS_NAME</span> <span>&lt;String&gt;</span></code>
-			 *       <span>Other attributes</dd>
-			 *   </dl>
+			 * @param {Object} data The event properties
+			 * @property {String} contents Instruction contents
+			 * @property {String} ATTRS_NAME Other attributes
+			 * @property {Object} options Additional request options
+			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
 			$(document).trigger('tdi:ajax:' + data._name, data);
 		}

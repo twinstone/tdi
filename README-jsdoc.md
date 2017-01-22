@@ -1,11 +1,11 @@
-# Web Page Integration - Javascript API
+# TDI - Javascript API
 
-In case it is not possible to use TDI elements the usual way or it is required to manage TDI directly from the javascript, you can use the Javascript API ([API reference](http://twinstone.github.io/tdi/docs/api/)).
+## Parts
 
-API is separated into two parts:
-
-* API methods
-* API events
+* **[TDI.Ajax](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.html)**
+* **[TDI.Ajax.Request](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html)**
+* **[TDI.Ajax.Response](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html)**
+* **[TDI.Tools](http://twinstone.github.io/tdi/docs/api/TDI.Tools.html)**
 
 ## API methods
 

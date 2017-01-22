@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Documentation Namespace: Request</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Documentation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="TDI.html">TDI</a></li><li><a href="TDI.Ajax.html">TDI.Ajax</a></li><li><a href="TDI.Ajax.Request.html">TDI.Ajax.Request</a></li><li><a href="TDI.Ajax.Response.html">TDI.Ajax.Response</a></li><li><a href="TDI.Tools.html">TDI.Tools</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="TDI.Ajax.Request.html#.event:tdi:ajax:end">TDI.Ajax.Request.tdi:ajax:end</a></li><li><a href="TDI.Ajax.Request.html#.event:tdi:ajax:error">TDI.Ajax.Request.tdi:ajax:error</a></li><li><a href="TDI.Ajax.Request.html#.event:tdi:ajax:start">TDI.Ajax.Request.tdi:ajax:start</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:beforeInsert">TDI.Ajax.Response.tdi:ajax:beforeInsert</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:beforePopup">TDI.Ajax.Response.tdi:ajax:beforePopup</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:beforeRedirect">TDI.Ajax.Response.tdi:ajax:beforeRedirect</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:beforeReload">TDI.Ajax.Response.tdi:ajax:beforeReload</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:beforeScript">TDI.Ajax.Response.tdi:ajax:beforeScript</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:beforeStyle">TDI.Ajax.Response.tdi:ajax:beforeStyle</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:beforeUnknown">TDI.Ajax.Response.tdi:ajax:beforeUnknown</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:beforeUpdate">TDI.Ajax.Response.tdi:ajax:beforeUpdate</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:done">TDI.Ajax.Response.tdi:ajax:done</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:insert">TDI.Ajax.Response.tdi:ajax:insert</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:insertsDone">TDI.Ajax.Response.tdi:ajax:insertsDone</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:popup">TDI.Ajax.Response.tdi:ajax:popup</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:popupsDone">TDI.Ajax.Response.tdi:ajax:popupsDone</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:script">TDI.Ajax.Response.tdi:ajax:script</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:scriptsDone">TDI.Ajax.Response.tdi:ajax:scriptsDone</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:style">TDI.Ajax.Response.tdi:ajax:style</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:stylesDone">TDI.Ajax.Response.tdi:ajax:stylesDone</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:unknown">TDI.Ajax.Response.tdi:ajax:unknown</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:unknownsDone">TDI.Ajax.Response.tdi:ajax:unknownsDone</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:update">TDI.Ajax.Response.tdi:ajax:update</a></li><li><a href="TDI.Ajax.Response.html#.event:tdi:ajax:updatesDone">TDI.Ajax.Response.tdi:ajax:updatesDone</a></li><li><a href="TDI.html#.event:tdi:ajax:beforeFormSubmit">TDI.tdi:ajax:beforeFormSubmit</a></li><li><a href="TDI.html#.event:tdi:ajax:beforeLinkClick">TDI.tdi:ajax:beforeLinkClick</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	<h1 class="page-title">Namespace: Request</h1>
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="TDI.html">TDI</a><a href="TDI.Ajax.html">.Ajax</a>.</span>
+        
+        Request
+        </h2>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>The Request API for the TDI Ajax. Provides methods to send TDI requests.</p></div>
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<hr>
+<dt>
+    <h4 class="name" id=".ajaxifyUrl"><span class="type-signature">&lt;static> </span>ajaxifyUrl(url)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Modifies the URL and adds an Ajax (tdi) flag.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The URL to modify</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>The modified URL</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".send"><span class="type-signature">&lt;static> </span>send(url, options)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Sends the Ajax request and calls the needed callback methods.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The request URL.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>jQuery.ajax() settings. Aditional options:
+  <dl>
+    <dd><code><span>method</span> <span>&lt;String&gt;</span></code>
+      <span>The HTTP method used to send the request. Defaults to <em>get</em>.</span></dd>
+    <dd><code><span>data</span> <span>&lt;(String|Object)&gt;</span></code>
+      <span>Data to be sent to the server. It is converted to a query string, if not already a string. See jQuery documentation for <a href="http://api.jquery.com/jQuery.ajax/">$.ajax()</a></span></dd>
+    <dd><code><span>sync</span> <span>&lt;(Boolean)&gt;</span></code>
+      <span>Whether the AJAX request should be synchronous or not. Defaults to <em>false</em></span></dd>
+    <dd><code><span>beforeStart</span> <span>&lt;Function&gt;</span></code>
+        <span>Function to be called before the request is sent. If this function returns <em>false</em>, the request is not sent. This function is called with parameters:</span>
+        <dl>
+          <dd><code><span>xhr</span> <span>&lt;jqXHR&gt;</span></code> the jqXHR object</dd>
+          <dd><code><span>settings</span> <span>&lt;Object&gt;</span></code> The settings map used in the jQuery $.ajax call</dd>
+          <dd><code><span>options</span> <span>&lt;Object&gt;</span></code> Aditional request options</dd>
+        </dl>
+      </dd>
+    <dd><code><span>start</span> <span>&lt;Function&gt;</span></code>
+        <span>Function to be called before the request is sent. This function is called with parameters:</span>
+        <dl>
+          <dd><code><span>xhr</span> <span>&lt;jqXHR&gt;</span></code> The jqXHR object</dd>
+          <dd><code><span>settings</span> <span>&lt;Object&gt;</span></code> The settings map used in the jQuery $.ajax call</dd>
+          <dd><code><span>options</span> <span>&lt;Object&gt;</span></code> Aditional request options</dd>
+         </dl>
+      </dd>
+    <dd><code><span>beforeEnd</span> <span>&lt;Function&gt;</span></code>
+        <span>Function to be called after the request is complete. If this function returns <em>false</em>, the default <em>end</em> callback is not executed. This function is called with parameters:</span>
+        <dl>
+          <dd><code><span>xhr</span> <span>&lt;jqXHR&gt;</span></code> The jqXHR object</dd>
+          <dd><code><span>textStatus</span> <span>&lt;String&gt;</span></code> Status of the request (&quot;success&quot;, &quot;notmodified&quot;, &quot;error&quot;, &quot;timeout&quot;, &quot;abort&quot;, or &quot;parsererror&quot;)</dd>
+          <dd><code><span>options</span> <span>&lt;Object&gt;</span></code> Aditional request options</dd>
+        </dl>
+      </dd>
+    <dd><code><span>end</span> <span>&lt;Function&gt;</span></code>
+        <span>Function to be called after the request is complete. This function is called with parameters:</span>
+        <dl>
+          <dd><code><span>xhr</span> <span>&lt;jqXHR&gt;</span></code> The jqXHR object</dd>
+          <dd><code><span>textStatus</span> <span>&lt;String&gt;</span></code> Status of the request (&quot;success&quot;, &quot;notmodified&quot;, &quot;error&quot;, &quot;timeout&quot;, &quot;abort&quot;, or &quot;parsererror&quot;)</dd>
+          <dd><code><span>options</span> <span>&lt;Object&gt;</span></code> Aditional request options&lt;/&gt;
+        </dl>
+      </dd>
+  </dl></p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>xhr The jqXHR object</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">jqXHR</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".sendForm"><span class="type-signature">&lt;static> </span>sendForm(form, options)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Submits a form using an Iframe (fake Ajax call).</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>form</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">jQuery</span>
+|
+
+<span class="param-type">HTMLElement</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The form element which will be sent.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Aditional request options:
+  <dl>
+    <dd><code><span>beforeStart</span> <span>&lt;Function&gt;</span></code>
+        <span>Function to be called before the request is sent. If this function returns <em>false</em>, the request is not sent. This function is called with parameters:</span>
+        <dl>
+          <dd><code><span>form</span> <span>&lt;jQuery&gt;</span></code> The form which is to be submited</dd>
+          <dd><code><span>options</span> <span>&lt;Object&gt;</span></code> Aditional request options</dd>
+        </dl>
+      </dd>
+    <dd><code><span>start</span> <span>&lt;Function&gt;</span></code>
+        <span>Function to be called before the request is sent. This function is called with parameters:</span>
+        <dl>
+          <dd><code><span>form</span> <span>&lt;jQuery&gt;</span></code> The form which is to be submited</dd>
+          <dd><code><span>options</span> <span>&lt;Object&gt;</span></code> Aditional request options</dd>
+        </dl>
+      </dd>
+    <dd><code><span>beforeEnd</span> <span>&lt;Function&gt;</span></code>
+        <span>Function to be called after the request is complete. If this function returns <em>false</em>, the default <em>end</em> callback is not executed. This function is called with parameters:</span>
+        <dl>
+          <dd><code><span>form</span> <span>&lt;jQuery&gt;</span></code> The form which was submited</dd>
+          <dd><code><span>options</span> <span>&lt;Object&gt;</span></code> Aditional request options</dd>
+          <dd><code><span>xml</span> <span>&lt;jQuery&gt;</span></code> The response XML document</dd>
+        </dl>
+      </dd>
+    <dd><code><span>end</span> <span>&lt;Function&gt;</span></code>
+        <span>Function to be called after the request is complete. This function is called with parameters:</span>
+        <dl>
+          <dd><code><span>form</span> <span>&lt;jQuery&gt;</span></code> The form which was submited</dd>
+          <dd><code><span>options</span> <span>&lt;Object&gt;</span></code> Aditional request options</dd>
+          <dd><code><span>xml</span> <span>&lt;jQuery&gt;</span></code> The response XML document</dd>
+        </dl>
+      </dd>
+  </dl></p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>xhr The jqXHR object or null if the iframe method is used</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">jqXHR</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Events</h3>
+
+        <dl>
+            
+<hr>
+<dt>
+    <h4 class="name" id=".event:tdi:ajax:end">tdi:ajax:end</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Fires when the TDI request has ended.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>evt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The event object</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The event properties</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Additional request options</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".event:tdi:ajax:error">tdi:ajax:error</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Fires when the Ajax request ends with an error.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>evt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The event object</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The event properties</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>status</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The XHR status text (if available)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The error message</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>xhr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">jqXHR</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The jqXHR object (see jQuery documentation for jQuery.ajax())</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>textStatus</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The XHR text status (if available)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Additional request options</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".event:tdi:ajax:start">tdi:ajax:start</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Fires when the TDI request has started.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>evt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The event object</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The event properties</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>xhr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">jqXHR</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The jqXHR object</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Additional request options</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>settings</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The Ajax settings</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        </dl>
+    
+</article>
+
+</section>
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	
+		on 2017-01-22T21:05:51+01:00
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : false,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

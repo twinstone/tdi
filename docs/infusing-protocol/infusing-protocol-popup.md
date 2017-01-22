@@ -44,8 +44,8 @@ Popup window height (only when in `dialog` mode).
 
 ## Events - Javascript API
 
-* [tdi:ajax:beforePopup](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:beforePopup)
-* [tdi:ajax:popup](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:popup)
+* [tdi:ajax:beforePopup](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:beforePopup)
+* [tdi:ajax:popup](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:popup)
 
 # Examples
 

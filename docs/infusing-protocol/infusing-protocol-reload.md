@@ -16,7 +16,7 @@ _No attributes._
 
 ## Events - Javascript API
 
-* [tdi:ajax:beforeReload](http://twinstone.github.io/tdi/docs/api/classes/TDI.Ajax.Response.html#event_tdi:ajax:beforeReload)
+* [tdi:ajax:beforeReload](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:beforeReload)
 
 # Examples
 
