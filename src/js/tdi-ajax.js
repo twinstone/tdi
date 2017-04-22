@@ -158,7 +158,7 @@
 		 * @param {Event} evt The event object
 		 */
 		function _onLinkClick(evt) {
-			TDI.Ajax.send(evt.target);
+			TDI.Ajax.send(evt.target, evt.callbacks);
 		}
 
 		/**
@@ -194,7 +194,7 @@
 		 * @param {Event} evt The event object
 		 */
 		function _onFormSubmit(evt) {
-			TDI.Ajax.send(evt.target);
+			TDI.Ajax.send(evt.target, evt.callbacks);
 		}
 
 		/**
