@@ -1508,7 +1508,7 @@
 
 			// update the target element
 			if (data.replace === 'true') {
-				data.target.find('*').andSelf().off(); // detach all event handlers from the target and its child nodes
+				data.target.find('*').addBack().off(); // detach all event handlers from the target and its child nodes
 				data.target.replaceWith(data.content);
 			}
 			else if (data.append === 'true') {
