@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.9.1
+=============================
+
+==== Overview ====
+  * Replace deprecated jQuery method andSelf() - fixes #33
+
 CHANGES AFTER VERSION 1.8.2
 =============================
 
