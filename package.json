@@ -1,6 +1,6 @@
 {
   "name": "twinstone-tdi",
-  "version": "1.9.0",
+  "version": "1.9.3",
   "description": "Turbocharged Direct Infusion",
   "homepage": "https://github.com/twinstone/tdi",
   "main": "./build/tdi-bundle.min.js",

@@ -602,29 +602,36 @@
 				var $submitButton = $form.data('_submitButton');
 				var url = $form.data('ajax-url') || $form.attr('action');
 
-				// send in iframe or through ajax
+				if (!$form.attr('enctype')) {
+					$form.attr('enctype', 'application/x-www-form-urlencoded');
+				}
+
+				options.contentType = $form.attr('enctype') + '; charset=UTF-8';
+
 				options.method = options.method || $form.attr('method');
+
 				if ($form.find('input[type=file]').length > 0) {
+					// use XHR2 to send file forms when possible otherwise let pass through to the Iframe method
 					options.method = 'post';
-				}
+					$form.attr('enctype', 'multipart/form-data');
+					options.contentType = $form.attr('enctype') + '; charset=UTF-8';
 
-				// send POST forms using Ajax and FormData if possible
-				if (options.method === 'post' && HAS_XHR2_SUPPORT && HAS_FORMDATA_SUPPORT) {
-					options.data = new FormData($form.get(0));
-					options.processData = false;
-					options.contentType = false;
-
-					return TDI.Ajax.Request.send(url, options);
-				}
-				else {
-					// send forms without file uploads using Ajax
-					if ($form.find('input[type=file]').length === 0) {
-						options.data = $form.serialize(); // safe to overwrite
+					if (HAS_XHR2_SUPPORT && HAS_FORMDATA_SUPPORT) {
+						options.data = new FormData($form.get(0));
+						options.processData = false;
+						options.contentType = false;
 
 						return TDI.Ajax.Request.send(url, options);
 					}
 				}
+				else {
+					// send non-file forms using ajax
+					options.data = $form.serialize(); // safe to overwrite
 
+					return TDI.Ajax.Request.send(url, options);
+				}
+
+				// Send file forms using Iframe method
 				// onStart
 				options.url = TDI.Ajax.Request.ajaxifyUrl(url);
 				var res = options.beforeStart && options.beforeStart($form, options);

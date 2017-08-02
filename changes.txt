@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.9.2
+=============================
+
+==== Overview ====
+  * Do not use FormData for all forms, only for the ones with file inputs - fixes #34
+
 CHANGES AFTER VERSION 1.9.1
 =============================
 
