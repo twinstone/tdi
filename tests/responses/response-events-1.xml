@@ -3,6 +3,7 @@
 	<status>OK</status>
 	<update target="update-default">Update default</update>
 	<update target="to-be-emptied"></update>
+	<update target="update-replace" replace="true">&lt;div id="update-replace"&gt;Replaced with new content.&lt;/div&gt;</update>
 	<insert target="inserts">&lt;p&gt;Inserted before (default)&lt;/p&gt;</insert>
 	<script>
 		window._TDI_TEST_SCRIPT_INLINE_1 = true;

@@ -1510,13 +1510,17 @@
 		 *    </dl>
 		 */
 		function _onUpdateDefault(evt, data) {
+			var $replaceTarget;
+
 			// classes
 			data.target.removeClass(data.class_remove).addClass(data.class_add);
 
 			// update the target element
 			if (data.replace === 'true') {
+				$replaceTarget = $(data.content);
 				data.target.find('*').addBack().off(); // detach all event handlers from the target and its child nodes
-				data.target.replaceWith(data.content);
+				data.target.replaceWith($replaceTarget);
+				data.target = $replaceTarget;
 			}
 			else if (data.append === 'true') {
 				data.target.append(data.content);

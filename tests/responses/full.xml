@@ -18,7 +18,7 @@
 	<insert selector=".inserts-multiple-default">&lt;div class="inserted-multiple-after-default"&gt;Inserted after (default)&lt;/div&gt;</insert>
 	<insert selector=".inserts-multiple-after" position="after">&lt;div class="inserted-multiple-after"&gt;Inserted after&lt;/div&gt;</insert>
 	<insert selector=".inserts-multiple-before" position="before">&lt;div class="inserted-multiple-before"&gt;Inserted before&lt;/div&gt;</insert>
-	
+
 	<script>
 		/*QUnit.test( 'TDI.Ajax.Response: inline script', function( assert ) {
 			assert.expect(1);
@@ -38,19 +38,19 @@
 			} );*/
 		}
 	</script>
-	
+
 	<style src="responses/style.css" id="style1"></style>
-	
+
 	<popup href="responses/popup1.html"><!-- default popup --></popup>
 	<popup href="responses/popup2.html" mode="dialog"><!-- default dialog --></popup>
 	<popup href="responses/popup3.html" mode="dialog" width="300" height="300"><!-- dialog with dimensions --></popup>
-	
+
 	<reload></reload>
 	<redirect href="http://google.com"></redirect>
-	
+
 	<message severity="INFO" title="Info message 1 title">Info message 1</message>
 	<message severity="ERROR" name="message-name">Info message 2</message>
-	
+
 	<dialog width="500" height="400" id="dialog1">This is a dialog!</dialog>
 	<dialog action="open" cancel-url="cancel/url" id="dialog2">This is a dialog!</dialog>
 	<dialog action="close" id="dialog3">This is a dialog!</dialog>

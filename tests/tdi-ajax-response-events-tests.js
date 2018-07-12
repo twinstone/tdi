@@ -7,7 +7,7 @@
 		var done = assert.async();
 		var requests = 2;
 		var requestsDone = 0;
-		assert.expect(50);
+		assert.expect(52);
 
 		// bind the events
 		$(document)

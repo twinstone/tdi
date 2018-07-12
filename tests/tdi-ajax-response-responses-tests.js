@@ -34,7 +34,7 @@
 				assert.equal(u1.content, 'Update default', 'Update1: content');
 
 				assert.equal(u2.target_id, 'update-replace', 'Update2: target_id');
-				assert.equal(u2.target.attr('id'), 'update-replace', 'Update2: target');
+				assert.equal(u2.target.attr('id'), 'update-replaced', 'Update2: target');
 				assert.equal(u2.replace, 'true', 'Update2: replace');
 				assert.equal(u2.content, '<div id="update-replaced">Update replace</div>', 'Update2: content');
 
@@ -69,7 +69,7 @@
 				assert.equal(u7.content, 'Update multiple', 'Update7: content');
 
 				assert.equal(u8.selector, '.update-multiple-replace', 'Update8: selector');
-				assert.equal(u8.target.length, 2, 'Update8: targets');
+				assert.equal(u8.target.length, 1, 'Update8: targets');
 				assert.equal(
 					u8.content,
 					'<div class="update-multiple-replaced">Update multiple replace</div>',
