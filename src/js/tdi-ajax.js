@@ -1553,7 +1553,7 @@
 			 * @property {Object} options Additional request options
 			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			data.target.trigger('tdi:ajax:update', data);
+			data.target.first().trigger('tdi:ajax:update', data);
 		}
 
 		/**
