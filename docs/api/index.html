@@ -93,45 +93,56 @@
 
 
     <section class="readme-section">
-        <article><h1>TDI - Javascript API</h1><h2>Parts</h2><ul>
+        <article><h1>TDI - Javascript API</h1>
+<h2>Parts</h2>
+<ul>
 <li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.html">TDI.Ajax</a></strong></li>
 <li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html">TDI.Ajax.Request</a></strong></li>
 <li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html">TDI.Ajax.Response</a></strong></li>
 <li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Tools.html">TDI.Tools</a></strong></li>
 </ul>
-<h2>API methods</h2><ul>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.html#.send__anchor">TDI.Ajax.send(elm, callbacks)</a></strong> - Simulates usual TDI behaviour - sending a request using TDI element<ul>
+<h2>API methods</h2>
+<ul>
+<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.html#.send__anchor">TDI.Ajax.send(elm, callbacks)</a></strong> - Simulates usual TDI behaviour - sending a request using TDI element
+<ul>
 <li><strong><code>elm</code></strong> - HTML element, which contains TDI info (see. <a href="README.md">Web Page Integration</a>)</li>
 <li><code>callbacks</code> - can contain different callback functions</li>
 </ul>
 </li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.send__anchor">TDI.Ajax.Request.send(url, options)</a></strong> - Sends a TDI request to the specified URL<ul>
+<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.send__anchor">TDI.Ajax.Request.send(url, options)</a></strong> - Sends a TDI request to the specified URL
+<ul>
 <li><strong><code>url</code></strong> - target of a TDI request</li>
 <li><code>options</code> - can contain further setings</li>
 </ul>
 </li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.sendForm__anchor">TDI.Ajax.Request.sendForm(form, options)</a></strong> - Sends a TDI form using hidden <code>&lt;iframe&gt;</code> tag. Used when the browser does not support <code>FormData</code> and the form cannot be sent using <code>XHR</code>.<ul>
+<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.sendForm__anchor">TDI.Ajax.Request.sendForm(form, options)</a></strong> - Sends a TDI form using hidden <code>&lt;iframe&gt;</code> tag. Used when the browser does not support <code>FormData</code> and the form cannot be sent using <code>XHR</code>.
+<ul>
 <li><strong><code>form</code></strong> - HTML form</li>
 <li><code>options</code> - can contain further setings</li>
 </ul>
 </li>
-<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.ajaxifyUrl__anchor">TDI.Ajax.Request.ajaxifyUrl(url)</a></strong> - Marks the URL for TDI usage - a GET parameter <code>_infuse=1</code> is added to the request<ul>
+<li><strong><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.ajaxifyUrl__anchor">TDI.Ajax.Request.ajaxifyUrl(url)</a></strong> - Marks the URL for TDI usage - a GET parameter <code>_infuse=1</code> is added to the request
+<ul>
 <li><strong><code>url</code></strong> - The URL to mark</li>
 </ul>
 </li>
 </ul>
-<h3>Examples of usage</h3><pre class="prettyprint source lang-javascript"><code>TDI.Ajax.send($(&quot;#buy-link&quot;), {
+<h3>Examples of usage</h3>
+<pre class="prettyprint source lang-javascript"><code>TDI.Ajax.send($(&quot;#buy-link&quot;), {
     end : function() {
         alert(&quot;Thank you.&quot;);  
     }
 });
-
+ 
 TDI.Ajax.Request.send(&quot;/path/to/action&quot;, {
     method : &quot;POST&quot;
 });
-`</code></pre><h2>API events</h2><p>TDI uses so-called Custom events for notifications about TDI process flow. Events in TDI can be separated into two groups:</p>
+</code></pre>
+<h2>API events</h2>
+<p>TDI uses so-called Custom events for notifications about TDI process flow. Events in TDI can be separated into two groups:</p>
 <ul>
-<li><strong>process</strong>  - informs about the flow and state of TDI process<ul>
+<li><strong>process</strong>  - informs about the flow and state of TDI process
+<ul>
 <li><a href="http://twinstone.github.io/tdi/docs/api/TDI.html#.event:tdi:ajax:beforeLinkClick"><code>tdi:ajax:beforeLinkClick</code></a> - allows suspending default action (sending a  TDI request)</li>
 <li><a href="http://twinstone.github.io/tdi/docs/api/TDI.html#.event:tdi:ajax:beforeFormSubmit"><code>tdi:ajax:beforeFormSubmit</code></a> - allows suspending default action (sending a form)</li>
 <li><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.event:tdi:ajax:start"><code>tdi:ajax:start</code></a></li>
@@ -140,15 +151,20 @@ TDI.Ajax.Request.send(&quot;/path/to/action&quot;, {
 <li><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:done"><code>tdi:ajax:done</code></a></li>
 </ul>
 </li>
-<li><strong>protocol</strong> - informs about separate server instructions (see <a href="../infusing-protocol/README.md">Infusing Protocol</a>)<ul>
+<li><strong>protocol</strong> - informs about separate server instructions (see <a href="../infusing-protocol/README.md">Infusing Protocol</a>)
+<ul>
 <li><a href="http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#toc2__anchor">all other events from TDI.Ajax.Response</a> - all before* actions allow suspending of the default action</li>
 </ul>
 </li>
 </ul>
-<h3>Events usage</h3><pre class="prettyprint source lang-javascript"><code>$(document).on(&quot;tdi:ajax:start&quot;, function(evt, data) {
+<h3>Events usage</h3>
+<pre class="prettyprint source lang-javascript"><code>$(document).on(&quot;tdi:ajax:start&quot;, function(evt, data) {
     // evt - Event object
     // data - Additional data  
-});</code></pre><h3>Preventing of the default action</h3><p>Some events allow preventing the default behaviour:</p>
+});
+</code></pre>
+<h3>Preventing of the default action</h3>
+<p>Some events allow preventing the default behaviour:</p>
 <pre class="prettyprint source lang-javascript"><code>$(document).on('tdi:ajax:beforeLinkClick', 'a',  function(evt, data) {
     evt.preventDefault();
 
@@ -159,14 +175,17 @@ TDI.Ajax.Request.send(&quot;/path/to/action&quot;, {
             return true; // allow the TDI sending process to go on
         }
     });
-});</code></pre><pre class="prettyprint source lang-javascript"><code>$(document).on(&quot;tdi:ajax:beforeFormSubmit&quot;, function(evt, data) {
+});
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>$(document).on(&quot;tdi:ajax:beforeFormSubmit&quot;, function(evt, data) {
     evt.preventDefault(); // prevent the default action, eg. submiting the form
-
+    
     // process form data
     // set http headers
     // send form some other way
     // ...
-});</code></pre></article>
+});
+</code></pre></article>
     </section>
 
 
@@ -210,9 +229,9 @@ TDI.Ajax.Request.send(&quot;/path/to/action&quot;, {
 
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
 	
-		on 2017-01-22T21:05:51+01:00
+		on 2020-10-20T15:22:05+02:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

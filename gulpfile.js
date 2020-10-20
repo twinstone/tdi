@@ -5,7 +5,6 @@
 
 	var gulp = require('gulp');
 	var through = require('through2');
-	var runSequence = require('run-sequence');
 	var rimraf = require('gulp-rimraf');
 	var concat = require('gulp-concat');
 	var template = require('gulp-template');
@@ -26,8 +25,6 @@
 	var testFolder = rootFolder + 'tests/';
 	var bundleName = 'tdi-bundle';
 
-	gulp.task('clean', ['cleanBuild', 'cleanDoc']);
-
 	gulp.task('cleanBuild', function () {
 		return gulp.src(buildFolder, {read: false})
 			.pipe(rimraf());
@@ -38,7 +35,9 @@
 			.pipe(rimraf());
 	});
 
-	gulp.task('doc', ['cleanDoc'], function () {
+	gulp.task('clean', gulp.parallel('cleanBuild', 'cleanDoc'));
+
+	gulp.task('doc', gulp.series('cleanDoc', function () {
 		return gulp.src(["./README-jsdoc.md", srcFolder + "js/*.js"], {read: false})
 			.pipe(jsdoc({
 				"tags": {
@@ -51,9 +50,9 @@
 					"plugins/markdown"
 				]
 			}));
-	});
+	}));
 
-	gulp.task('bundle', [], function () {
+	gulp.task('bundle', function () {
 		var files = [];
 
 		files.push(rootFolder + 'banner.txt');
@@ -89,7 +88,7 @@
 			.pipe(gulp.dest(buildFolder));
 	});
 
-	gulp.task('release', ['bundle', 'minify'], function () {
+	gulp.task('release', gulp.series('bundle', 'minify', function () {
 		return gulp.src([buildFolder + bundleName + '.js', buildFolder + bundleName + '.min.js'])
 			.pipe(function () {
 				return rename(function (path) {
@@ -97,16 +96,14 @@
 				});
 			}())
 			.pipe(gulp.dest(buildFolder));
-	});
+	}));
 
-	gulp.task('test', ['prepare'], function () {
+	gulp.task('prepare', gulp.series('cleanBuild', 'bundle', 'minify'));
+
+	gulp.task('test', gulp.series('prepare', function () {
 		return gulp.src(testFolder + '*.html')
 			.pipe(qunit({timeout: 10}));
-	});
-
-	gulp.task('prepare', function (callback) {
-		runSequence('cleanBuild', 'bundle', 'minify', callback);
-	});
+	}));
 
 	gulp.task('lint', function () {
 		return gulp.src(['./src/**/*.js', './tests/*.js'])
@@ -117,8 +114,7 @@
 			.pipe(jshint.reporter('fail'));
 	});
 
-	gulp.task('build', function () {
-		runSequence('lint', 'test', 'doc');
-	});
-	gulp.task('default', ['build']);
+	gulp.task('build', gulp.series('lint', 'test', 'doc'));
+
+	gulp.task('default', gulp.parallel('build'));
 }());
