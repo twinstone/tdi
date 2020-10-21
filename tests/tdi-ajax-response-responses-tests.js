@@ -5,7 +5,7 @@
 
 	QUnit.test('TDI.Ajax.Response: events and XML', function (assert) {
 		var done = assert.async();
-		assert.expect(191);
+		assert.expect(195);
 
 		// bind the events
 		$(document)
@@ -491,6 +491,12 @@
 				var s1 = data.scripts[0];
 				var s2 = data.scripts[1];
 				var s3 = data.scripts[2];
+				var tdiScriptTag = document.getElementById('tdi-main-script');
+				var nonce;
+
+				if (tdiScriptTag) {
+					nonce = tdiScriptTag.getAttribute('nonce');
+				}
 
 				assert.equal(s1.script_src, undefined);
 				assert.equal(
@@ -504,6 +510,7 @@
 				assert.equal(s1.script_id, undefined);
 				assert.equal(s1.script_node, undefined);
 				assert.ok(s1.script_node_inline, 'Script 1 inline tag exists');
+				assert.equal(s1.script_node_inline.nonce || s1.script_node_inline.getAttribute('nonce'), nonce);
 
 				assert.equal(s2.script_src, 'responses/script1.js');
 				assert.equal(s2.script_data, '');
@@ -511,6 +518,7 @@
 
 				setTimeout(function () {
 					assert.ok(s2.script_node, 'Script 2 tag exists');
+					assert.equal(s2.script_node.nonce || s2.script_node.getAttribute('nonce'), nonce);
 				}, 200);
 
 				assert.equal(s2.script_node_inline, undefined);
@@ -529,6 +537,8 @@
 				setTimeout(function () {
 					assert.ok(s3.script_node, 'Script 3 tag exists');
 					assert.ok(s3.script_node_inline, 'Script 3 inline tag exists');
+					assert.equal(s3.script_node.nonce || s3.script_node.getAttribute('nonce'), nonce);
+					assert.equal(s3.script_node_inline.nonce || s3.script_node_inline.getAttribute('nonce'), nonce);
 				}, 200);
 
 				assert.ok(s1.tag instanceof $);

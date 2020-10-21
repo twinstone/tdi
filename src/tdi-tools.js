@@ -36,6 +36,8 @@
 		 *       <span>It is called when the javascript is fully loaded.</span></dd>
 		 *     <dd><code><span>id</span> <span>&lt;String&gt;</span></code>
 		 *       <span>An optional <em>id</em> attribute of the script tag.</span></dd>
+		 *     <dd><code><span>nonce</span> <span>&lt;String&gt;</span></code>
+		 *       <span>An optional <em>nonce</em> attribute of the script tag.</span></dd>
 		 *   </dl>
 		 */
 		getScript: function (url, options) {
@@ -48,8 +50,14 @@
 				node = document.createElement('script');
 				node.type = 'text/javascript';
 				node.src = url;
+
 				if (options.id) {
 					node.id = options.id;
+				}
+
+				if (options.nonce) {
+					node.setAttribute('nonce', options.nonce);
+					node.nonce = options.nonce;
 				}
 
 				if (options.complete) {

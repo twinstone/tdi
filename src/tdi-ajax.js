@@ -17,6 +17,9 @@
 (function (TDI) {
 	'use strict';
 
+	var tdiScriptTag = document.currentScript;
+	var NONCE = tdiScriptTag.nonce || tdiScriptTag.getAttribute('nonce');
+
 	/**
 	 * <p>Basic Ajax functionality for the TDI library.
 	 * Used to bind DOM events to desired HTML elements
@@ -1625,6 +1628,8 @@
 				// execute inline script
 				if (data.script_data) {
 					s = document.createElement('script');
+					s.setAttribute('nonce', NONCE);
+					s.nonce = NONCE;
 					s.type = 'text/javascript';
 					s.text = data.script_data;
 
@@ -1638,6 +1643,7 @@
 				// trigger the script event
 				data.script_node = node;
 				data.script_node_inline = s;
+
 				/**
 				 * <p>Fires after the TDI <em>script</em> takes place.</p>
 				 * @event tdi:ajax:script
@@ -1673,6 +1679,7 @@
 					TDI.Tools.getScript(data.script_src, {
 						id: data.script_id,
 						complete: onComplete,
+						nonce: NONCE,
 					});
 				}
 			}

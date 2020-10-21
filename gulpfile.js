@@ -38,7 +38,7 @@
 	gulp.task('clean', gulp.parallel('cleanBuild', 'cleanDoc'));
 
 	gulp.task('doc', gulp.series('cleanDoc', function () {
-		return gulp.src(["./README-jsdoc.md", srcFolder + "js/*.js"], {read: false})
+		return gulp.src(["./README-jsdoc.md", srcFolder + "*.js"], {read: false})
 			.pipe(jsdoc({
 				"tags": {
 					"allowUnknownTags": true
@@ -56,9 +56,10 @@
 		var files = [];
 
 		files.push(rootFolder + 'banner.txt');
-		files.push(srcFolder + 'js/tdi.js');
-		files.push(srcFolder + 'js/tdi-ajax.js');
-		files.push(srcFolder + 'js/tdi-tools.js');
+		files.push(srcFolder + 'polyfills/*.js');
+		files.push(srcFolder + 'tdi.js');
+		files.push(srcFolder + 'tdi-ajax.js');
+		files.push(srcFolder + 'tdi-tools.js');
 
 		return gulp.src(files)
 			.pipe(through.obj(function (file, enc, cb) {
@@ -106,7 +107,7 @@
 	}));
 
 	gulp.task('lint', function () {
-		return gulp.src(['./src/**/*.js', './tests/*.js'])
+		return gulp.src(['./src/*.js', './tests/*.js'])
 			.pipe(jshint())
 			.pipe(jscs())
 			.pipe(stylish.combineWithHintResults())

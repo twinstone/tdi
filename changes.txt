@@ -1,3 +1,9 @@
+CHANGES AFTER VERSION 1.9.5
+=============================
+
+==== Overview ====
+  * Added 'nonce' attribute support - fixes #36
+
 CHANGES AFTER VERSION 1.9.3
 =============================
 
