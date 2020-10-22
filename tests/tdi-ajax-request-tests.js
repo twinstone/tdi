@@ -293,4 +293,24 @@
 			},
 		});
 	});
+
+	QUnit.test('TDI.Ajax.Request.send: FormData data', function (assert) {
+		var done = assert.async();
+		assert.expect(2);
+
+		var fd = new FormData();
+		fd.append('field1', 'value1');
+
+		TDI.Ajax.Request.send('responses/empty.xml', {
+			data: fd,
+
+			beforeStart: function (xhr, settings, options) {
+				assert.equal(options.processData, false, 'Process data should be disabled.');
+				assert.equal(options.contentType, false, 'Content type should be disabled.');
+
+				done();
+				return false;
+			},
+		});
+	});
 })(window.TDI);

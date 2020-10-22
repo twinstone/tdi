@@ -103,7 +103,9 @@
 
 	gulp.task('test', gulp.series('prepare', function () {
 		return gulp.src(testFolder + '*.html')
-			.pipe(qunit({timeout: 10}));
+			.pipe(qunit({
+				timeout: 10,
+			}));
 	}));
 
 	gulp.task('lint', function () {

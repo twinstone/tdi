@@ -18,7 +18,7 @@
 	'use strict';
 
 	var tdiScriptTag = document.currentScript;
-	var NONCE = tdiScriptTag.nonce || tdiScriptTag.getAttribute('nonce');
+	var NONCE = tdiScriptTag ? tdiScriptTag.nonce || tdiScriptTag.getAttribute('nonce') : undefined;
 	var WINDOW_UNLOAD = 'unload';
 	var WINDOW_PAGEHIDE = 'pagehide';
 
@@ -500,6 +500,11 @@
 				options.async = !options.sync;
 				options.data = options.data || '';
 				options.dataType = options.dataType || 'xml';
+
+				if (HAS_XHR2_SUPPORT && HAS_FORMDATA_SUPPORT && options.data instanceof FormData) {
+					options.processData = false;
+					options.contentType = false;
+				}
 
 				var jqSettings = $.extend({}, options);
 				jqSettings.beforeSend = function (xhr, settings) {
@@ -1636,8 +1641,12 @@
 				// execute inline script
 				if (data.script_data) {
 					s = document.createElement('script');
-					s.setAttribute('nonce', NONCE);
-					s.nonce = NONCE;
+
+					if (NONCE) {
+						s.setAttribute('nonce', NONCE);
+						s.nonce = NONCE;
+					}
+
 					s.type = 'text/javascript';
 					s.text = data.script_data;
 
