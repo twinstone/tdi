@@ -7,7 +7,13 @@
 		var done = assert.async();
 		var requests = 2;
 		var requestsDone = 0;
-		assert.expect(52);
+		var WINDOW_UNLOAD = 'unload';
+		var WINDOW_PAGEHIDE = 'pagehide';
+
+		assert.expect(55);
+
+		assert.ok(window[WINDOW_UNLOAD] === false || window[WINDOW_UNLOAD] === undefined, 'Window is not unloaded.');
+		assert.ok(window[WINDOW_PAGEHIDE] === false || window[WINDOW_PAGEHIDE] === undefined, 'Window page is not hidden.');
 
 		// bind the events
 		$(document)
@@ -93,6 +99,11 @@
 
 				requestsDone++;
 				if (requestsDone === requests) {
+					$(window).trigger('unload');
+					$(window).trigger('pagehide');
+
+					assert.equal(window['onpagehide' in window ? WINDOW_PAGEHIDE : WINDOW_UNLOAD], true, 'Window is unloaded/pagehidden.');
+
 					done();
 				}
 			});

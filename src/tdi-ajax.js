@@ -19,6 +19,8 @@
 
 	var tdiScriptTag = document.currentScript;
 	var NONCE = tdiScriptTag.nonce || tdiScriptTag.getAttribute('nonce');
+	var WINDOW_UNLOAD = 'unload';
+	var WINDOW_PAGEHIDE = 'pagehide';
 
 	/**
 	 * <p>Basic Ajax functionality for the TDI library.
@@ -93,7 +95,7 @@
 				.on('change', _delegateSelectors.fieldChange, _onFieldChange)
 				.on('keydown', _delegateSelectors.fieldSubmit, _onFieldSubmit);
 
-			$(window).on('unload', _unbindUI);
+			$(window).on('onpagehide' in window ? WINDOW_PAGEHIDE : WINDOW_UNLOAD, _unbindUI);
 
 			$.event.special['tdi:ajax:beforeLinkClick'] = {
 				_default: _onLinkClick
@@ -115,12 +117,18 @@
 		 * @private
 		 */
 		function _unbindUI(evt) {
+			if (evt.persisted) {
+				return;
+			}
+
 			$(document)
 				.off('click', _delegateSelectors.linkClick, _onLinkClick)
 				.off('submit', _delegateSelectors.formSubmit, _onBeforeFormSubmit)
 				.off('click', _delegateSelectors.formButtonActivate, _onFormButtonActivate)
 				.off('change', _delegateSelectors.fieldChange, _onFieldChange)
 				.off('keydown', _delegateSelectors.fieldSubmit, _onFieldSubmit);
+
+			window[evt.type === 'pagehide' ? WINDOW_PAGEHIDE : WINDOW_UNLOAD] = true;
 		}
 
 		// EVENT HANDLERS ------------------------------------------------------------
