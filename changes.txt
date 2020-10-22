@@ -3,6 +3,7 @@ CHANGES AFTER VERSION 1.9.5
 
 ==== Overview ====
   * Added 'nonce' attribute support - fixes #37
+  * Added support for the 'pagehide' window event - fixes #38
 
 CHANGES AFTER VERSION 1.9.3
 =============================
