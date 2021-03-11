@@ -40,8 +40,5 @@
     "lint",
     "test"
   ],
-  "engines": {
-    "npm": "<=6.7.0"
-  },
   "dependencies": {}
 }
