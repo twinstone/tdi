@@ -8,7 +8,8 @@
     "test": "gulp test",
     "lint": "gulp lint",
     "build": "gulp build",
-    "prepublish": "npm run build"
+    "prepare": "npm run build",
+    "validate": "npm ls"
   },
   "repository": {
     "type": "git",
@@ -23,8 +24,6 @@
     "eol": "^0.9.1",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
-    "gulp-jscs": "^4.1.0",
-    "gulp-jscs-stylish": "^1.4.0",
     "gulp-jsdoc3": "^3.0.0",
     "gulp-jshint": "^2.1.0",
     "gulp-qunit": "^3.0.0",

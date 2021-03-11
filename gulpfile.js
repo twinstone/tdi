@@ -12,8 +12,6 @@
 	var rename = require('gulp-rename');
 	var qunit = require('gulp-qunit');
 	var jshint = require('gulp-jshint');
-	var jscs = require('gulp-jscs');
-	var stylish = require('gulp-jscs-stylish');
 	var eol = require('eol');
 	var jsdoc = require('gulp-jsdoc3');
 
@@ -111,8 +109,6 @@
 	gulp.task('lint', function () {
 		return gulp.src(['./src/*.js', './tests/*.js'])
 			.pipe(jshint())
-			.pipe(jscs())
-			.pipe(stylish.combineWithHintResults())
 			.pipe(jshint.reporter('jshint-stylish'))
 			.pipe(jshint.reporter('fail'));
 	});
