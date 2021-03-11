@@ -24,12 +24,12 @@
 	var bundleName = 'tdi-bundle';
 
 	gulp.task('cleanBuild', function () {
-		return gulp.src(buildFolder, {read: false})
+		return gulp.src(buildFolder, {read: false, allowEmpty: true})
 			.pipe(rimraf());
 	});
 
 	gulp.task('cleanDoc', function () {
-		return gulp.src(docApiFolder, {read: false})
+		return gulp.src(docApiFolder, {read: false, allowEmpty: true})
 			.pipe(rimraf());
 	});
 
