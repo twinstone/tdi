@@ -54,7 +54,7 @@
 		var files = [];
 
 		files.push(rootFolder + 'banner.txt');
-		files.push(srcFolder + 'polyfills/*.js');
+		// files.push(srcFolder + 'polyfills/*.js');
 		files.push(srcFolder + 'tdi.js');
 		files.push(srcFolder + 'tdi-ajax.js');
 		files.push(srcFolder + 'tdi-tools.js');

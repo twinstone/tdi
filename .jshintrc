@@ -10,5 +10,7 @@
 	"strict": true,
 	"undef": true,
 	"unused": "vars",
-	"multistr": true
+	"multistr": true,
+	"esversion": 11,
+  "asi": true
 }

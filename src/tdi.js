@@ -17,46 +17,6 @@
 (function () {
 	'use strict';
 
-	function versionsCompare(a, b) {
-		var pa = a.split('.');
-		var pb = b.split('.');
-		for (var i = 0; i < 3; i++) {
-			var na = Number(pa[i]);
-			var nb = Number(pb[i]);
-			if (na > nb) {
-				return 1;
-			}
-
-			if (nb > na) {
-				return -1;
-			}
-
-			if (!isNaN(na) && isNaN(nb)) {
-				return 1;
-			}
-
-			if (isNaN(na) && !isNaN(nb)) {
-				return -1;
-			}
-		}
-
-		return 0;
-	}
-
-	if (jQuery === undefined) {
-		throw('Missing dependency: jQuery!');
-	}
-	else {
-		if (versionsCompare(jQuery.fn.jquery, '1.10.2') < 0) {
-			try {
-				console.log('Recommended version of jQuery is 1.10.2 or higher.');
-				console.log('See: https://github.com/twinstone/tdi/issues/8');
-				console.log('See: https://bugs.jquery.com/ticket/13936');
-			}
-			catch (e) {}
-		}
-	}
-
 	/**
 	 * <p>Javascript library which enables the communication between the UI and the application,
 	 * using the Infusion AJAX protocol, see:
