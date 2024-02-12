@@ -9,7 +9,7 @@
 	"quotmark": "single",
 	"strict": true,
 	"undef": true,
-	"unused": "vars",
+	"unused": false,
 	"multistr": true,
 	"esversion": 11,
   "asi": true

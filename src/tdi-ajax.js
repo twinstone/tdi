@@ -42,6 +42,17 @@
 		})
 	}
 
+	function _off(eventName, handleFn, selectors) {
+		const _elms = selectors ? document.querySelectorAll(selectors) : null;
+		const _removeListener = (elm) => (elm || document).removeEventListener(eventName, handleFn );
+
+		if (_elms && _elms.length) {
+			_elms.forEach(_removeListener);
+		} else {
+			_removeListener();
+		}
+	}
+
 	// TODO: error checks
 	/**
 	 * 
@@ -63,7 +74,7 @@
 	}
 
 	/**
-	 * 
+	 * Shorthand method to get value of data attr from element
 	 * @param {HTMLElement} elm 
 	 * @param {string} dataAttr 
 	 * @returns string
@@ -85,44 +96,52 @@
 	 */
 	function _batchClass(elms, method, className) {
 		if (elms && elms.length) {
-			// elms.map( elm => elm.classList[method](className))
-			elms.map( elm => {
-				return elm.classList[method](className)
-			})
+			elms.map( elm => elm.classList[method](className))
 		}
 		return null;
 	}
 
 	/**
-	 * 
-	 * @param {string} selector 
-	 * @param {array} list 
-	 * @returns array
+	 * Create a list of elements
+	 * @param {HTMLElement[]} listOfElms List of html elements
+	 * @returns Nodelist
 	 */
-	function _updateListNode(selector, list) {
-		if (!selector || typeof selector !== 'string' || typeof list !== 'object')
+	function _convertToNodeList(listOfElms) {
+		if (!listOfElms || !listOfElms.length)
 			return null;
 
-		const _list = [...list];
-		const _elm = document.querySelectorAll(selector);
-		_elm.forEach( element => element && list.push(element) );
+		const _fragment = document.createDocumentFragment();
+		listOfElms.forEach( elm => {
+			return _fragment.appendChild(elm.cloneNode())	
+		}
+		);
 
-		return _list;
+		return _fragment.childNodes;
 	}
 
+	/**
+	 * Wheter elm has class
+	 * @param {HTMLElement} elm 
+	 * @param {string} className 
+	 * @returns boolean
+	 */
 	function _hasClass(elm, className) {
 		return [...elm.classList].includes(className);
 	}
 
-	function _ajax() {
-		const options = arguments[1];
-		if(options) {
-			if(options.beforeSend)
-				options.beforeSend(options)
+	/**
+	 * Wrapper for ajax calls to call beforeSend handlers
+	 * @param {string} url 
+	 * @param {object} options fetch options
+	 * @returns Promise
+	 */
+	function _ajax(url ,options) {
+		if(options && options.beforeSend) {
+			options.beforeSend(options)
 		} 
 
-		return fetch
-			.apply(null, arguments)
+		return fetch(url, options || {})
+			// .apply(null, arguments)
 			.then( res => {
 				if (res.ok) {
 					return res
@@ -139,6 +158,24 @@
 
 	function _parseXMLContent(content) {
 		return content.replace('<![CDATA[', '').replace(']]>', '').trim();
+	}
+
+	function _serializeFormData(form) {
+		const formData = new FormData(form);
+		const serializedData = {};
+
+		for (var [name, value] of formData) {
+			if (serializedData[name]) {
+				if (!Array.isArray(serializedData[name])) {
+					serializedData[name] = [serializedData[name]];
+				}
+				serializedData[name].push(value);
+			} else {
+				serializedData[name] = value;
+			}
+		}
+
+		return serializedData;
 	}
 
 	/**
@@ -231,18 +268,19 @@
 		 * @private
 		 */
 		function _unbindUI(evt) {
-			if (evt.persisted) {
+			if (evt && evt.persisted) {
 				return;
 			}
+			// removeEventListener
+			_off('click', _onLinkClick, _delegateSelectors.linkClick);
+			_off('submit', _onBeforeFormSubmit, _delegateSelectors.formSubmit);
+			_off('click', _onFormButtonActivate, _delegateSelectors.formButtonActivate);
+			_off('change', _onFieldChange, _delegateSelectors.fieldChange);
+			_off('keydown', _onFieldSubmit, _delegateSelectors.fieldSubmit);
 
-			$(document)
-				.off('click', _delegateSelectors.linkClick, _onLinkClick)
-				.off('submit', _delegateSelectors.formSubmit, _onBeforeFormSubmit)
-				.off('click', _delegateSelectors.formButtonActivate, _onFormButtonActivate)
-				.off('change', _delegateSelectors.fieldChange, _onFieldChange)
-				.off('keydown', _delegateSelectors.fieldSubmit, _onFieldSubmit);
-
-			window[evt.type === 'pagehide' ? WINDOW_PAGEHIDE : WINDOW_UNLOAD] = true;
+			if (evt) {
+				window[evt.type === 'pagehide' ? WINDOW_PAGEHIDE : WINDOW_UNLOAD] = true;
+			}
 		}
 
 		// EVENT HANDLERS ------------------------------------------------------------
@@ -292,7 +330,7 @@
 		 * @param {Event} evt The event object
 		 */
 		function _onBeforeFormSubmit(evt) {
-			const $target = $(evt.currentTarget);
+			const form = evt.target;
 
 			evt.preventDefault();
 
@@ -305,9 +343,7 @@
 			 * @param {Object} data The event properties
 			 * @property {jQuery} form The form object
 			 */
-			$target.trigger('tdi:ajax:beforeFormSubmit', {
-				form: $target
-			});
+			_trigger(form, 'tdi:ajax:beforeFormSubmit', { form });
 		}
 
 		/**
@@ -327,25 +363,29 @@
 		 * @private
 		 * @param {Event} evt The event object
 		 */
+		// FIXME: je tahle metoda orpavdu potreba?
 		function _onFormButtonActivate(evt) {
-			const target = evt.currentTarget;
-			const $button = $(target);
-			const $form = $(target.form);
+			const button = evt.target;
+			const form = button.form;
+			const submitActionButton = form.querySelector('input.submit-action');
+
+			if (!submitActionButton)
+				return null;
 
 			// save the used submit button
-			$form.data('_submitButton', $button);
+			form._submitButton = _getDataAttr(button, '_submitButton')
 
-			if ($button.attr('name')) {
+			if (button.name) {
 				// remove the old field
-				$form.find('input.submit-action').remove();
+				form.querySelector('input.submit-action').remove();
 
 				// create a new field with the buttons name and value
-				$('<input>')
-					.attr('type', 'hidden')
-					.attr('name', $button.attr('name'))
-					.attr('value', $button.attr('value'))
-					.addClass('submit-action')
-					.appendTo($form);
+				const _newBtn = document.createElement('input');
+				_newBtn.type = 'hidden';
+				_newBtn.name = button.name;
+				_newBtn.value = button.value;
+				_newBtn.classList.add('submit-action');
+				form.appendChild(_newBtn);
 			}
 		}
 
@@ -436,13 +476,21 @@
 				const name = elm.getAttribute('name');
 				const value = elm.value;
 				const confirm = elm.dataset.confirm;
-				const related = [];
-				const relatedAncestor = elm.closest(_getDataAttr(elm, 'related-ancestor'));
 				
-				_updateListNode(relatedAncestor, related);
-				_updateListNode(_getDataAttr(elm, 'related-element'), related);
-				_updateListNode(elm._submitButton, related);
-				_updateListNode(elm.rel, related);
+				const relatedAncestor = elm.closest(_getDataAttr(elm, 'related-ancestor'));
+				const related = [];
+				const getRelatedElm = (selector) => {
+					const _relatedElm = selector ? document.querySelector(selector) : null;
+					if (_relatedElm) 
+						related.push(_relatedElm)
+					return _relatedElm;
+				}
+				
+				if (relatedAncestor)
+					related.push( relatedAncestor );
+				getRelatedElm( _getDataAttr(elm, 'related-element') );
+				getRelatedElm( elm._submitButton );
+				getRelatedElm( elm.rel );
 
 				const involvedElms = [elm].concat(related);
 
@@ -530,10 +578,10 @@
 					xhrFields: xhrFields,
 				};
 
-				if (elm.matches('form')) {
+				const _submitActionElm = elm.querySelector('input.submit-action');
+				if (elm.matches('form') && _submitActionElm) {
 					_options.end = function () {
 						elm._submitButton = null;
-						const _submitActionElm = elm.querySelector('input.submit-action');
 						elm.removeChild(_submitActionElm);
 					};
 
@@ -649,16 +697,12 @@
 				};
 
 				jqSettings.error = function (xhr) {
-					const { statusText: textStatus, error } = xhr;
-
-					_trigger(options.trigger, 'tdi:ajax:_error', {
-							textStatus, error, options
-					});
+					_trigger(options.trigger, 'tdi:ajax:_error', { xhr, options });
 
 					// TDI.Ajax.Response._error( xhr, textStatus, error, options );
 
 					if (options.error) {
-						options.error(textStatus, error, options);
+						options.error(xhr, options);
 					}
 				};
 
@@ -728,35 +772,26 @@
 			sendForm: function (form, options) {
 				options = options || {};
 
-				const $form = $(form);
-				const $submitButton = $form.data('_submitButton');
-				const url = $form.data('ajax-url') || $form.attr('action');
+				const submitButton = form._submitButton;
+				const url = _getDataAttr(form, 'ajax-url') || form.action;
 
-				if (!$form.attr('enctype')) {
-					$form.attr('enctype', 'application/x-www-form-urlencoded');
+				if (!form.getAttribute('enctype')) {
+					form.setAttribute('enctype', 'application/x-www-form-urlencoded');
 				}
 
-				options.contentType = $form.attr('enctype') + '; charset=UTF-8';
+				options.contentType = form.getAttribute('enctype') + '; charset=UTF-8';
 
-				options.method = options.method || $form.attr('method');
+				options.method = options.method || form.method;
 
-				if ($form.find('input[type=file]').length > 0) {
+				if (form.querySelectorAll('input[type=file]').length > 0) {
 					// use XHR2 to send file forms when possible otherwise let pass through to the Iframe method
 					options.method = 'post';
-					$form.attr('enctype', 'multipart/form-data');
-					options.contentType = $form.attr('enctype') + '; charset=UTF-8';
-
-					// if (HAS_XHR2_SUPPORT && HAS_FORMDATA_SUPPORT) {
-					// 	options.data = new FormData($form.get(0));
-					// 	options.processData = false;
-					// 	options.contentType = false;
-
-					// 	return TDI.Ajax.Request.send(url, options);
-					// }
+					form.setAttribute('enctype', 'multipart/form-data');
+					options.contentType = form.getAttribute('enctype') + '; charset=UTF-8';
 				}
 				else {
 					// send non-file forms using ajax
-					options.data = $form.serialize(); // safe to overwrite
+					options.data = _serializeFormData(form); // safe to overwrite
 
 					return TDI.Ajax.Request.send(url, options);
 				}
@@ -764,88 +799,84 @@
 				// Send file forms using Iframe method
 				// onStart
 				options.url = TDI.Ajax.Request.ajaxifyUrl(url);
-				const res = options.beforeStart && options.beforeStart($form, options);
+				const res = options.beforeStart && options.beforeStart(form, options);
 				if (res === false) {
 					return false;
 				}
 
-				$(document).trigger('tdi:ajax:_start', {xhr: $form, settings: null, options: options});
+				_trigger(document, 'tdi:ajax:_start', {
+					xhr: form, settings: null, options: options
+				});
 
 				// TDI.Ajax.Response._start( $form, null, options );
 
 				if (options.start) {
-					options.start($form, options);
+					options.start(form, options);
 				}
 
-				if ($submitButton) {
-					$submitButton.addClass('loading');
+				if (submitButton) {
+					submitButton.classList.add('loading');
 				}
 
 				// prepare the form and its iframe
 				const iframeName = 'form_iframe_' + (new Date()).getTime();
 				let iframe;
 
-				// IE8- has a problem assigning the `name` attribute to a dynamicaly created Iframe. It needs to be created as a string.
-				if (document.documentMode && document.documentMode <= 8) {
-					iframe = document.createElement('<iframe name="' + iframeName + '">');
-				}
-				else {
-					iframe = document.createElement('iframe');
-					iframe.name = iframeName;
-				}
+				iframe = document.createElement('iframe');
+				iframe.name = iframeName;
 
 				iframe.style.display = 'none';
 				document.body.appendChild(iframe);
 
 				// onComplete/onEnd
-				$(iframe).load(function () {
+				iframe.onload = function () {
 					const xml = this.contentWindow.document.XMLDocument || this.contentWindow.document;
 					const xhr = {
 						responseXML: xml,
 						responseText: (xml.body) ? xml.getElementsByTagName('html')[0].innerHTML : null,
 					};
 
-					const res = options.beforeEnd && options.beforeEnd($form, options, xml);
+					const res = options.beforeEnd && options.beforeEnd(form, options, xml);
 					if (res === false) {
 						return false;
 					}
 
-					if ($submitButton) {
-						$submitButton.removeClass('loading');
+					if (submitButton) {
+						submitButton.classList.remove('loading');
 					}
 
-					$(document).trigger('tdi:ajax:_success', {
+					_trigger(document, 'tdi:ajax:_success', {
 						data: xml,
 						textStatus: '',
-						xhr: xhr,
-						options: options,
-					});
-					$(document).trigger('tdi:ajax:_end', {xhr: $form, textStatus: null, options: options});
-					$form.trigger('tdi:ajax:_formSubmit', {form: $form, options: options, xhr: xhr, data: xml});
+						xhr,
+						options,
+					})
 
-					// TDI.Ajax.Response._success( xml, '', null, options );
-					// TDI.Ajax.Response._end( $form, null, options );
+					_trigger('document', 'tdi:ajax:_end',{xhr: form, textStatus: null, options});
+
+					_trigger(form, 'tdi:ajax:_formSubmit', {form, options, xhr, data: xml});
 
 					if (options.end) {
-						options.end($form, options, xml);
+						options.end(form, options, xml);
 					}
 
 					setTimeout(function () {
-						$(iframe).off().remove();
-						$form.removeAttr('target');
+						iframe.onload = null;
+						delete iframe.target;
+						iframe.remove();
 					}, 10000);
-				});
+				};
 
-				$form.attr('action', options.url);
-				$form.attr('method', options.method || 'post');
-				$form.attr('target', iframeName);
-				$form.attr('enctype', 'multipart/form-data');
+				form.setAttribute('action', options.url);
+				form.setAttribute('method', options.method || 'post');
+				form.setAttribute('target', iframeName);
+				form.setAttribute('enctype', 'multipart/form-data');
 
 				/*
 				 Send the $form manualy.
 				 Needs to be the normal DOM method, jQuery submit() causes endless recursion of submit handlers.
 				 */
-				$form[0].submit();
+				form.submit();
 
 				return null;
 			},
@@ -907,8 +938,8 @@
 		})
 
 		_on('tdi:ajax:_error', function ({ detail }) {
-			const { error, textStatus, xhr, options } = detail;
-			_error(xhr, textStatus, error, options);
+			const { xhr, options } = detail;
+			_error(xhr, options);
 		});
 
 		_on('tdi:ajax:_end', function ({ detail }) {
@@ -1099,12 +1130,10 @@
 
 			const xml = _parseXMLRespose(xmlString);
 			const status = xml.querySelector('status').innerHTML;
-			
 			let _scriptsDoneInterval;
 
-			// check for status
 			if (status.toLowerCase() !== 'ok') {
-				_error(xhr, textStatus, status, options);
+				_error(xhr, textStatus, status.innerHTML, options);
 			}
 
 			// handle tags
@@ -1168,12 +1197,10 @@
 		 * @function _error
 		 * @fires TDI.Ajax.Request#tdi:ajax:error
 		 * @private
-		 * @param {jqXHR} xhr The jqXHR object
-		 * @param {String} textStatus The status of the response
-		 * @param {String} error The error message
+		 * @param {Prominse<Response>} xhr Promise response
 		 * @param {Object} options Additional request options
 		 */
-		function _error(xhr, textStatus, error, options) {
+		function _error(xhr, options) {
 			/**
 			 * <p>Fires when the Ajax request ends with an error.</p>
 			 * @event tdi:ajax:error
@@ -1187,12 +1214,14 @@
 			 * @property {Object} options Additional request options
 			 */
 
+			throw('TDI ajax response status ' + xhr.status + ', ' + xhr.statusText)
+
 			_trigger(document, 'tdi:ajax:error', {
 				status: xhr ? xhr.status : 'N/A',
-				message: error || 'Invalid Ajax response. The response must be a valid XML.',
-				xhr: xhr,
-				textStatus,
-				options,
+				message: xhr.error || 'Invalid Ajax response. The response must be a valid XML.',
+				xhr,
+				textStatus: xhr.statusText,
+				options
 			})
 		}
 
@@ -1639,11 +1668,10 @@
 			if(data.class_add.trim())
 			 data.target.classList.add(data.class_add);
 
-			const contentElm = (new DOMParser().parseFromString(data.content, 'text/xml')).firstChild
+			const response = (new DOMParser().parseFromString(data.content, 'text/html')).body.childNodes;
 			const replaceFragment = document.createDocumentFragment();
 
-			// console.log(contentElm)
-			replaceFragment.appendChild(contentElm)
+			response.forEach( elm => replaceFragment.appendChild(elm))
 
 			// update the target element
 			if (data.replace === 'true') {
@@ -1651,10 +1679,11 @@
 				data.target = replaceFragment;
 			}
 			else if (data.append === 'true') {
-				data.target.append(contentElm);
+				console.log(replaceFragment)
+				data.target.append(replaceFragment);
 			}
 			else if (data.prepend === 'true') {
-				data.target.prepend(contentElm);
+				data.target.prepend(replaceFragment);
 			}
 			else {
 				// data.target.find('*').off(); // detach all event handlers from the targets child nodes
