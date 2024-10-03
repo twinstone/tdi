@@ -23,7 +23,7 @@
 	const WINDOW_PAGEHIDE = 'pagehide';
 
 	/**
-	 * 
+	 * Add event event listener to element(s)
 	 * @param {Event} eventName 
 	 * @param {function} handleFn 
 	 * @param {string[]*} selectors Optional
@@ -34,35 +34,61 @@
 			const selectorsChecks = selectors && selectors.length;
 
 			if (selectorsChecks) {
-				if(evt.target.matches(selectors))
+				if(evt.target.matches(selectors)) {
 					handleFn(evt);
+				}
 			} else {
 				handleFn(evt);
 			}
 		})
 	}
 
-	function _off(eventName, handleFn, selectors) {
-		const _elms = selectors ? document.querySelectorAll(selectors) : null;
-		const _removeListener = (elm) => (elm || document).removeEventListener(eventName, handleFn );
+	/**
+	 * Remove known event handlers from element(s)
+	 * @param {String} selectors Target css selector
+	 * @param {String} eventName Event name to be removed
+	 * @param {Function} handleFn Event handler function to be removed
+	 */
+	function _off(selectors, eventName, handleFn) {
+		const _elms = document.querySelectorAll(selectors);
 
-		if (_elms && _elms.length) {
-			_elms.forEach(_removeListener);
+		_elms.forEach( elm => {
+			if (eventName && handleFn) {
+				elm.removeEventListener(eventName, handleFn);
+			} else {
+				_offAllEvents(elm);
+			}
+		});
+	}
+
+	/**
+	 * Remove all events from an element, or its child nodes
+	 * @param {HTMLElement | string} target Element to remove event (or its childs) event handler from
+	 * @param {Boolean?} fromChildNodes If true, remove event handlers from child nodes
+	 */
+	function _offAllEvents(target, fromChildNodes) {
+		const _target = typeof target === 'string' ? document.querySelector(target) : target;
+		
+		if (fromChildNodes) {
+			_target.querySelectorAll('*').forEach(function(child) {
+				_offAllEvents(child);
+			});
 		} else {
-			_removeListener();
+			// Clone each child node
+			const clonedTarget = _target.cloneNode(true);
+			// Replace the original child node with the clone
+			_target.parentNode.replaceChild(clonedTarget, _target);
 		}
 	}
 
-	// TODO: error checks
 	/**
-	 * 
-	 * @param {HTMLElement} target 
-	 * @param {string} eventName 
-	 * @param {object} detail 
-	 * @returns 
+	 * Creates custom event
+	 * @param {String} eventName Event name
+	 * @param {Object?} detail Custom event properties
+	 * @returns Event
 	 */
-	function _trigger(target, eventName, detail) {
-		if (!target || !eventName) return null;
+	function _customEvent(eventName, detail) {
+		if (!eventName) return null;
 
 		const _event = new CustomEvent(eventName, {
 			detail, 
@@ -70,11 +96,29 @@
 			cancelable: true,
 		});
 
-		target.dispatchEvent(_event);
+		return _event;
+	}
+	/**
+	 * <p>Dispatches custom event on provided element.</p>
+	 * @param {HTMLElement} target 
+	 * @param {string} eventName 
+	 * @param {object} detail 
+	 * @returns 
+	 */
+	function _trigger(target, eventName, detail) {
+		const _event = _customEvent(eventName, detail);
+
+		if (!_event) return null;
+
+		if (target instanceof NodeList) {
+			return target.forEach( elm => elm.dispatchEvent(_event) );
+		} else {
+			return target.dispatchEvent(_event);
+		}
 	}
 
 	/**
-	 * Shorthand method to get value of data attr from element
+	 * <p>Shorthand method to get value of data attr from element</p>
 	 * @param {HTMLElement} elm 
 	 * @param {string} dataAttr 
 	 * @returns string
@@ -88,7 +132,7 @@
 	}
 
 	/**
-	 * 
+	 * <p>Add css classes to element(s)</p>
 	 * @param {HTMLElement[]} elms 
 	 * @param {string} method `add` or `remove`
 	 * @param {string} className 
@@ -98,7 +142,6 @@
 		if (elms && elms.length) {
 			elms.map( elm => elm.classList[method](className))
 		}
-		return null;
 	}
 
 	/**
@@ -144,7 +187,7 @@
 			// .apply(null, arguments)
 			.then( res => {
 				if (res.ok) {
-					return res
+					return res;
 				} else {
 					throw(res);
 				}
@@ -272,11 +315,11 @@
 				return;
 			}
 			// removeEventListener
-			_off('click', _onLinkClick, _delegateSelectors.linkClick);
-			_off('submit', _onBeforeFormSubmit, _delegateSelectors.formSubmit);
-			_off('click', _onFormButtonActivate, _delegateSelectors.formButtonActivate);
-			_off('change', _onFieldChange, _delegateSelectors.fieldChange);
-			_off('keydown', _onFieldSubmit, _delegateSelectors.fieldSubmit);
+			_off(_delegateSelectors.linkClick, 'click', _onLinkClick);
+			_off(_delegateSelectors.formSubmit, 'submit', _onBeforeFormSubmit);
+			_off(_delegateSelectors.formButtonActivate, 'click', _onFormButtonActivate);
+			_off(_delegateSelectors.fieldChange, 'change', _onFieldChange);
+			_off(_delegateSelectors.fieldSubmit, 'keydown', _onFieldSubmit);
 
 			if (evt) {
 				window[evt.type === 'pagehide' ? WINDOW_PAGEHIDE : WINDOW_UNLOAD] = true;
@@ -367,13 +410,9 @@
 		function _onFormButtonActivate(evt) {
 			const button = evt.target;
 			const form = button.form;
-			const submitActionButton = form.querySelector('input.submit-action');
-
-			if (!submitActionButton)
-				return null;
 
 			// save the used submit button
-			form._submitButton = _getDataAttr(button, '_submitButton')
+			form._submitButton = button;
 
 			if (button.name) {
 				// remove the old field
@@ -430,7 +469,7 @@
 		}
 
 		// initialization
-		_bindUI();
+		document.addEventListener('DOMContentLoaded', _bindUI);
 
 		// PUBLIC STUFF ------------------------------------------------------------
 		return {
@@ -578,11 +617,13 @@
 					xhrFields: xhrFields,
 				};
 
-				const _submitActionElm = elm.querySelector('input.submit-action');
-				if (elm.matches('form') && _submitActionElm) {
+				if (elm.matches('form')) {
 					_options.end = function () {
+						const _submitActionElm = elm.querySelector('input.submit-action');
 						elm._submitButton = null;
-						elm.removeChild(_submitActionElm);
+						if(_submitActionElm) {
+							elm.removeChild(_submitActionElm);
+						}
 					};
 
 					return TDI.Ajax.Request.sendForm(elm, _options);
@@ -818,58 +859,9 @@
 					submitButton.classList.add('loading');
 				}
 
-				// prepare the form and its iframe
-				const iframeName = 'form_iframe_' + (new Date()).getTime();
-				let iframe;
-
-				iframe = document.createElement('iframe');
-				iframe.name = iframeName;
-
-				iframe.style.display = 'none';
-				document.body.appendChild(iframe);
-
-				// onComplete/onEnd
-				iframe.onload = function () {
-					const xml = this.contentWindow.document.XMLDocument || this.contentWindow.document;
-					const xhr = {
-						responseXML: xml,
-						responseText: (xml.body) ? xml.getElementsByTagName('html')[0].innerHTML : null,
-					};
-
-					const res = options.beforeEnd && options.beforeEnd(form, options, xml);
-					if (res === false) {
-						return false;
-					}
-
-					if (submitButton) {
-						submitButton.classList.remove('loading');
-					}
-
-					_trigger(document, 'tdi:ajax:_success', {
-						data: xml,
-						textStatus: '',
-						xhr,
-						options,
-					})
-
-					_trigger('document', 'tdi:ajax:_end',{xhr: form, textStatus: null, options});
-
-					_trigger(form, 'tdi:ajax:_formSubmit', {form, options, xhr, data: xml});
-
-					if (options.end) {
-						options.end(form, options, xml);
-					}
-
-					setTimeout(function () {
-						iframe.onload = null;
-						delete iframe.target;
-						iframe.remove();
-					}, 10000);
-				};
-
+				
 				form.setAttribute('action', options.url);
 				form.setAttribute('method', options.method || 'post');
-				form.setAttribute('target', iframeName);
 				form.setAttribute('enctype', 'multipart/form-data');
 
 				/*
@@ -1166,7 +1158,7 @@
 			});
 
 			if (involvedElms.length === 0) {
-				involvedElms = document;
+				involvedElms = [document];
 			}
 
 			_onUpdatesDone(involvedElms, _responses.updates, options);
@@ -1264,8 +1256,8 @@
 
 			const target_id = tag.getAttribute('target');
 			const selector = tag.getAttribute('selector');
-			const target = document.querySelector(selector ? selector : '#' + target_id);
-			const content = _parseXMLContent(tag.innerHTML);
+			const targets = document.querySelectorAll(selector ? selector : '#' + target_id);
+			const content = _parseXMLContent(tag.innerHTML.trim());
 			const replace = tag.getAttribute('replace');
 			const append = tag.getAttribute('append');
 			const prepend = tag.getAttribute('prepend');
@@ -1274,8 +1266,7 @@
 			const eventData = {
 				target_id,
 				selector,
-				target,
-				content,
+				content: content !== '' ? content : null,
 				content_empty: (content.replace(/\&nbsp;/g, '').length === 0),
 				replace,
 				append,
@@ -1286,7 +1277,7 @@
 				tag,
 			};
 
-			if (target) {
+			if (targets.length) {
 				// fire custom events
 				/**
 				 * <p>Fires before the TDI <em>update</em> takes place.</p>
@@ -1309,8 +1300,11 @@
 				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
 
-				_trigger(target, 'tdi:ajax:beforeUpdate', eventData)
-				_responses.updates.push(eventData);
+				targets.forEach( target => {
+					const data = {...eventData, target};
+					_trigger(target , 'tdi:ajax:beforeUpdate', data);
+					_responses.updates.push(data);
+				});
 			}
 		}
 
@@ -1331,14 +1325,13 @@
 
 			const target_id = tag.getAttribute('target');
 			const selector = tag.getAttribute('selector');
-			const target = document.querySelectorAll(selector ? '.' : '#' + target_id);
+			const targets = document.querySelectorAll(selector ? selector : '#' + target_id);
 			const content = _parseXMLContent(tag.innerHTML);
 			const position = tag.getAttribute('position') || 'after';
 			let insertedNode;
 			const eventData = {
 				target_id,
 				selector,
-				target,
 				content,
 				position,
 				inserted_node: insertedNode,
@@ -1346,7 +1339,7 @@
 				tag,
 			};
 
-			if (target) {
+			if (targets.length) {
 				// fire custom events
 				/**
 				 * <p>Fires before the TDI <em>insert</em> takes place.</p>
@@ -1363,9 +1356,11 @@
 				 * @property {Object} options Additional request options
 				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
-				_trigger(target, 'tdi:ajax:beforeInsert', eventData )
-
-				_responses.inserts.push(eventData);
+				targets.forEach( target => {
+					const data = {...eventData, target};
+					_trigger(target , 'tdi:ajax:beforeInsert', data);
+					_responses.inserts.push(data);
+				});				
 			}
 		}
 
@@ -1411,7 +1406,27 @@
 			 * @property {Object} options Additional request options
 			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			_trigger(document, 'tdi:ajax:beforeScript', eventData)
+			_eventSpecial('tdi:ajax:beforeScript', eventData)
+		}
+
+		/**
+		 * <p>The beforeUnknown callback. It takes the &lt;unknown&gt; xml node, gets its data and triggers a custom events default action if not prevented from client.</p>
+		 * @function _onBeforeUnknown
+		 * @private
+		 * @param {String} eventName Name of custom event
+		 * @param {Object} eventData Additional request options
+		 * @param {HTMLElement} eventTarget The target element
+		 */
+		function _eventSpecial(eventName, eventData, eventTarget) {
+			const _event = _customEvent(eventName, eventData);
+			const wasDefaultPrevented = !_trigger(eventTarget || document, eventName, eventData);
+
+			// If default event handler wasnt prevented via `evt.preventDefault()`
+			if (wasDefaultPrevented) {
+				customPostDispatch();
+			} else {
+				customDefault(_event, eventData)
+			}
 		}
 
 		/**
@@ -1451,7 +1466,7 @@
 			 * @property {Object} options Additional request options
 			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			_trigger( document, 'tdi:ajax:beforeStyle', eventData)
+			_eventSpecial('tdi:ajax:beforeStyle', eventData)
 
 			_responses.styles.push(eventData);
 		}
@@ -1618,9 +1633,8 @@
 			 * @property {Object} options Additional request options
 			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			$.event.special['tdi:ajax:before' + beforeName] = {
-				_default: customDefault
-			};
+			// $.event.special['tdi:ajax:before' + beforeName] = {
+			_on('tdi:ajax:before' + beforeName, customDefault, eventData)
 
 			_trigger(document, 'tdi:ajax:before' + beforeName, eventData);
 			_responses.unknowns.push(eventData);
@@ -1659,37 +1673,41 @@
 		 */
 		function _onUpdateDefault(evt) {
 			const data = evt.detail
-			// console.log('_onUpdateDefault:', evt.detail)
-			// let replaceTarget;
 
 			// classes
-			if(data.class_remove.trim())
-			 	data.target.classList.remove(data.class_remove)
-			if(data.class_add.trim())
-			 data.target.classList.add(data.class_add);
+			if(data.class_remove.trim()) {
+				data.target.classList.remove(data.class_remove)
+			}
+
+			if(data.class_add.trim()) {
+				data.target.classList.add(data.class_add);
+			}
 
 			const response = (new DOMParser().parseFromString(data.content, 'text/html')).body.childNodes;
 			const replaceFragment = document.createDocumentFragment();
 
-			response.forEach( elm => replaceFragment.appendChild(elm))
+			response.forEach( elm => 
+				replaceFragment.appendChild(elm)
+			)
 
 			// update the target element
-			if (data.replace === 'true') {
-				data.target.replaceWith(replaceFragment);
-				data.target = replaceFragment;
+			if (data.content) {
+				if (data.replace === 'true') {
+					data.target.replaceWith(replaceFragment);
+					data.target = replaceFragment;
+				}
+				else if (data.append === 'true') {
+					data.target.append(replaceFragment);
+				}
+				else if (data.prepend === 'true') {
+					data.target.prepend(replaceFragment);
+				}
+				else {
+					// data.target.find('*').off(); // detach all event handlers from the targets child nodes
+					_offAllEvents(data.target, true);
+					data.target.innerHTML = data.content;
+				}
 			}
-			else if (data.append === 'true') {
-				console.log(replaceFragment)
-				data.target.append(replaceFragment);
-			}
-			else if (data.prepend === 'true') {
-				data.target.prepend(replaceFragment);
-			}
-			else {
-				// data.target.find('*').off(); // detach all event handlers from the targets child nodes
-				data.target.innerHTML = data.content;
-			}
-
 			// trigger the update event
 			/**
 			 * <p>Fires after the TDI <em>update</em> takes place.</p>
@@ -1733,8 +1751,16 @@
 		 *       <span>Additional request options</span></dd>
 		 *   </dl>
 		 */
-		function _onInsertDefault(evt, data) {
-			data.inserted_node = $(data.content)[(data.position === 'before') ? 'insertBefore' : 'insertAfter'](data.target);
+		function _onInsertDefault(evt) {
+			const data = evt.detail;
+			function _insertBefore(target, content) {
+				 
+			}
+			function _inserAfter(target, content) {
+
+			}
+			console.log(data)
+			// data.inserted_node = $(data.content)[(data.position === 'before') ? 'insertBefore' : 'insertAfter'](data.target);
 
 			// trigger the insert event
 			/**
@@ -1752,7 +1778,7 @@
 			 * @property {Object} options Additional request options
 			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			data.target.trigger('tdi:ajax:insert', data);
+			_trigger(data.target, 'tdi:ajax:insert', data);
 		}
 
 		/**
@@ -1816,7 +1842,7 @@
 				 * @property {Object} options Additional request options
 				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
-				$(document).trigger('tdi:ajax:script', data);
+				_trigger(document, 'tdi:ajax:script', data);
 
 				// process next script
 				if (scripts.length) {
@@ -1887,7 +1913,7 @@
 						 * @property {Object} options Additional request options
 						 * @property {jQuery} tag The raw XML tag of the instruction
 						 */
-						$(document).trigger('tdi:ajax:style', data);
+						_trigger(document, 'tdi:ajax:style', data);
 					},
 				});
 			}
@@ -2012,12 +2038,12 @@
 			'tdi:ajax:beforePopup': _onPopupDefault,
 		};
 
-		customDefault = function (evt) {
+		customDefault = function (evt, data) {
 			if (customHandlers[evt.type]) {
-				customHandlers[evt.type].call(this, evt);
+				customHandlers[evt.type].call(this, evt, data);
 			}
 			else {
-				_onUnknownDefault.call(this, evt);
+				_onUnknownDefault.call(this, evt, data);
 			}
 		};
 
@@ -2039,5 +2065,8 @@
 		// PUBLIC STUFF
 		return {};
 
-	})();
+	});
+
+	// initialization
+	document.addEventListener('DOMContentLoaded', TDI.Ajax.Response );
 }(window.TDI));
