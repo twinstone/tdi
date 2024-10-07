@@ -194,15 +194,42 @@
 			})
 	}
 
+	/**
+	 * <p>Parse the HTML from string and returns it as a DOM element.</p>
+	 * @param {String} content Html as a string
+	 * @param {String?} contentType Type of the content, `text/html` by default
+	 * @returns HtmlElement
+	 */
+	function _parseHtmlFromString(content, contentType) {
+		const parser = new window.DOMParser();
+		return parser.parseFromString(content, contentType || 'text/html');
+	}
+
+	/**
+	 * <p>Parse the XML response and returns content as Node.</p>
+	 * @param {String | Object} res Ajaxt response
+	 * @returns HTMLElement
+	 */
 	function _parseXMLRespose(res) {
 		const data = typeof res === 'string' ? res : res.text();
 		return new window.DOMParser().parseFromString(data, 'text/xml').firstChild
 	}
 
+	/**
+	 * <p>Parse the XML content and remove the CDATA tags.</p>
+	 * @param {string} content Content of the XML node
+	 * @returns string
+	 * @private
+	 */
 	function _parseXMLContent(content) {
 		return content.replace('<![CDATA[', '').replace(']]>', '').trim();
 	}
 
+	/**
+	 * <p>Serializes form data into an object.</p>
+	 * @param {HTMLElement} form Form element
+	 * @returns Object
+	 */
 	function _serializeFormData(form) {
 		const formData = new FormData(form);
 		const serializedData = {};
@@ -729,8 +756,6 @@
 					_trigger(options.trigger, 'tdi:ajax:_success', {
 						textStatus, xhr, data, options
 					});
-
-					// TDI.Ajax.Response._success( data, textStatus, xhr, options );
 
 					if (options.success) {
 						options.success(data, textStatus, options);
@@ -1683,7 +1708,7 @@
 				data.target.classList.add(data.class_add);
 			}
 
-			const response = (new DOMParser().parseFromString(data.content, 'text/html')).body.childNodes;
+			const response = _parseHtmlFromString(data.content).body.childNodes;
 			const replaceFragment = document.createDocumentFragment();
 
 			response.forEach( elm => 
@@ -1753,14 +1778,20 @@
 		 */
 		function _onInsertDefault(evt) {
 			const data = evt.detail;
-			function _insertBefore(target, content) {
-				 
+			if (!data.content || !data.target || !data.position) {
+				return null;
 			}
-			function _inserAfter(target, content) {
 
+			const content = _parseHtmlFromString(data.content).body.firstChild;
+
+			console.log(content)
+			if (data.position === 'before') {
+				data.target.parentNode.insertBefore(content, data.target);
+			} else {
+				data.target.parentNode.insertBefore(content, data.target.nextSibling);
 			}
-			console.log(data)
-			// data.inserted_node = $(data.content)[(data.position === 'before') ? 'insertBefore' : 'insertAfter'](data.target);
+
+			data.inserted_node = content;
 
 			// trigger the insert event
 			/**
