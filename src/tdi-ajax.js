@@ -1431,27 +1431,7 @@
 			 * @property {Object} options Additional request options
 			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			_eventSpecial('tdi:ajax:beforeScript', eventData)
-		}
-
-		/**
-		 * <p>The beforeUnknown callback. It takes the &lt;unknown&gt; xml node, gets its data and triggers a custom events default action if not prevented from client.</p>
-		 * @function _onBeforeUnknown
-		 * @private
-		 * @param {String} eventName Name of custom event
-		 * @param {Object} eventData Additional request options
-		 * @param {HTMLElement} eventTarget The target element
-		 */
-		function _eventSpecial(eventName, eventData, eventTarget) {
-			const _event = _customEvent(eventName, eventData);
-			const wasDefaultPrevented = !_trigger(eventTarget || document, eventName, eventData);
-
-			// If default event handler wasnt prevented via `evt.preventDefault()`
-			if (wasDefaultPrevented) {
-				customPostDispatch();
-			} else {
-				customDefault(_event, eventData)
-			}
+			_triggerDefault('tdi:ajax:beforeScript', eventData)
 		}
 
 		/**
@@ -1491,7 +1471,7 @@
 			 * @property {Object} options Additional request options
 			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			_eventSpecial('tdi:ajax:beforeStyle', eventData)
+			_triggerDefault('tdi:ajax:beforeStyle', eventData)
 
 			_responses.styles.push(eventData);
 		}
@@ -1526,7 +1506,7 @@
 			 * @property {Object} options Additional request options
 			 * @property {jQuery} tag The raw XML tag of the instruction
 			 */
-			_trigger(document, 'tdi:ajax:beforeReload', eventData)
+			_triggerDefault('tdi:ajax:beforeReload', eventData)
 		}
 
 		/**
@@ -1563,7 +1543,8 @@
 				 * @property {Object} options Additional request options
 				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
-				_trigger(document, 'tdi:ajax:beforeRedirect', eventData)
+				
+				_triggerDefault('tdi:ajax:beforeRedirect', eventData)
 			}
 		}
 
@@ -1611,7 +1592,7 @@
 				 * @property {Object} options Additional request options
 				 * @property {jQuery} tag The raw XML tag of the instruction
 				 */
-				_trigger(document, 'tdi:ajax:beforePopup', eventData)
+				_triggerDefault('tdi:ajax:beforePopup', eventData)
 				_responses.popups.push(eventData);
 			}
 		}
@@ -1781,10 +1762,8 @@
 			if (!data.content || !data.target || !data.position) {
 				return null;
 			}
-
 			const content = _parseHtmlFromString(data.content).body.firstChild;
 
-			console.log(content)
 			if (data.position === 'before') {
 				data.target.parentNode.insertBefore(content, data.target);
 			} else {
@@ -2059,6 +2038,26 @@
 		}
 
 		// TDI Ajax custom events -------------------------------------------------
+		/**
+		 * <p>The beforeUnknown callback. It takes the &lt;unknown&gt; xml node, gets its data and triggers a custom events default action if not prevented from client.</p>
+		 * @function _onBeforeUnknown
+		 * @private
+		 * @param {String} eventName Name of custom event
+		 * @param {Object} eventData Additional request options
+		 * @param {HTMLElement} eventTarget The target element
+		 */
+		function _triggerDefault(eventName, eventData, eventTarget) {
+			const _event = _customEvent(eventName, eventData);
+			const wasDefaultPrevented = !_trigger(eventTarget || document, eventName, eventData);
+
+			// If default event handler wasnt prevented via `evt.preventDefault()`
+			if (wasDefaultPrevented) {
+				customPostDispatch();
+			} else {
+				customDefault(_event, eventData)
+			}
+		}
+
 		customHandlers = {
 			'tdi:ajax:beforeUpdate': _onUpdateDefault,
 			'tdi:ajax:beforeInsert': _onInsertDefault,
