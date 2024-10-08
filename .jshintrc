@@ -12,5 +12,8 @@
 	"unused": false,
 	"multistr": true,
 	"esversion": 11,
-  "asi": true
+	"asi": true,
+	"globals": {
+		"URLSearchParams": true
+	}
 }

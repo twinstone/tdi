@@ -172,19 +172,55 @@
 		return [...elm.classList].includes(className);
 	}
 
+	function _prepareFormRequest(options) {
+		const fetchOptions = { ...options}
+		if (options.method.toUpperCase() === 'POST') {
+			fetchOptions.body = JSON.stringify(options.data);
+		} else {
+			fetchOptions.url = fetchOptions.url + _prepareUrlParams(options.data, fetchOptions.url);
+		}
+
+		return fetchOptions;
+	}
+
+	/**
+	 * Takes serialized form data and prepares it for url params
+	 * @param {Object} data serialized form data
+	 * @param {String?} optional url 
+	 * @returns String
+	 */
+	function _prepareUrlParams(data, url) {
+		const params = new URLSearchParams();
+		const startingSymbol = url && url.indexOf('?') > -1 ? '&' : '?';
+
+		for (const key in data) {
+			if (Array.isArray(data[key])) {
+				data[key].forEach(value => {
+					params.append(key, value);
+				});
+			} else {
+				params.append(key, data[key]);
+			}
+		}
+
+		return params.toString() ? startingSymbol + params.toString() : '';
+	}
+	
 	/**
 	 * Wrapper for ajax calls to call beforeSend handlers
 	 * @param {string} url 
 	 * @param {object} options fetch options
 	 * @returns Promise
 	 */
-	function _ajax(url ,options) {
+	function _ajax(url, options) {
 		if(options && options.beforeSend) {
 			options.beforeSend(options)
-		} 
+		}
 
-		return fetch(url, options || {})
-			// .apply(null, arguments)
+		// prepare payload
+		const fetchOptions = options.data ? _prepareFormRequest(options) : options;
+
+		return fetch(fetchOptions.url || url, fetchOptions)
 			.then( res => {
 				if (res.ok) {
 					return res;
@@ -234,7 +270,7 @@
 		const formData = new FormData(form);
 		const serializedData = {};
 
-		for (var [name, value] of formData) {
+		for (var [name, value] of formData.entries()) {
 			if (serializedData[name]) {
 				if (!Array.isArray(serializedData[name])) {
 					serializedData[name] = [serializedData[name]];
@@ -535,7 +571,6 @@
 				if (!elm || elm.nodeType !== Node.ELEMENT_NODE) {
 					// TODO: error logging?
 					throw ('Ajax.send: not a valid element')
-					return null;
 				}
 				callbacks = callbacks || {};
 
@@ -547,15 +582,19 @@
 				const related = [];
 				const getRelatedElm = (selector) => {
 					const _relatedElm = selector ? document.querySelector(selector) : null;
-					if (_relatedElm) 
+					if (_relatedElm) {
 						related.push(_relatedElm)
+					}
 					return _relatedElm;
 				}
 				
-				if (relatedAncestor)
-					related.push( relatedAncestor );
+				if (relatedAncestor) {
+					related.push(relatedAncestor);
+				}
 				getRelatedElm( _getDataAttr(elm, 'related-element') );
-				getRelatedElm( elm._submitButton );
+				if (elm._submitButton) {
+					related.push(elm._submitButton)
+				}
 				getRelatedElm( elm.rel );
 
 				const involvedElms = [elm].concat(related);
@@ -724,7 +763,7 @@
 				options = options || {};
 				options.url = TDI.Ajax.Request.ajaxifyUrl(url);
 				options.xhrFields = options.xhrFields || {};
-				options.type = options.type || options.method || 'GET';
+				options.method = options.type || options.method || 'GET';
 				options.async = !options.sync;
 				options.data = options.data || '';
 				options.dataType = options.dataType || 'xml';
@@ -848,6 +887,7 @@
 				options.contentType = form.getAttribute('enctype') + '; charset=UTF-8';
 
 				options.method = options.method || form.method;
+				options.trigger = form;
 
 				if (form.querySelectorAll('input[type=file]').length > 0) {
 					// use XHR2 to send file forms when possible otherwise let pass through to the Iframe method
@@ -862,7 +902,7 @@
 					return TDI.Ajax.Request.send(url, options);
 				}
 
-				// Send file forms using Iframe method
+				// Send file
 				// onStart
 				options.url = TDI.Ajax.Request.ajaxifyUrl(url);
 				const res = options.beforeStart && options.beforeStart(form, options);
@@ -883,7 +923,6 @@
 				if (submitButton) {
 					submitButton.classList.add('loading');
 				}
-
 				
 				form.setAttribute('action', options.url);
 				form.setAttribute('method', options.method || 'post');
@@ -999,9 +1038,11 @@
 			 * @property {Array} updates The list of all updates
 			 * @property {Object} options Additional request options
 			 */
-			involvedElms.map( elm => 
-				_trigger(elm, 'tdi:ajax:updatesDone', { updates, options })
-			);
+			if (involvedElms && involvedElms.length) {
+				involvedElms.map( elm => 
+					_trigger(elm, 'tdi:ajax:updatesDone', { updates, options })
+				);
+			}
 		}
 
 		function _onInsertsDone(involvedElms, inserts, options) {
@@ -1014,9 +1055,11 @@
 			 * @property {Array} inserts The list of all inserts
 			 * @property {Object} options Additional request options
 			 */
-			involvedElms.map( elm => 
-				_trigger(elm, 'tdi:ajax:updatesDone', { inserts, options })
-			);
+			if (involvedElms && involvedElms.length) {
+				involvedElms.map( elm => 
+					_trigger(elm, 'tdi:ajax:updatesDone', { inserts, options })
+				);
+			}
 		}
 
 		function _onScriptsDone(involvedElms, scripts, options) {
@@ -1029,9 +1072,11 @@
 			 * @property {Array} scripts The list of all scripts
 			 * @property {Object} options Additional request options
 			 */
-			involvedElms.map( elm => 
-				_trigger(elm, 'tdi:ajax:scriptsDone', { scripts, options })
-			);
+			if (involvedElms && involvedElms.length) {
+				involvedElms.map( elm => 
+					_trigger(elm, 'tdi:ajax:scriptsDone', { scripts, options })
+				);
+			}
 		}
 
 		function _onStylesDone(involvedElms, styles, options) {
@@ -1044,9 +1089,11 @@
 			 * @property {Array} styles The list of all styles
 			 * @property {Object} options Additional request options
 			 */
-			involvedElms.map( elm => 
-				_trigger(elm, 'tdi:ajax:stylesDone', { styles, options })
-			);
+			if (involvedElms && involvedElms.length) {
+				involvedElms.map( elm => 
+					_trigger(elm, 'tdi:ajax:stylesDone', { styles, options })
+				);
+			}
 		}
 
 		function _onPopupsDone(involvedElms, popups, options) {
@@ -1059,9 +1106,11 @@
 			 * @property {Array} popups The list of all popups
 			 * @property {Object} options Additional request options
 			 */
-			involvedElms.map( elm => 
-				_trigger(elm, 'tdi:ajax:popupsDone', { popups, options })
-			);
+			if (involvedElms && involvedElms.length) {
+				involvedElms.map( elm => 
+					_trigger(elm, 'tdi:ajax:popupsDone', { popups, options })
+				);
+			}
 		}
 
 		function _onUnknownsDone(involvedElms, unknowns, options) {
@@ -1074,9 +1123,11 @@
 			 * @property {Array} instructions The list of all unknown instructions
 			 * @property {Object} options Additional request options
 			 */
-			involvedElms.map( elm => 
-				_trigger(elm, 'tdi:ajax:unknownsDone', { unknowns, options })
-			);
+			if (involvedElms && involvedElms.length) {
+				involvedElms.map( elm => 
+					_trigger(elm, 'tdi:ajax:unknownsDone', { unknowns, options })
+				);
+			}
 		}
 
 		function _onAllResponsesDone(involvedElms, responses, options) {
@@ -1089,9 +1140,11 @@
 			 * @property {Array} responses The list of all instructions
 			 * @property {Object} options Additional request options
 			 */
-			involvedElms.map( elm => 
-				_trigger(elm, 'tdi:ajax:done', { responses, options })
-			);
+			if (involvedElms && involvedElms.length) {
+				involvedElms.map( elm => 
+					_trigger(elm, 'tdi:ajax:done', { responses, options })
+				);
+			}
 		}
 
 		// CALLBACKS -----------------------------------------------------------------
@@ -1118,7 +1171,7 @@
 			 * @property {Object} settings The Ajax settings
 			 */
 
-			options.involvedElms.map( elm => 
+			[].concat(options.involvedElms || document).map( elm => 
 				_trigger(elm, 'tdi:ajax:start', { options, settings	})
 			)
 		}
@@ -1178,9 +1231,9 @@
 			});
 
 			// fire the custom ajax:done events
-			let involvedElms = options.involvedElms.filter(function (elm) {
+			let involvedElms = options.involvedElms ? options.involvedElms.filter(function (elm) {
 				return document.body ? document.body.contains(elm) : document.contains(elm);
-			});
+			}) : [];
 
 			if (involvedElms.length === 0) {
 				involvedElms = [document];
@@ -1233,13 +1286,6 @@
 
 			throw('TDI ajax response status ' + xhr.status + ', ' + xhr.statusText)
 
-			_trigger(document, 'tdi:ajax:error', {
-				status: xhr ? xhr.status : 'N/A',
-				message: xhr.error || 'Invalid Ajax response. The response must be a valid XML.',
-				xhr,
-				textStatus: xhr.statusText,
-				options
-			})
 		}
 
 		/**
