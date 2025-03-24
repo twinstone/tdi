@@ -140,7 +140,7 @@
 	 */
 	function _batchClass(elms, method, className) {
 		if (elms && elms.length) {
-			elms.map( elm => elm.classList[method](className))
+			elms.forEach( elm => elm.classList[method](className))
 		}
 	}
 
@@ -1039,7 +1039,7 @@
 			 * @property {Object} options Additional request options
 			 */
 			if (involvedElms && involvedElms.length) {
-				involvedElms.map( elm => 
+				involvedElms.forEach( elm => 
 					_trigger(elm, 'tdi:ajax:updatesDone', { updates, options })
 				);
 			}
@@ -1056,7 +1056,7 @@
 			 * @property {Object} options Additional request options
 			 */
 			if (involvedElms && involvedElms.length) {
-				involvedElms.map( elm => 
+				involvedElms.forEach( elm => 
 					_trigger(elm, 'tdi:ajax:updatesDone', { inserts, options })
 				);
 			}
@@ -1073,7 +1073,7 @@
 			 * @property {Object} options Additional request options
 			 */
 			if (involvedElms && involvedElms.length) {
-				involvedElms.map( elm => 
+				involvedElms.forEach( elm => 
 					_trigger(elm, 'tdi:ajax:scriptsDone', { scripts, options })
 				);
 			}
@@ -1090,7 +1090,7 @@
 			 * @property {Object} options Additional request options
 			 */
 			if (involvedElms && involvedElms.length) {
-				involvedElms.map( elm => 
+				involvedElms.forEach( elm => 
 					_trigger(elm, 'tdi:ajax:stylesDone', { styles, options })
 				);
 			}
@@ -1107,7 +1107,7 @@
 			 * @property {Object} options Additional request options
 			 */
 			if (involvedElms && involvedElms.length) {
-				involvedElms.map( elm => 
+				involvedElms.forEach( elm => 
 					_trigger(elm, 'tdi:ajax:popupsDone', { popups, options })
 				);
 			}
@@ -1124,7 +1124,7 @@
 			 * @property {Object} options Additional request options
 			 */
 			if (involvedElms && involvedElms.length) {
-				involvedElms.map( elm => 
+				involvedElms.forEach( elm => 
 					_trigger(elm, 'tdi:ajax:unknownsDone', { unknowns, options })
 				);
 			}
@@ -1141,7 +1141,7 @@
 			 * @property {Object} options Additional request options
 			 */
 			if (involvedElms && involvedElms.length) {
-				involvedElms.map( elm => 
+				involvedElms.forEach( elm => 
 					_trigger(elm, 'tdi:ajax:done', { responses, options })
 				);
 			}
@@ -1171,7 +1171,7 @@
 			 * @property {Object} settings The Ajax settings
 			 */
 
-			[].concat(options.involvedElms || document).map( elm => 
+			[].concat(options.involvedElms || document).forEach( elm => 
 				_trigger(elm, 'tdi:ajax:start', { options, settings	})
 			)
 		}
@@ -1199,7 +1199,13 @@
 			}
 
 			const xml = _parseXMLRespose(xmlString);
-			const status = xml.querySelector('status').innerHTML;
+			const xmlStatusAttribute = xml.querySelector && xml.querySelector('status');
+			
+			if (!xmlStatusAttribute) {
+				throw new Error('TDI ajax response does not contain a status tag');
+			}
+
+			const status = xmlStatusAttribute.innerHTML;
 			let _scriptsDoneInterval;
 
 			if (status.toLowerCase() !== 'ok') {
@@ -1304,9 +1310,11 @@
 			 * @property {Object} options Additional request options
 			 */
 
-			options.involvedElms.map( elm => 
-				_trigger(elm, 'tdi:ajax:end', { options })
-			);
+			if (options.involvedElms && options.involvedElms.length) {
+				options.involvedElms.forEach( elm => 
+					_trigger(elm, 'tdi:ajax:end', { options })
+				);
+			}
 		}
 
 		// RESPONSES -----------------------------------------------------------------
@@ -1326,8 +1334,12 @@
 			}
 
 			const target_id = tag.getAttribute('target');
+			const purged_target_id = target_id ? target_id.replace(/^[^a-zA-Z]+/, '') : null;
 			const selector = tag.getAttribute('selector');
-			const targets = document.querySelectorAll(selector ? selector : '#' + target_id);
+			const targets = document.querySelectorAll(
+				selector || (purged_target_id ? '#' + purged_target_id : '')
+			)
+
 			const content = _parseXMLContent(tag.innerHTML.trim());
 			const replace = tag.getAttribute('replace');
 			const append = tag.getAttribute('append');
@@ -1349,7 +1361,7 @@
 			};
 
 			if (targets.length) {
-				// fire custom events
+			// fire custom events
 				/**
 				 * <p>Fires before the TDI <em>update</em> takes place.</p>
 				 * <p>This event is <strong>preventable</strong>. Use <a href="http://api.jquery.com/event.preventDefault/">preventDefault()</a> to prevent the default action (<code>Response._onUpdateDefault</code>).</p>
