@@ -889,52 +889,12 @@
 				options.method = options.method || form.method;
 				options.trigger = form;
 
-				if (form.querySelectorAll('input[type=file]').length > 0) {
-					// use XHR2 to send file forms when possible otherwise let pass through to the Iframe method
-					options.method = 'post';
-					form.setAttribute('enctype', 'multipart/form-data');
-					options.contentType = form.getAttribute('enctype') + '; charset=UTF-8';
-				}
-				else {
-					// send non-file forms using ajax
-					options.data = _serializeFormData(form); // safe to overwrite
-
-					return TDI.Ajax.Request.send(url, options);
-				}
-
-				// Send file
-				// onStart
-				options.url = TDI.Ajax.Request.ajaxifyUrl(url);
-				const res = options.beforeStart && options.beforeStart(form, options);
-				if (res === false) {
-					return false;
-				}
-
-				_trigger(document, 'tdi:ajax:_start', {
-					xhr: form, settings: null, options: options
-				});
-
-				// TDI.Ajax.Response._start( $form, null, options );
-
-				if (options.start) {
-					options.start(form, options);
-				}
-
 				if (submitButton) {
 					submitButton.classList.add('loading');
 				}
-				
-				form.setAttribute('action', options.url);
-				form.setAttribute('method', options.method || 'post');
-				form.setAttribute('enctype', 'multipart/form-data');
+				options.data = _serializeFormData(form); // safe to overwrite
 
-				/*
-				 Send the $form manualy.
-				 Needs to be the normal DOM method, jQuery submit() causes endless recursion of submit handlers.
-				 */
-				form.submit();
-
-				return null;
+				return TDI.Ajax.Request.send(url, options);
 			},
 
 			/**
