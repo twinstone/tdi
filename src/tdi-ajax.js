@@ -767,6 +767,7 @@
 				options.async = !options.sync;
 				options.data = options.data || '';
 				options.dataType = options.dataType || 'xml';
+				options.trigger = options.trigger || document.body;
 
 				const jqSettings = {...options};
 				jqSettings.beforeSend = function (settings) {
