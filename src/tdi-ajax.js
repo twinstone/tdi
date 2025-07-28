@@ -769,8 +769,8 @@
 				options.dataType = options.dataType || 'xml';
 				options.trigger = options.trigger || document.body;
 
-				const jqSettings = {...options};
-				jqSettings.beforeSend = function (settings) {
+				const settings = {...options};
+				settings.beforeSend = function (settings) {
 					const res = options.beforeStart && options.beforeStart(settings, options);
 					if (typeof res === 'undefined' || res === true) {
 						_trigger(options.trigger, 'tdi:ajax:_start', {
@@ -789,7 +789,7 @@
 					return false;
 				};
 
-				jqSettings.success = async function (xhr) {
+				settings.success = async function (xhr) {
 					const { statusText: textStatus } = xhr;
 					const data = await xhr.text();
 
@@ -802,7 +802,7 @@
 					}
 				};
 
-				jqSettings.error = function (xhr) {
+				settings.error = function (xhr) {
 					_trigger(options.trigger, 'tdi:ajax:_error', { xhr, options });
 
 					// TDI.Ajax.Response._error( xhr, textStatus, error, options );
@@ -812,7 +812,7 @@
 					}
 				};
 
-				jqSettings.complete = function (xhr, textStatus) {
+				settings.complete = function (xhr, textStatus) {
 					const res = options.beforeEnd && options.beforeEnd(textStatus, options);
 					if (typeof res === 'undefined' || res === true) {
 						_trigger(options.trigger, 'tdi:ajax:_end', {
@@ -827,11 +827,11 @@
 					}
 				};
 
-				_ajax(jqSettings.url, jqSettings)
+				_ajax(settings.url, settings)
 					// .then( res => res.text() )
-					.then( jqSettings.success )
-					.catch( jqSettings.error )
-					.finally( jqSettings.complete )
+					.then( settings.success )
+					.catch( settings.error )
+					.finally( settings.complete )
 			},
 
 			/**
@@ -885,9 +885,10 @@
 					form.setAttribute('enctype', 'application/x-www-form-urlencoded');
 				}
 
-				options.contentType = form.getAttribute('enctype') + '; charset=UTF-8';
+				options.headers = options.headers || {};
+				options.headers['Content-Type'] = form.getAttribute('enctype') + '; charset=UTF-8';
 
-				options.method = options.method || form.method;
+				options.method = (options.method || form.method).toUpperCase();
 				options.trigger = form;
 
 				if (submitButton) {
