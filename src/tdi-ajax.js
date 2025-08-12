@@ -175,7 +175,7 @@
 	function _prepareFormRequest(options) {
 		const fetchOptions = { ...options}
 		if (options.method.toUpperCase() === 'POST') {
-			fetchOptions.body = JSON.stringify(options.data);
+			fetchOptions.body = options.data;
 		} else {
 			fetchOptions.url = fetchOptions.url + _prepareUrlParams(options.data, fetchOptions.url);
 		}
@@ -220,6 +220,15 @@
 		// prepare payload
 		const fetchOptions = options.data ? _prepareFormRequest(options) : options;
 
+		
+		// set custom headers
+		if (TDI.config) {
+			fetchOptions.headers = {
+				...fetchOptions.headers,
+				...TDI.config.headers
+			};
+		}
+	
 		return fetch(fetchOptions.url || url, fetchOptions)
 			.then( res => {
 				if (res.ok) {
@@ -259,29 +268,6 @@
 	 */
 	function _parseXMLContent(content) {
 		return content.replace('<![CDATA[', '').replace(']]>', '').trim();
-	}
-
-	/**
-	 * <p>Serializes form data into an object.</p>
-	 * @param {HTMLElement} form Form element
-	 * @returns Object
-	 */
-	function _serializeFormData(form) {
-		const formData = new FormData(form);
-		const serializedData = {};
-
-		for (var [name, value] of formData.entries()) {
-			if (serializedData[name]) {
-				if (!Array.isArray(serializedData[name])) {
-					serializedData[name] = [serializedData[name]];
-				}
-				serializedData[name].push(value);
-			} else {
-				serializedData[name] = value;
-			}
-		}
-
-		return serializedData;
 	}
 
 	/**
@@ -763,7 +749,7 @@
 				options = options || {};
 				options.url = TDI.Ajax.Request.ajaxifyUrl(url);
 				options.xhrFields = options.xhrFields || {};
-				options.method = options.type || options.method || 'GET';
+				options.method = options.type || options.method || TDI.config.method;
 				options.async = !options.sync;
 				options.data = options.data || '';
 				options.dataType = options.dataType || 'xml';
@@ -877,16 +863,12 @@
 			 */
 			sendForm: function (form, options) {
 				options = options || {};
+				
 
 				const submitButton = form._submitButton;
 				const url = _getDataAttr(form, 'ajax-url') || form.action;
-
-				if (!form.getAttribute('enctype')) {
-					form.setAttribute('enctype', 'application/x-www-form-urlencoded');
-				}
-
+				
 				options.headers = options.headers || {};
-				options.headers['Content-Type'] = form.getAttribute('enctype') + '; charset=UTF-8';
 
 				options.method = (options.method || form.method).toUpperCase();
 				options.trigger = form;
@@ -894,7 +876,8 @@
 				if (submitButton) {
 					submitButton.classList.add('loading');
 				}
-				options.data = _serializeFormData(form); // safe to overwrite
+
+				options.data = new FormData(form);
 
 				return TDI.Ajax.Request.send(url, options);
 			},
