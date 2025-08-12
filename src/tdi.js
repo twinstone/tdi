@@ -14,19 +14,39 @@
  * limitations under the License.
  */
 
-(function () {
+(() => {
 	'use strict';
 
 	/**
-	 * <p>Javascript library which enables the communication between the UI and the application,
-	 * using the Infusion AJAX protocol, see:
-	 * https://wiki.twinstone.org/display/TDI/Infusing+Protocol.</p>
+	 * Javascript library enabling communication between the UI and the application
+	 * using the Infusion AJAX protocol.
 	 * @namespace TDI
 	 */
-	window.TDI = (function () {
-		// PRIVATE STUFF -----------------------------------------------------------
+	const _config = {
+		method: 'GET',
+		headers: {}
+	};
 
-		// PUBLIC STUFF ------------------------------------------------------------
-		return {};
-	})();
-}());
+	function setup(newConfig) {
+		if (typeof newConfig === 'object' && newConfig !== null) {
+			Object.keys(newConfig).forEach(key => {
+				if (_config.hasOwnProperty(key)) {
+					_config[key] = newConfig[key];
+				}
+			});
+		}
+	}
+
+	const tdiApi = {};
+
+	Object.defineProperty(tdiApi, 'config', {
+		get: () => Object.freeze({ ..._config }),
+		set: () => { throw new Error('Use setup() to modify config.'); },
+		configurable: false,
+		enumerable: true
+	});
+
+	tdiApi.setup = setup;
+
+	window.TDI = tdiApi;
+})();

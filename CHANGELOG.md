@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.9-beta
+
+- [CTO-370](https://etnetera.atlassian.net/browse/CTO-370) - headers can be configured
+- fixed: headers for file upload and form post
+
 ## 2.0.8-alpha
 
 - Fix proper header settings - content type for POST requests
