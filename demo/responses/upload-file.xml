@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="update-block">
+    <![CDATA[
+        <p>obsah odeslanim formulare</p>
+        <ul>
+            <li>1. polozka</li>
+            <li>2. polozka</li>
+            <li>3. polozka</li>
+        </ul>
+    ]]>  
+    </update>
+</response>  

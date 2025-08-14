@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <!-- <popup href="/modal-content.html" mode="dialog" width="500" height="300"></popup> -->
+    <dialog closalble="true">
+    <![CDATA[
+        <title>Dialog title</title>
+        <content>
+            <p>This is a dialog content.</p>
+            <p>You can put any HTML content here, including forms, images, etc.</p>
+        </content>
+    ]]>
+    </dialog>
+</response>  

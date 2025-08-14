@@ -1,4 +1,5 @@
-/build
+*.DS_Store
 /.idea/
 /node_modules/
-*.DS_Store
+/demo/uploads/*
+!/demo/uploads/.gitkeep

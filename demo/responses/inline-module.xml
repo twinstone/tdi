@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update selector=".inline-script" replace="true">
+    <![CDATA[
+      <h3>Double click the page</h3>
+      <script type="module">
+        import PageColorChanger from './responses/module.js';
+        PageColorChanger.init();
+      </script>
+    ]]>
+    </update>
+</response>  

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="update-block">
+    <![CDATA[
+        <p>novy obsah z kliku na button 1</p>
+    ]]>  
+    </update>
+    <update selector="form:last-of-type div" replace="true">
+    <![CDATA[
+        <h2>
+            <u>novy obsah</u>
+            replacnuty z buttonu 1
+        </h2>
+    ]]>  
+    </update>
+</response>  

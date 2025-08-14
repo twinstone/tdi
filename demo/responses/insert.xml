@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <insert target="update-block" position="before">
+    <![CDATA[
+        <h3>Content inserted before the target element</h3>
+    ]]>
+    </insert>
+    <insert selector=".row" position="after">
+    <![CDATA[
+        <h4>Content inserted after every <pre>.row</pre></h4>
+    ]]>
+    </insert>
+</response>  

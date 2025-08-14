@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TDI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+  <!-- <script src="./jquery.3.7.1.js"></script> -->
+  <style>
+    body {
+      background-color: #036;
+      color: #efe;
+    }
+    #related-block {
+      border: 1px solid #fff;
+      padding: 5px;
+    }
+    .loading {
+      background-color: #333;
+    }
+    .row.updated {
+      border: 1px solid #369;
+      padding: 1rem;
+    }
+    pre {
+      display: inline;
+      color: #ccc;
+    }
+    .button, button, input[type=button], input[type=reset], input[type=submit] {
+      color: #fff;
+      &:hover{ color: #888;}
+    }
+  </style>
+  <script type="module">
+    import TDI from '../dist/tdi.esm.js';
+
+    TDI.setup({
+      headers: {
+        "X-custom-header": "my-custom-header-value",
+      },
+    });
+  </script>
+  <!-- <script src="./tdi2/dist/tdi2.umd.development.js">
+    TDI.setup({
+      headers: {
+        "X-custom-header": 'my-cusom-header-value'
+      }
+    });
+  </script> -->
+  <!-- <script src="./tdi/build/tdi-bundle.js">
+    TDI.setup({
+      headers: {
+        "X-custom-header": 'my-cusom-header-value'
+      }
+    });
+  </script> -->
+</head>
+  <div class="container">
+    <div class="row">
+        <a 
+          href="./responses/update.xml" 
+          class="button button-primary tdi" 
+          data-related-element=".related-block"
+          data-trigger-group=".trigger-group1"
+        >
+          button 1
+        </a>
+        <a href="./responses/update2.xml" class="button button-primary tdi" rel="#related-block">
+          button 2
+        </a>
+        <a href="./responses/insert.xml" class="button button-primary tdi">
+          insert content
+        </a>
+        <a href="./responses/redirect.xml" class="button button-primary tdi">
+          redirect
+        </a>
+        <a href="./responses/reload.xml" class="button button-primary tdi">
+          reload
+        </a>
+        <a href="./responses/modal.xml" class="button button-primary tdi">
+          modal
+        </a>
+      </div>
+      <div class="row">
+        <a href="./responses/update-element-class.xml" class="button button-primary tdi">
+          update elms class
+        </a>
+        <a href="./responses/u.xml" class="button button-primary tdi">
+          error
+        </a>
+        <a href="./responses/update-style.xml" class="button button-primary tdi">
+          change style
+        </a>
+        <a href="./responses/load-script.xml" class="button button-primary tdi">
+          load script
+        </a>
+        <span class="button button-primary tdi-on-click">
+          update on click
+        </span>
+    </div>
+    <div class="row">
+      <form action="./responses/update-form.xml" class="tdi" method="post">
+        <div>
+          <label class="tdi">
+            <input type="checkbox" name="formUpdated" value="true">
+            <span class="label-body">checkbox</span>
+          </label>
+        </div>
+        <button type="submit" class="button">form update</button>
+      </form>
+    </div>
+    <div id="update-block">
+      <code id="js-mock-event" style="background-color: #036;">Content that will be replaced. It has an onClick event on it</code>
+    </div>
+
+    <script>
+      document.getElementById('js-mock-event').addEventListener('click', function() {
+        alert('clicked');
+      });
+    </script>
+
+    <br>
+    <br>
+    <div class="row">
+      <div id="related-block">
+        <br>
+        related block for button 2
+        <br>
+      </div>
+
+      <div class="related-block">
+        <br>
+        related block for button 1
+        <br>
+      </div>
+    </div>
+
+    <div class="row">
+      <form class="tdi form-to-be-updated" action="./responses/update.xml" method="post">
+        <div>
+          Obsah k nahrazeni
+        </div>
+        <fieldset>
+          <input type="text" name="test" class="trigger-group1">
+          <input type="text" name="test" class="trigger-group1">
+          <input type="text" name="test" class="trigger-group1">
+        </fieldset>
+          <button class="submit-action">submit</button>
+      </form>
+    </div>
+    <div class="row">
+      <form action="./responses/upload-file.php" method="post" enctype="multipart/form-data" class="tdi">
+        <fieldset>
+          <legend>Upload file</legend>
+          <label>
+            save it: 
+            <input type="checkbox" name="safeFiles" value="true">
+          </label>
+          <label>
+            <div>Select image to upload:</div>
+          <input type="file" name="fileToUpload" id="fileToUpload" required multiple>
+          </label>
+          <button class="submit-action">Upload Image</button>
+        </fieldset>
+      </form>
+    </div>
+    <div class="row">
+      <a href="./responses/inline-module.xml" class="button button-primary tdi">
+        load module
+      </a>
+      <div class="inline-script">
+        ...inline script content...
+      </div>
+    </div>
+  </div>
+  <script >
+    (() => {
+      let onClickButton = document.querySelector('.tdi-on-click');
+      onClickButton.addEventListener('click', () => {
+        TDI.Ajax.Request.send('./responses/update.xml');
+      });
+    })();
+  </script>
+</body>
+</html>

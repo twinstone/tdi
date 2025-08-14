@@ -1,6 +1,0 @@
-language: node_js
-node_js: node
-sudo: false
-script:
-  - ./node_modules/.bin/gulp lint
-  - ./node_modules/.bin/gulp test

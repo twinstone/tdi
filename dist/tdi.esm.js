@@ -1,14 +1,514 @@
-import * as tdi from './tools.ts';
+/*!
+ * Twinstone TDI (https://github.com/twinstone/tdi)
+ *
+ * Version: 2.0.11-beta
+ * Build: 2025-09-26 192954
+ *
+ * Copyright Etnetera a.s. https://www.etnetera.cz
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function asyncGeneratorStep(n, t, e, r, o, a, c) {
+  try {
+    var i = n[a](c),
+      u = i.value;
+  } catch (n) {
+    return void e(n);
+  }
+  i.done ? t(u) : Promise.resolve(u).then(r, o);
+}
+function _asyncToGenerator(n) {
+  return function () {
+    var t = this,
+      e = arguments;
+    return new Promise(function (r, o) {
+      var a = n.apply(t, e);
+      function _next(n) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "next", n);
+      }
+      function _throw(n) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "throw", n);
+      }
+      _next(void 0);
+    });
+  };
+}
+function _extends() {
+  return _extends = Object.assign ? Object.assign.bind() : function (n) {
+    for (var e = 1; e < arguments.length; e++) {
+      var t = arguments[e];
+      for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]);
+    }
+    return n;
+  }, _extends.apply(null, arguments);
+}
+function _regenerator() {
+  /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */
+  var e,
+    t,
+    r = "function" == typeof Symbol ? Symbol : {},
+    n = r.iterator || "@@iterator",
+    o = r.toStringTag || "@@toStringTag";
+  function i(r, n, o, i) {
+    var c = n && n.prototype instanceof Generator ? n : Generator,
+      u = Object.create(c.prototype);
+    return _regeneratorDefine(u, "_invoke", function (r, n, o) {
+      var i,
+        c,
+        u,
+        f = 0,
+        p = o || [],
+        y = !1,
+        G = {
+          p: 0,
+          n: 0,
+          v: e,
+          a: d,
+          f: d.bind(e, 4),
+          d: function (t, r) {
+            return i = t, c = 0, u = e, G.n = r, a;
+          }
+        };
+      function d(r, n) {
+        for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) {
+          var o,
+            i = p[t],
+            d = G.p,
+            l = i[2];
+          r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0));
+        }
+        if (o || r > 1) return a;
+        throw y = !0, n;
+      }
+      return function (o, p, l) {
+        if (f > 1) throw TypeError("Generator is already running");
+        for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) {
+          i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u);
+          try {
+            if (f = 2, i) {
+              if (c || (o = "next"), t = i[o]) {
+                if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object");
+                if (!t.done) return t;
+                u = t.value, c < 2 && (c = 0);
+              } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1);
+              i = e;
+            } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break;
+          } catch (t) {
+            i = e, c = 1, u = t;
+          } finally {
+            f = 1;
+          }
+        }
+        return {
+          value: t,
+          done: y
+        };
+      };
+    }(r, o, i), !0), u;
+  }
+  var a = {};
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+  t = Object.getPrototypeOf;
+  var c = [][n] ? t(t([][n]())) : (_regeneratorDefine(t = {}, n, function () {
+      return this;
+    }), t),
+    u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c);
+  function f(e) {
+    return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e;
+  }
+  return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine(u), _regeneratorDefine(u, o, "Generator"), _regeneratorDefine(u, n, function () {
+    return this;
+  }), _regeneratorDefine(u, "toString", function () {
+    return "[object Generator]";
+  }), (_regenerator = function () {
+    return {
+      w: i,
+      m: f
+    };
+  })();
+}
+function _regeneratorDefine(e, r, n, t) {
+  var i = Object.defineProperty;
+  try {
+    i({}, "", {});
+  } catch (e) {
+    i = 0;
+  }
+  _regeneratorDefine = function (e, r, n, t) {
+    function o(r, n) {
+      _regeneratorDefine(e, r, function (e) {
+        return this._invoke(r, n, e);
+      });
+    }
+    r ? i ? i(e, r, {
+      value: n,
+      enumerable: !t,
+      configurable: !t,
+      writable: !t
+    }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2));
+  }, _regeneratorDefine(e, r, n, t);
+}
 
-const TDI = (function() {
-  const TDI = window.TDI || {};
+/**
+ * Add event event listener to element(s)
+ */
+function on(eventName, handleFn, selectors) {
+  document.body.addEventListener(eventName, function (evt) {
+    var selectorsChecks = selectors && selectors.length;
+    if (selectorsChecks) {
+      if (selectors.some(function (selector) {
+        return evt.target.matches(selector);
+      })) {
+        handleFn(evt);
+      }
+    } else {
+      handleFn(evt);
+    }
+  });
+}
+/**
+ * Remove known event handlers from element(s)
+ */
+function off(selectors, eventName, handleFn) {
+  var elms = document.querySelectorAll(selectors);
+  elms.forEach(function (elm) {
+    if (eventName && handleFn) {
+      elm.removeEventListener(eventName, handleFn);
+    } else {
+      offAllEvents(elm);
+    }
+  });
+}
+/**
+ * Remove all events from an element, or its child nodes
+ */
+function offAllEvents(target, fromChildNodes) {
+  var _target = typeof target === 'string' ? document.querySelector(target) : target;
+  if (!_target) return;
+  if (fromChildNodes) {
+    _target.querySelectorAll('*').forEach(function (child) {
+      offAllEvents(child);
+    });
+  } else {
+    var clonedTarget = _target.cloneNode(true);
+    if (_target.parentNode) {
+      _target.parentNode.replaceChild(clonedTarget, _target);
+    }
+  }
+}
+/**
+ * Creates custom event
+ */
+function customEvent(eventName, detail) {
+  if (!eventName) return null;
+  var event = new CustomEvent(eventName, {
+    detail: detail,
+    bubbles: true,
+    cancelable: true
+  });
+  return event;
+}
+/**
+ * Dispatches custom event on provided element.
+ */
+function trigger(target, eventName, detail) {
+  var _event = customEvent(eventName, detail);
+  if (!_event) return null;
+  if (target instanceof NodeList) {
+    return target.forEach(function (elm) {
+      return elm.dispatchEvent(_event);
+    });
+  } else {
+    return target.dispatchEvent(_event);
+  }
+}
+/**
+ * Shorthand method to get value of data attr from element
+ */
+function getDataAttr(elm, dataAttr) {
+  if (elm && elm.dataset && dataAttr) {
+    if (dataAttr.indexOf('data-') === 0) throw new Error('getDataAttr: dataAttr should not begin with "data-"');
+    return elm.getAttribute('data-' + dataAttr);
+  }
+  return null;
+}
+/**
+ * Add or remove css classes to element(s)
+ */
+function batchClass(elms, method, className) {
+  Array.from(elms).forEach(function (elm) {
+    return elm.classList[method](className);
+  });
+}
+/**
+ * Whether elm has class
+ */
+function hasClass(elm, className) {
+  return elm.classList.contains(className);
+}
+function prepareFormRequest(options) {
+  var fetchOptions = _extends({}, options);
+  if (options.method.toUpperCase() === 'POST') {
+    fetchOptions.body = options.data;
+  } else {
+    fetchOptions.url = (fetchOptions.url || '') + prepareUrlParams(options.data || {}, fetchOptions.url);
+  }
+  return fetchOptions;
+}
+/**
+ * Takes serialized form data and prepares it for url params
+ */
+function prepareUrlParams(data, url) {
+  var params = new URLSearchParams();
+  var startingSymbol = url && url.indexOf('?') > -1 ? '&' : '?';
+  var _loop = function _loop(key) {
+    if (Array.isArray(data[key])) {
+      data[key].forEach(function (value) {
+        params.append(key, value);
+      });
+    } else {
+      params.append(key, data[key]);
+    }
+  };
+  for (var key in data) {
+    _loop(key);
+  }
+  return params.toString() ? startingSymbol + params.toString() : '';
+}
+/**
+ * Wrapper for ajax calls to call beforeSend handlers
+ */
+function ajax(_x, _x2) {
+  return _ajax.apply(this, arguments);
+}
+/**
+ * <p>Modifies the URL and adds an Ajax (tdi) flag.</p>
+ * @function ajaxifyUrl
+ * @memberOf TDI.Ajax.Request
+ * @static
+ * @param {String} url The URL to modify
+ * @return {String} The modified URL
+ */
+function _ajax() {
+  _ajax = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(url, options) {
+    var fetchOptions, response;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          if (options && options.beforeSend) {
+            options.beforeSend(options);
+          }
+          // prepare payload
+          fetchOptions = options.data ? prepareFormRequest(options) : options; // set custom headers
+          if (typeof TDI !== 'undefined' && TDI.config) {
+            fetchOptions.headers = _extends({}, fetchOptions.headers, TDI.config.headers);
+          }
+          _context.n = 1;
+          return fetch(fetchOptions.url || url, fetchOptions).then(function (res) {
+            if (res.ok) {
+              return res;
+            } else {
+              throw res;
+            }
+          });
+        case 1:
+          response = _context.v;
+          return _context.a(2, response);
+      }
+    }, _callee);
+  }));
+  return _ajax.apply(this, arguments);
+}
+function ajaxifyUrl(url) {
+  var p = '_infuse=1&_ts=' + new Date().getTime();
+  if (url.indexOf('?#') >= 0) {
+    return url.replace(/\?#/, '?' + p + '#');
+  } else if (url.indexOf('&#') > 0) {
+    return url.replace(/&#/, '&' + p + '#');
+  } else if (url.indexOf('?') >= 0) {
+    return url.replace(/\?/, '?' + p + '&');
+  } else if (url.indexOf('#') >= 0) {
+    return url.replace(/#/, '?' + p + '#');
+  } else {
+    return url + '?' + p;
+  }
+}
+/**
+ * Parse the HTML from string and returns it as a DOM element.
+ */
+function parseHtmlFromString(content, contentType) {
+  var parser = new DOMParser();
+  return parser.parseFromString(content, contentType || 'text/html');
+}
+/**
+ * Parse the XML response and returns content as Node.
+ */
+function parseXMLResponse(_x3) {
+  return _parseXMLResponse.apply(this, arguments);
+}
+/**
+ * Parse the XML content and remove the CDATA tags.
+ */
+function _parseXMLResponse() {
+  _parseXMLResponse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(res) {
+    var parser, data, replacedData, _t;
+    return _regenerator().w(function (_context2) {
+      while (1) switch (_context2.n) {
+        case 0:
+          parser = new DOMParser();
+          if (!(typeof res === 'string')) {
+            _context2.n = 1;
+            break;
+          }
+          _t = res;
+          _context2.n = 3;
+          break;
+        case 1:
+          _context2.n = 2;
+          return res.text();
+        case 2:
+          _t = _context2.v;
+        case 3:
+          data = _t;
+          replacedData = data.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+          return _context2.a(2, parser.parseFromString(replacedData, 'text/xml').firstChild);
+      }
+    }, _callee2);
+  }));
+  return _parseXMLResponse.apply(this, arguments);
+}
+function parseXMLContent(content) {
+  return content.replace('<![CDATA[', '').replace(']]>', '').trim();
+}
+/**
+ * <p>Loads an external javascript file. It uses a 'script tag' technique instead of AJAX,
+ * so the loaded javascript file is debuggable in tools like Firebug.</p>
+ * @function getScript
+ * @memberOf TDI.Tools
+ * @param {String} url URL of the external javascript file
+ * @param {Object} options Additional options
+ *   <dl>
+ *     <dd><code><span>complete</span> <span>&lt;Function&gt;</span></code>
+ *       <span>It is called when the javascript is fully loaded.</span></dd>
+ *     <dd><code><span>id</span> <span>&lt;String&gt;</span></code>
+ *       <span>An optional <em>id</em> attribute of the script tag.</span></dd>
+ *     <dd><code><span>nonce</span> <span>&lt;String&gt;</span></code>
+ *       <span>An optional <em>nonce</em> attribute of the script tag.</span></dd>
+ *   </dl>
+ */
+function getScript(url, options) {
+  var loaded = false;
+  var node;
+  if (url) {
+    options = options || {};
+    node = document.createElement('script');
+    node.type = 'text/javascript';
+    node.src = url;
+    if (options.id) {
+      node.id = options.id;
+    }
+    if (options.nonce) {
+      node.setAttribute('nonce', options.nonce);
+      node.nonce = options.nonce;
+    }
+    if (options.complete) {
+      /*
+       IE supports only the `onreadystatechange` event.
+       Other browsers (Chrome, Firefox, Opera, Safari) support the `onload` event.
+       IE9 supports both. But we make sure, that only one callback is fired.
+       */
+      node.onreadystatechange = function () {
+        var rs = this.readyState;
+        if (!loaded && (rs === 'loaded' || rs === 'complete')) {
+          loaded = true;
+          node.onreadystatechange = null;
+          options.complete(node);
+        }
+      };
+      node.onload = function () {
+        if (!loaded) {
+          loaded = true;
+          options.complete(node);
+        }
+      };
+    }
+    document.getElementsByTagName('head')[0].appendChild(node);
+  }
+}
+/**
+ * <p>Loads an external CSS file. It uses AJAX to load the CSS data to provide
+ * the <em>complete</em> event.</p>
+ * @function getStyle
+ * @memberOf TDI.Tools
+ * @param {String} url URL of the external CSS file
+ * @param {Object} options Additional options
+ *   <dl>
+ *     <dd><code><span>complete</span> <span>&lt;Function&gt;</span></code>
+ *       <span>It is called when the CSS file is fully loaded.</span></dd>
+ *     <dd><code><span>id</span> <span>&lt;String&gt;</span></code>
+ *       <span>An optional <em>id</em> attribute of the style tag.</span></dd>
+ *   </dl>
+ */
+function getStyle(url, options) {
+  var node;
+  if (url) {
+    options = options || {};
+    node = document.createElement('link');
+    node.rel = 'stylesheet';
+    node.type = 'text/css';
+    node.media = options.media || 'screen';
+    node.href = url;
+    if (options.id) {
+      node.id = options.id;
+    }
+    document.getElementsByTagName('head')[0].appendChild(node);
+    if (options.complete) {
+      options.complete(node);
+    }
+  }
+}
+function prepareContent(content) {
+  var doc = parseHtmlFromString(content);
+  var responseContent = doc.body.childNodes;
+  var contentFragment = document.createDocumentFragment();
+  responseContent.forEach(function (elm) {
+    if (elm.nodeName.toUpperCase() === 'SCRIPT' && elm instanceof HTMLScriptElement) {
+      // Create a new <script>
+      var newScriptTag = document.createElement('script');
+      // Copy attributes
+      for (var _i = 0, _Array$from = Array.from(elm.attributes); _i < _Array$from.length; _i++) {
+        var _Array$from$_i = _Array$from[_i],
+          name = _Array$from$_i.name,
+          value = _Array$from$_i.value;
+        newScriptTag.setAttribute(name, value);
+      }
+      newScriptTag.textContent = elm.textContent;
+      contentFragment.appendChild(newScriptTag);
+    } else if (elm instanceof Node) {
+      contentFragment.appendChild(elm);
+    }
+  });
+  return contentFragment;
+}
 
-  const tdiScriptTag = document.currentScript;
-  const NONCE = tdiScriptTag
-    ? tdiScriptTag.nonce || tdiScriptTag.getAttribute('nonce')
-    : undefined;
-  const WINDOW_UNLOAD = 'unload';
-  const WINDOW_PAGEHIDE = 'pagehide';
+var TDI$1 = /*#__PURE__*/function () {
+  var TDI = window.TDI || {};
+  var tdiScriptTag = document.currentScript;
+  var NONCE = tdiScriptTag ? tdiScriptTag.nonce || /*#__PURE__*/tdiScriptTag.getAttribute('nonce') : undefined;
+  var WINDOW_UNLOAD = 'unload';
+  var WINDOW_PAGEHIDE = 'pagehide';
 
   /**
    * <p>Basic Ajax functionality for the TDI library.
@@ -18,7 +518,7 @@ const TDI = (function() {
    * @namespace Ajax
    * @memberOf TDI
    */
-  TDI.Ajax = (function() {
+  TDI.Ajax = /*#__PURE__*/function () {
     /**
      * <p>Selectors for ajax enabled elements:</p>
      * <ul>
@@ -32,24 +532,12 @@ const TDI = (function() {
      * @private
      * @final
      */
-    const _delegateSelectors = {
+    var _delegateSelectors = {
       linkClick: ['a.ajaxlink', 'a.tdi', 'a.infuse'],
       formSubmit: ['form.ajaxform', 'form.tdi', 'form.infuse'],
-      formButtonActivate: [
-        'form.ajaxform [type=submit]',
-        'form.tdi [type=submit]',
-        'form.infuse [type=submit]',
-      ],
-      fieldChange: [
-        'select.ajaxselect',
-        'select.tdi',
-        'select.infuse',
-        'input[type=checkbox].tdi',
-        'input[type=checkbox].infuse',
-        'input[type=radio].tdi',
-        'input[type=radio].infuse',
-      ],
-      fieldSubmit: ['input[type=text].tdi', 'input[type=text].infuse'],
+      formButtonActivate: ['form.ajaxform [type=submit]', 'form.tdi [type=submit]', 'form.infuse [type=submit]'],
+      fieldChange: ['select.ajaxselect', 'select.tdi', 'select.infuse', 'input[type=checkbox].tdi', 'input[type=checkbox].infuse', 'input[type=radio].tdi', 'input[type=radio].infuse'],
+      fieldSubmit: ['input[type=text].tdi', 'input[type=text].infuse']
     };
 
     /**
@@ -64,20 +552,14 @@ const TDI = (function() {
      * @private
      */
     function _bindUI() {
-      tdi.on('click', _onBeforeLinkClick, _delegateSelectors.linkClick);
-      tdi.on('submit', _onBeforeFormSubmit, _delegateSelectors.formSubmit);
-      tdi.on(
-        'click',
-        _onFormButtonActivate,
-        _delegateSelectors.formButtonActivate
-      );
-      tdi.on('change', _onFieldChange, _delegateSelectors.fieldChange);
-      tdi.on('keydown', _onFieldSubmit, _delegateSelectors.fieldSubmit);
-
-      tdi.on('pagehide', _unbindUI, document.body);
-
-      tdi.on('tdi:ajax:beforeLinkClick', _onLinkClick);
-      tdi.on('tdi:ajax:beforeFormSubmit', _onFormSubmit);
+      on('click', _onBeforeLinkClick, _delegateSelectors.linkClick);
+      on('submit', _onBeforeFormSubmit, _delegateSelectors.formSubmit);
+      on('click', _onFormButtonActivate, _delegateSelectors.formButtonActivate);
+      on('change', _onFieldChange, _delegateSelectors.fieldChange);
+      on('keydown', _onFieldSubmit, _delegateSelectors.fieldSubmit);
+      on('pagehide', _unbindUI, document.body);
+      on('tdi:ajax:beforeLinkClick', _onLinkClick);
+      on('tdi:ajax:beforeFormSubmit', _onFormSubmit);
     }
 
     /**
@@ -96,20 +578,13 @@ const TDI = (function() {
         return;
       }
       // removeEventListener
-      tdi.off(_delegateSelectors.linkClick, 'click', _onLinkClick);
-      tdi.off(_delegateSelectors.formSubmit, 'submit', _onBeforeFormSubmit);
-      tdi.off(
-        _delegateSelectors.formButtonActivate,
-        'click',
-        _onFormButtonActivate
-      );
-      tdi.off(_delegateSelectors.fieldChange, 'change', _onFieldChange);
-      tdi.off(_delegateSelectors.fieldSubmit, 'keydown', _onFieldSubmit);
-
+      off(_delegateSelectors.linkClick, 'click', _onLinkClick);
+      off(_delegateSelectors.formSubmit, 'submit', _onBeforeFormSubmit);
+      off(_delegateSelectors.formButtonActivate, 'click', _onFormButtonActivate);
+      off(_delegateSelectors.fieldChange, 'change', _onFieldChange);
+      off(_delegateSelectors.fieldSubmit, 'keydown', _onFieldSubmit);
       if (evt) {
-        window[
-          evt.type === 'pagehide' ? WINDOW_PAGEHIDE : WINDOW_UNLOAD
-        ] = true;
+        window[evt.type === 'pagehide' ? WINDOW_PAGEHIDE : WINDOW_UNLOAD] = true;
       }
     }
 
@@ -122,17 +597,10 @@ const TDI = (function() {
      * @param {Event} evt The event object
      */
     function _onBeforeLinkClick(evt) {
-      const target = evt.target;
-
-      if (
-        evt.ctrlKey ||
-        evt.metaKey ||
-        evt.shiftKey ||
-        (evt.button && evt.button === 1)
-      ) {
+      var target = evt.target;
+      if (evt.ctrlKey || evt.metaKey || evt.shiftKey || evt.button && evt.button === 1) {
         return;
       }
-
       evt.preventDefault();
 
       /**
@@ -144,7 +612,7 @@ const TDI = (function() {
        * @param {Object} data The event properties
        * @property {jQuery} link The link object
        */
-      tdi.trigger(target, 'tdi:ajax:beforeLinkClick');
+      trigger(target, 'tdi:ajax:beforeLinkClick');
     }
 
     /**
@@ -165,8 +633,7 @@ const TDI = (function() {
      * @param {Event} evt The event object
      */
     function _onBeforeFormSubmit(evt) {
-      const form = evt.target;
-
+      var form = evt.target;
       evt.preventDefault();
 
       /**
@@ -178,7 +645,9 @@ const TDI = (function() {
        * @param {Object} data The event properties
        * @property {jQuery} form The form object
        */
-      tdi.trigger(form, 'tdi:ajax:beforeFormSubmit', { form });
+      trigger(form, 'tdi:ajax:beforeFormSubmit', {
+        form: form
+      });
     }
 
     /**
@@ -200,18 +669,17 @@ const TDI = (function() {
      */
     // FIXME: je tahle metoda orpavdu potreba?
     function _onFormButtonActivate(evt) {
-      const button = evt.target;
-      const form = button.form;
+      var button = evt.target;
+      var form = button.form;
 
       // save the used submit button
       form._submitButton = button;
-
       if (button.name) {
         // remove the old field
         form.querySelector('input.submit-action').remove();
 
         // create a new field with the buttons name and value
-        const _newBtn = document.createElement('input');
+        var _newBtn = document.createElement('input');
         _newBtn.type = 'hidden';
         _newBtn.name = button.name;
         _newBtn.value = button.value;
@@ -229,8 +697,7 @@ const TDI = (function() {
      * @param {Event} evt The event object
      */
     function _onFieldChange(evt) {
-      const target = evt.currentTarget;
-
+      var target = evt.currentTarget;
       if (target.dataset.ajaxUrl) {
         TDI.Ajax.send(target);
       } else {
@@ -246,8 +713,7 @@ const TDI = (function() {
      * @param {Event} evt The event object
      */
     function _onFieldSubmit(evt) {
-      const target = evt.currentTarget;
-
+      var target = evt.currentTarget;
       if (evt.keyCode === 13) {
         evt.preventDefault();
         if (target.dataset.ajaxUrl) {
@@ -294,50 +760,38 @@ const TDI = (function() {
        *     <dd><code><span>end</span> <span>&lt;Function&gt;</span></code></dd>
        *   </dl>
        */
-      send: function(elm, callbacks) {
+      send: function send(elm, callbacks) {
         if (!elm || elm.nodeType !== Node.ELEMENT_NODE) {
           // TODO: error logging?
           throw new Error('Ajax.send: not a valid element');
         }
         callbacks = callbacks || {};
-
-        const name = elm.getAttribute('name');
-        const value = elm.value;
-        const confirm = elm.dataset.confirm;
-
-        const relatedAncestor = elm.closest(
-          tdi.getDataAttr(elm, 'related-ancestor')
-        );
-        const related = [];
-        const getRelatedElm = selector => {
-          const _relatedElm = selector
-            ? document.querySelector(selector)
-            : null;
+        var name = elm.getAttribute('name');
+        var value = elm.value;
+        var confirm = elm.dataset.confirm;
+        var relatedAncestor = elm.closest(getDataAttr(elm, 'related-ancestor'));
+        var related = [];
+        var getRelatedElm = function getRelatedElm(selector) {
+          var _relatedElm = selector ? document.querySelector(selector) : null;
           if (_relatedElm) {
             related.push(_relatedElm);
           }
           return _relatedElm;
         };
-
         if (relatedAncestor) {
           related.push(relatedAncestor);
         }
-        getRelatedElm(tdi.getDataAttr(elm, 'related-element'));
+        getRelatedElm(getDataAttr(elm, 'related-element'));
         if (elm._submitButton) {
           related.push(elm._submitButton);
         }
         getRelatedElm(elm.rel);
-
-        const involvedElms = [elm].concat(related);
-
-        const triggerGroup = document.querySelectorAll(
-          tdi.getDataAttr(elm, 'trigger-group')
-        );
-
-        let url = elm.getAttribute('data-ajax-url') || elm.href || elm.action;
-        const method = tdi.getDataAttr(elm, '-ajax-method') || elm.method;
-        const xhrFields = tdi.getDataAttr(elm, 'ajax-xhr-fields') || {};
-        const data = {};
+        var involvedElms = [elm].concat(related);
+        var triggerGroup = document.querySelectorAll(getDataAttr(elm, 'trigger-group'));
+        var url = elm.getAttribute('data-ajax-url') || elm.href || elm.action;
+        var method = getDataAttr(elm, '-ajax-method') || elm.method;
+        var xhrFields = getDataAttr(elm, 'ajax-xhr-fields') || {};
+        var data = {};
 
         // if the URL is empty, try to use $elm.value
         if ((url === '' || url === undefined) && value) {
@@ -357,87 +811,72 @@ const TDI = (function() {
         if (elm.matches('[disabled], .disabled')) {
           return;
         }
-
         if (confirm && !window.confirm(confirm)) {
           return;
         }
-
-        const _options = {
-          beforeStart: function() {
-            const res =
-              callbacks.beforeStart &&
-              callbacks.beforeStart.apply(this, arguments);
+        var _options = {
+          beforeStart: function beforeStart() {
+            var res = callbacks.beforeStart && callbacks.beforeStart.apply(this, arguments);
             if (typeof res === 'undefined' || res === true) {
-              tdi.batchClass(involvedElms, 'add', 'loading');
-
-              triggerGroup.forEach(trigger => {
-                if (!tdi.hasClass(trigger, 'disabled') && !trigger.disabled) {
+              batchClass(involvedElms, 'add', 'loading');
+              triggerGroup.forEach(function (trigger) {
+                if (!hasClass(trigger, 'disabled') && !trigger.disabled) {
                   trigger.classList.add('disabled');
                   trigger.disabled = true;
                   trigger._disabled = true;
                 }
               });
-
               if (callbacks.start) {
                 callbacks.start.apply(this, arguments);
               }
-
               return true;
             }
-
             return false;
           },
-
-          beforeEnd: function() {
-            const res =
-              callbacks.beforeEnd && callbacks.beforeEnd.apply(this, arguments);
+          beforeEnd: function beforeEnd() {
+            var res = callbacks.beforeEnd && callbacks.beforeEnd.apply(this, arguments);
             if (typeof res === 'undefined' || res === true) {
-              tdi.batchClass(involvedElms, 'remove', 'loading');
-
-              triggerGroup.forEach(trigger => {
+              batchClass(involvedElms, 'remove', 'loading');
+              triggerGroup.forEach(function (trigger) {
                 if (trigger._disabled === true) {
                   trigger.classList.remove('disabled');
                   delete trigger.disabled;
                   trigger._disabled = false;
                 }
               });
-
               if (callbacks.end) {
                 callbacks.end.apply(this, arguments);
               }
             }
           },
-
           data: data,
           method: method,
           trigger: elm,
           involvedElms: involvedElms,
-          xhrFields: xhrFields,
+          xhrFields: xhrFields
         };
-
         if (elm.matches('form')) {
-          _options.end = function() {
-            const _submitActionElm = elm.querySelector('input.submit-action');
+          _options.end = function () {
+            var _submitActionElm = elm.querySelector('input.submit-action');
             elm._submitButton = null;
             if (_submitActionElm) {
               elm.removeChild(_submitActionElm);
             }
           };
-
           return TDI.Ajax.Request.sendForm(elm, _options);
         } else {
           return TDI.Ajax.Request.send(url, _options);
         }
-      },
+      }
     };
-  })();
+  }();
 
   /**
    * <p>The Request API for the TDI Ajax. Provides methods to send TDI requests.</p>
    * @namespace Request
    * @memberOf TDI.Ajax
    */
-  TDI.Ajax.Request = (function() {
+  TDI.Ajax.Request = /*#__PURE__*/function () {
     return {
       /**
        * <p>Sends the Ajax request and calls the needed callback methods.</p>
@@ -488,24 +927,22 @@ const TDI = (function() {
        *       </dd>
        *   </dl>
        */
-      send: function(url, options) {
+      send: function send(url, options) {
         options = options || {};
-        options.url = tdi.ajaxifyUrl(url);
+        options.url = ajaxifyUrl(url);
         options.xhrFields = options.xhrFields || {};
         options.method = options.type || options.method || TDI.config.method;
         options.async = !options.sync;
         options.data = options.data || '';
         options.dataType = options.dataType || 'xml';
         options.trigger = options.trigger || document.body;
-
-        const settings = { ...options };
-        settings.beforeSend = function(settings) {
-          const res =
-            options.beforeStart && options.beforeStart(settings, options);
+        var settings = _extends({}, options);
+        settings.beforeSend = function (settings) {
+          var res = options.beforeStart && options.beforeStart(settings, options);
           if (typeof res === 'undefined' || res === true) {
-            tdi.trigger(options.trigger, 'tdi:ajax:_start', {
-              settings,
-              options,
+            trigger(options.trigger, 'tdi:ajax:_start', {
+              settings: settings,
+              options: options
             });
 
             // TDI.Ajax.Response._start( xhr, settings, options );
@@ -513,35 +950,42 @@ const TDI = (function() {
             if (options.start) {
               options.start(settings, options);
             }
-
             return true;
           }
-
           return false;
         };
-
-        settings.success = async function(response) {
-          const { statusText } = response;
-          const data = await response.text();
-
-          tdi.trigger(options.trigger, 'tdi:ajax:_success', {
-            statusText,
+        settings.success = /*#__PURE__*/function () {
+          var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(response) {
+            var statusText, data;
+            return _regenerator().w(function (_context) {
+              while (1) switch (_context.n) {
+                case 0:
+                  statusText = response.statusText;
+                  _context.n = 1;
+                  return response.text();
+                case 1:
+                  data = _context.v;
+                  trigger(options.trigger, 'tdi:ajax:_success', {
+                    statusText: statusText,
+                    xhr: response,
+                    data: data,
+                    options: options
+                  });
+                  if (options.success) {
+                    options.success(data, statusText, options);
+                  }
+                  return _context.a(2, response);
+              }
+            }, _callee);
+          }));
+          return function (_x) {
+            return _ref.apply(this, arguments);
+          };
+        }();
+        settings.error = function (response) {
+          trigger(options.trigger, 'tdi:ajax:_error', {
             xhr: response,
-            data,
-            options,
-          });
-
-          if (options.success) {
-            options.success(data, statusText, options);
-          }
-
-          return response;
-        };
-
-        settings.error = function(response) {
-          tdi.trigger(options.trigger, 'tdi:ajax:_error', {
-            xhr: response,
-            options,
+            options: options
           });
 
           // TDI.Ajax.Response._error( xhr, statusText, error, options );
@@ -549,15 +993,13 @@ const TDI = (function() {
           if (options.error) {
             options.error(response, options);
           }
-
           return response;
         };
-
-        settings.complete = function() {
-          const res = options.beforeEnd && options.beforeEnd(options);
+        settings.complete = function () {
+          var res = options.beforeEnd && options.beforeEnd(options);
           if (typeof res === 'undefined' || res === true) {
-            tdi.trigger(options.trigger, 'tdi:ajax:_end', {
-              options,
+            trigger(options.trigger, 'tdi:ajax:_end', {
+              options: options
             });
 
             // TDI.Ajax.Response._end( xhr, statusText, options );
@@ -567,16 +1009,11 @@ const TDI = (function() {
             }
           }
         };
-
-        tdi
-          .ajax(settings.url, settings)
-          // .then( res => res.text() )
-          // .then(settings.success)
-          .then(settings.success)
-          .catch(settings.error)
-          .finally(settings.complete);
+        ajax(settings.url, settings)
+        // .then( res => res.text() )
+        // .then(settings.success)
+        .then(settings.success)["catch"](settings.error)["finally"](settings.complete);
       },
-
       /**
        * <p>Submits a form using an Iframe (fake Ajax call).</p>
        * @function sendForm
@@ -618,27 +1055,21 @@ const TDI = (function() {
        *       </dd>
        *   </dl>
        */
-      sendForm: function(form, options) {
+      sendForm: function sendForm(form, options) {
         options = options || {};
-
-        const submitButton = form._submitButton;
-        const url = tdi.getDataAttr(form, 'ajax-url') || form.action;
-
+        var submitButton = form._submitButton;
+        var url = getDataAttr(form, 'ajax-url') || form.action;
         options.headers = options.headers || {};
-
         options.method = (options.method || form.method).toUpperCase();
         options.trigger = form;
-
         if (submitButton) {
           submitButton.classList.add('loading');
         }
-
         options.data = new FormData(form);
-
         return TDI.Ajax.Request.send(url, options);
-      },
+      }
     };
-  })();
+  }();
 
   /**
    * <p>The Response API for the TDI AJAX. Provides a set of custom <em>tdi</em> events which can be used
@@ -646,33 +1077,36 @@ const TDI = (function() {
    * @namespace Response
    * @memberOf TDI.Ajax
    */
-  TDI.Ajax.Response = function() {
-    let i;
-    let customHandlers;
-    let customDefault;
-    let customPostDispatch;
-    let _infusionInstructions;
-    let _scriptTags;
-    let _responses;
-    let _scriptsDone;
+  TDI.Ajax.Response = function () {
+    var i;
+    var customHandlers;
+    var customDefault;
+    var customPostDispatch;
+    var _infusionInstructions;
+    var _scriptTags;
+    var _responses;
+    var _scriptsDone;
 
     // Listen for ajax internal events
-    tdi.on('tdi:ajax:_start', evt => {
+    on('tdi:ajax:_start', function (evt) {
       _start(evt.detail.settings, evt.detail.options);
     });
-
-    tdi.on('tdi:ajax:_success', evt => {
-      const { data, statusText, xhr, options } = evt.detail;
+    on('tdi:ajax:_success', function (evt) {
+      var _evt$detail = evt.detail,
+        data = _evt$detail.data,
+        statusText = _evt$detail.statusText,
+        xhr = _evt$detail.xhr,
+        options = _evt$detail.options;
       _success(data, statusText, xhr, options);
     });
-
-    tdi.on('tdi:ajax:_error', evt => {
-      const { xhr, options } = evt.detail;
+    on('tdi:ajax:_error', function (evt) {
+      var _evt$detail2 = evt.detail,
+        xhr = _evt$detail2.xhr,
+        options = _evt$detail2.options;
       _error(xhr, options);
     });
-
-    tdi.on('tdi:ajax:_end', evt => {
-      const { options } = evt.detail;
+    on('tdi:ajax:_end', function (evt) {
+      var options = evt.detail.options;
       _end(options);
     });
 
@@ -686,7 +1120,7 @@ const TDI = (function() {
       redirect: _onBeforeRedirect,
       // @deprecated
       popup: _onBeforeDialog,
-      dialog: _onBeforeDialog,
+      dialog: _onBeforeDialog
     };
 
     // a collection of new script tags which will be added after the response is done to preserve the execution order
@@ -699,7 +1133,7 @@ const TDI = (function() {
       scripts: [],
       styles: [],
       dialogs: [],
-      unknowns: [],
+      unknowns: []
     };
 
     // EVENTS
@@ -714,12 +1148,14 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        */
       if (involvedElms && involvedElms.length) {
-        involvedElms.forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:updatesDone', { updates, options })
-        );
+        involvedElms.forEach(function (elm) {
+          return trigger(elm, 'tdi:ajax:updatesDone', {
+            updates: updates,
+            options: options
+          });
+        });
       }
     }
-
     function _onInsertsDone(involvedElms, inserts, options) {
       /**
        * <p>Fires when all TDI &lt;insert&gt;s are done.</p>
@@ -731,12 +1167,14 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        */
       if (involvedElms && involvedElms.length) {
-        involvedElms.forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:updatesDone', { inserts, options })
-        );
+        involvedElms.forEach(function (elm) {
+          return trigger(elm, 'tdi:ajax:updatesDone', {
+            inserts: inserts,
+            options: options
+          });
+        });
       }
     }
-
     function _onScriptsDone(involvedElms, scripts, options) {
       /**
        * <p>Fires when all TDI &lt;script&gt;s are done.</p>
@@ -748,12 +1186,14 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        */
       if (involvedElms && involvedElms.length) {
-        involvedElms.forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:scriptsDone', { scripts, options })
-        );
+        involvedElms.forEach(function (elm) {
+          return trigger(elm, 'tdi:ajax:scriptsDone', {
+            scripts: scripts,
+            options: options
+          });
+        });
       }
     }
-
     function _onStylesDone(involvedElms, styles, options) {
       /**
        * <p>Fires when all TDI &lt;style&gt;s are done.</p>
@@ -765,12 +1205,14 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        */
       if (involvedElms && involvedElms.length) {
-        involvedElms.forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:stylesDone', { styles, options })
-        );
+        involvedElms.forEach(function (elm) {
+          return trigger(elm, 'tdi:ajax:stylesDone', {
+            styles: styles,
+            options: options
+          });
+        });
       }
     }
-
     function _onDialogsDone(involvedElms, dialogs, options) {
       /**
        * <p>Fires when all TDI &lt;dialogs&gt;s are done.</p>
@@ -782,12 +1224,14 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        */
       if (involvedElms && involvedElms.length) {
-        involvedElms.forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:dialogsDone', { dialogs, options })
-        );
+        involvedElms.forEach(function (elm) {
+          return trigger(elm, 'tdi:ajax:dialogsDone', {
+            dialogs: dialogs,
+            options: options
+          });
+        });
       }
     }
-
     function _onUnknownsDone(involvedElms, unknowns, options) {
       /**
        * <p>Fires when all &lt;unknown&gt; TDI instructions are done.</p>
@@ -799,12 +1243,14 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        */
       if (involvedElms && involvedElms.length) {
-        involvedElms.forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:unknownsDone', { unknowns, options })
-        );
+        involvedElms.forEach(function (elm) {
+          return trigger(elm, 'tdi:ajax:unknownsDone', {
+            unknowns: unknowns,
+            options: options
+          });
+        });
       }
     }
-
     function _onAllResponsesDone(involvedElms, responses, options) {
       /**
        * <p>Fires when all TDI actions are done.</p>
@@ -816,9 +1262,12 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        */
       if (involvedElms && involvedElms.length) {
-        involvedElms.forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:done', { responses, options })
-        );
+        involvedElms.forEach(function (elm) {
+          return trigger(elm, 'tdi:ajax:done', {
+            responses: responses,
+            options: options
+          });
+        });
       }
     }
 
@@ -846,11 +1295,12 @@ const TDI = (function() {
        * @property {Object} settings The Ajax settings
        */
 
-      []
-        .concat(options.involvedElms || document)
-        .forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:start', { options, settings })
-        );
+      [].concat(options.involvedElms || document).forEach(function (elm) {
+        return trigger(elm, 'tdi:ajax:start', {
+          options: options,
+          settings: settings
+        });
+      });
     }
 
     /**
@@ -869,85 +1319,9 @@ const TDI = (function() {
      * @param {jqXHR} xhr The jqXHR object
      * @param {Object} options Additional request options
      */
-    async function _success(xmlString, statusText, xhr, options) {
-      if (typeof xmlString !== 'string') {
-        _error(statusText, null, options);
-        return false;
-      }
-
-      const xml = await tdi.parseXMLResponse(xmlString);
-      const xmlStatusAttribute =
-        xml.querySelector && xml.querySelector('status');
-
-      if (!xmlStatusAttribute) {
-        throw new Error('TDI ajax response does not contain a status tag');
-      }
-
-      const status = xmlStatusAttribute.innerHTML;
-      let _scriptsDoneInterval;
-
-      if (status.toLowerCase() !== 'ok') {
-        _error(xhr, statusText, status.innerHTML, options);
-      }
-
-      // handle tags
-      xml.querySelectorAll('response > *:not(status)').forEach(elm => {
-        const instruction = elm.tagName.toLowerCase();
-
-        switch (instruction) {
-          case 'script':
-            /*
-						 Collect all script tags to a list, so they can be downloaded
-						 and executed in the preserved order
-						 */
-            _scriptTags.push(elm);
-            break;
-          default:
-            if (_infusionInstructions[instruction]) {
-              _infusionInstructions[instruction](elm, options);
-            } else {
-              _onBeforeUnknown(elm, options);
-            }
-
-            break;
-        }
-      });
-
-      // fire the custom ajax:done events
-      let involvedElms = options.involvedElms
-        ? options.involvedElms.filter(function(elm) {
-            return document.body
-              ? document.body.contains(elm)
-              : document.contains(elm);
-          })
-        : [];
-
-      if (involvedElms.length === 0) {
-        involvedElms = [document];
-      }
-
-      _onUpdatesDone(involvedElms, _responses.updates, options);
-      _onInsertsDone(involvedElms, _responses.inserts, options);
-      _onStylesDone(involvedElms, _responses.styles, options);
-      _onDialogsDone(involvedElms, _responses.dialogs, options);
-      _onUnknownsDone(involvedElms, _responses.unknowns, options);
-
-      if (_scriptTags.length) {
-        _scriptsDoneInterval = window.setInterval(function() {
-          if (_scriptsDone) {
-            window.clearInterval(_scriptsDoneInterval);
-            _onScriptsDone(involvedElms, _responses.scripts, options);
-            _onAllResponsesDone(involvedElms, _responses, options);
-          }
-        }, 100);
-
-        // download and execute the list of script tags
-        _onBeforeScript(_scriptTags.shift(), options);
-      } else {
-        _onAllResponsesDone(involvedElms, _responses, options);
-      }
+    function _success(_x2, _x3, _x4, _x5) {
+      return _success2.apply(this, arguments);
     }
-
     /**
      * <p>The default <em>error</em> callback.</p>
      * @function _error
@@ -956,6 +1330,89 @@ const TDI = (function() {
      * @param {String} status The XHR status text (if available)
      * @param {String} statusText The XHR text status (if available)
      */
+    function _success2() {
+      _success2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(xmlString, statusText, xhr, options) {
+        var xml, xmlStatusAttribute, status, _scriptsDoneInterval, involvedElms;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.n) {
+            case 0:
+              if (!(typeof xmlString !== 'string')) {
+                _context2.n = 1;
+                break;
+              }
+              _error(statusText, null);
+              return _context2.a(2, false);
+            case 1:
+              _context2.n = 2;
+              return parseXMLResponse(xmlString);
+            case 2:
+              xml = _context2.v;
+              xmlStatusAttribute = xml.querySelector && xml.querySelector('status');
+              if (xmlStatusAttribute) {
+                _context2.n = 3;
+                break;
+              }
+              throw new Error('TDI ajax response does not contain a status tag');
+            case 3:
+              status = xmlStatusAttribute.innerHTML;
+              if (status.toLowerCase() !== 'ok') {
+                _error(xhr, statusText);
+              }
+
+              // handle tags
+              xml.querySelectorAll('response > *:not(status)').forEach(function (elm) {
+                var instruction = elm.tagName.toLowerCase();
+                switch (instruction) {
+                  case 'script':
+                    /*
+                    Collect all script tags to a list, so they can be downloaded
+                    and executed in the preserved order
+                    */
+                    _scriptTags.push(elm);
+                    break;
+                  default:
+                    if (_infusionInstructions[instruction]) {
+                      _infusionInstructions[instruction](elm, options);
+                    } else {
+                      _onBeforeUnknown(elm, options);
+                    }
+                    break;
+                }
+              });
+
+              // fire the custom ajax:done events
+              involvedElms = options.involvedElms ? options.involvedElms.filter(function (elm) {
+                return document.body ? document.body.contains(elm) : document.contains(elm);
+              }) : [];
+              if (involvedElms.length === 0) {
+                involvedElms = [document];
+              }
+              _onUpdatesDone(involvedElms, _responses.updates, options);
+              _onInsertsDone(involvedElms, _responses.inserts, options);
+              _onStylesDone(involvedElms, _responses.styles, options);
+              _onDialogsDone(involvedElms, _responses.dialogs, options);
+              _onUnknownsDone(involvedElms, _responses.unknowns, options);
+              if (_scriptTags.length) {
+                _scriptsDoneInterval = window.setInterval(function () {
+                  if (_scriptsDone) {
+                    window.clearInterval(_scriptsDoneInterval);
+                    _onScriptsDone(involvedElms, _responses.scripts, options);
+                    _onAllResponsesDone(involvedElms, _responses, options);
+                  }
+                }, 100);
+
+                // download and execute the list of script tags
+                _onBeforeScript(_scriptTags.shift(), options);
+              } else {
+                _onAllResponsesDone(involvedElms, _responses, options);
+              }
+            case 4:
+              return _context2.a(2);
+          }
+        }, _callee2);
+      }));
+      return _success2.apply(this, arguments);
+    }
     function _error(status, statusText) {
       /**
        * <p>Fires when the Ajax request ends with an error.</p>
@@ -980,9 +1437,11 @@ const TDI = (function() {
        */
 
       if (options.involvedElms && options.involvedElms.length) {
-        options.involvedElms.forEach(elm =>
-          tdi.trigger(elm, 'tdi:ajax:end', { options })
-        );
+        options.involvedElms.forEach(function (elm) {
+          return trigger(elm, 'tdi:ajax:end', {
+            options: options
+          });
+        });
       }
     }
 
@@ -1001,36 +1460,29 @@ const TDI = (function() {
       if (!tag) {
         return false;
       }
-
-      const target_id = tag.getAttribute('target');
-      const purged_target_id = target_id
-        ? target_id.replace(/^[^a-zA-Z]+/, '')
-        : null;
-      const selector = tag.getAttribute('selector');
-      const targets = document.querySelectorAll(
-        selector || (purged_target_id ? '#' + purged_target_id : '')
-      );
-
-      const content = tdi.parseXMLContent(tag.innerHTML.trim());
-      const replace = tag.getAttribute('replace');
-      const append = tag.getAttribute('append');
-      const prepend = tag.getAttribute('prepend');
-      const class_add = tag.getAttribute('class-add') || '';
-      const class_remove = tag.getAttribute('class-remove') || '';
-      const eventData = {
-        target_id,
-        selector,
+      var target_id = tag.getAttribute('target');
+      var purged_target_id = target_id ? target_id.replace(/^[^a-zA-Z]+/, '') : null;
+      var selector = tag.getAttribute('selector');
+      var targets = document.querySelectorAll(selector || (purged_target_id ? '#' + purged_target_id : ''));
+      var content = parseXMLContent(tag.innerHTML.trim());
+      var replace = tag.getAttribute('replace');
+      var append = tag.getAttribute('append');
+      var prepend = tag.getAttribute('prepend');
+      var class_add = tag.getAttribute('class-add') || '';
+      var class_remove = tag.getAttribute('class-remove') || '';
+      var eventData = {
+        target_id: target_id,
+        selector: selector,
         content: content !== '' ? content : null,
         content_empty: content.replace(/&nbsp;/g, '').length === 0,
-        replace,
-        append,
-        prepend,
-        class_add,
-        class_remove,
-        options,
-        tag,
+        replace: replace,
+        append: append,
+        prepend: prepend,
+        class_add: class_add,
+        class_remove: class_remove,
+        options: options,
+        tag: tag
       };
-
       if (targets.length) {
         // fire custom events
         /**
@@ -1054,9 +1506,11 @@ const TDI = (function() {
          * @property {jQuery} tag The raw XML tag of the instruction
          */
 
-        targets.forEach(target => {
-          const data = { ...eventData, target };
-          tdi.trigger(target, 'tdi:ajax:beforeUpdate', data);
+        targets.forEach(function (target) {
+          var data = _extends({}, eventData, {
+            target: target
+          });
+          trigger(target, 'tdi:ajax:beforeUpdate', data);
           _responses.updates.push(data);
         });
       }
@@ -1076,25 +1530,21 @@ const TDI = (function() {
       if (!tag) {
         return false;
       }
-
-      const target_id = tag.getAttribute('target');
-      const selector = tag.getAttribute('selector');
-      const targets = document.querySelectorAll(
-        selector ? selector : '#' + target_id
-      );
-      const content = tdi.parseXMLContent(tag.innerHTML);
-      const position = tag.getAttribute('position') || 'after';
-      let insertedNode;
-      const eventData = {
-        target_id,
-        selector,
-        content,
-        position,
+      var target_id = tag.getAttribute('target');
+      var selector = tag.getAttribute('selector');
+      var targets = document.querySelectorAll(selector ? selector : '#' + target_id);
+      var content = parseXMLContent(tag.innerHTML);
+      var position = tag.getAttribute('position') || 'after';
+      var insertedNode;
+      var eventData = {
+        target_id: target_id,
+        selector: selector,
+        content: content,
+        position: position,
         inserted_node: insertedNode,
-        options,
-        tag,
+        options: options,
+        tag: tag
       };
-
       if (targets.length) {
         // fire custom events
         /**
@@ -1112,9 +1562,11 @@ const TDI = (function() {
          * @property {Object} options Additional request options
          * @property {jQuery} tag The raw XML tag of the instruction
          */
-        targets.forEach(target => {
-          const data = { ...eventData, target };
-          tdi.trigger(target, 'tdi:ajax:beforeInsert', data);
+        targets.forEach(function (target) {
+          var data = _extends({}, eventData, {
+            target: target
+          });
+          trigger(target, 'tdi:ajax:beforeInsert', data);
           _responses.inserts.push(data);
         });
       }
@@ -1134,18 +1586,16 @@ const TDI = (function() {
       if (!tag) {
         return false;
       }
-
-      const contents = tag.innerHTML.trim();
-      const src = tag.getAttribute('src');
-      const id = tag.getAttribute('id');
-      const eventData = {
+      var contents = tag.innerHTML.trim();
+      var src = tag.getAttribute('src');
+      var id = tag.getAttribute('id');
+      var eventData = {
         script_src: src,
         script_data: contents,
         script_id: id,
-        options,
-        tag,
+        options: options,
+        tag: tag
       };
-
       _responses.scripts.push(eventData);
 
       // fire custom events
@@ -1179,14 +1629,13 @@ const TDI = (function() {
       if (!tag) {
         return false;
       }
-
-      const src = tag.getAttribute('src');
-      const id = tag.getAttribute('id');
-      const eventData = {
+      var src = tag.getAttribute('src');
+      var id = tag.getAttribute('id');
+      var eventData = {
         style_src: src,
         style_id: id,
         options: options,
-        tag,
+        tag: tag
       };
 
       // fire custom events
@@ -1203,7 +1652,6 @@ const TDI = (function() {
        * @property {jQuery} tag The raw XML tag of the instruction
        */
       _triggerDefault('tdi:ajax:beforeStyle', eventData);
-
       _responses.styles.push(eventData);
     }
 
@@ -1220,10 +1668,9 @@ const TDI = (function() {
       if (!tag) {
         return false;
       }
-
-      const eventData = {
-        options,
-        tag,
+      var eventData = {
+        options: options,
+        tag: tag
       };
 
       // fire custom events
@@ -1254,13 +1701,11 @@ const TDI = (function() {
       if (!tag) {
         return false;
       }
-
-      const eventData = {
+      var eventData = {
         href: tag.getAttribute('href'),
-        options,
-        tag,
+        options: options,
+        tag: tag
       };
-
       if (eventData.href) {
         // fire custom events
         /**
@@ -1294,20 +1739,18 @@ const TDI = (function() {
       if (!tag) {
         return false;
       }
-      const content = tdi.parseXMLContent(tag.innerHTML.trim());
-      const class_add = tag.getAttribute('class-add') || '';
-      const closable = tag.getAttribute('closable') !== 'false';
-
-      const mode = tag.getAttribute('mode') || 'dialog';
+      var content = parseXMLContent(tag.innerHTML.trim());
+      var class_add = tag.getAttribute('class-add') || '';
+      var closable = tag.getAttribute('closable') !== 'false';
+      var mode = tag.getAttribute('mode') || 'dialog';
       // const href = tag.getAttribute('href');
-      const eventData = {
-        class_add,
-        closable,
-        content,
-        mode,
-        options,
+      var eventData = {
+        class_add: class_add,
+        closable: closable,
+        content: content,
+        mode: mode,
+        options: options
       };
-
       _triggerDefault('tdi:ajax:beforeDialog', eventData);
       _responses.dialogs.push(eventData);
     }
@@ -1326,19 +1769,17 @@ const TDI = (function() {
       if (!tag) {
         return false;
       }
-
-      const name = tag.tagName.toLowerCase();
-      const beforeName = name.substr(0, 1).toUpperCase() + name.substr(1);
-      const attributes = tag.attributes;
-      const eventData = {
+      var name = tag.tagName.toLowerCase();
+      var beforeName = name.substr(0, 1).toUpperCase() + name.substr(1);
+      var attributes = tag.attributes;
+      var eventData = {
         _name: name,
         contents: tag.innerHTML.trim(),
-        options,
-        tag,
+        options: options,
+        tag: tag
       };
-
-      for (let i = 0, l = attributes.length; i < l; i++) {
-        eventData[attributes[i].name] = attributes[i].value;
+      for (var _i = 0, l = attributes.length; _i < l; _i++) {
+        eventData[attributes[_i].name] = attributes[_i].value;
       }
 
       // fire custom events
@@ -1354,9 +1795,8 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        * @property {jQuery} tag The raw XML tag of the instruction
        */
-      tdi.on('tdi:ajax:before' + beforeName, customDefault, eventData);
-
-      tdi.trigger(document, 'tdi:ajax:before' + beforeName, eventData);
+      on('tdi:ajax:before' + beforeName, customDefault, eventData);
+      trigger(document, 'tdi:ajax:before' + beforeName, eventData);
       _responses.unknowns.push(eventData);
     }
 
@@ -1392,24 +1832,21 @@ const TDI = (function() {
      *    </dl>
      */
     function _onUpdateDefault(evt) {
-      const data = evt.detail;
+      var data = evt.detail;
 
       // classes
       if (data.class_remove.trim()) {
         data.target.classList.remove(data.class_remove);
       }
-
       if (data.class_add.trim()) {
         data.target.classList.add(data.class_add);
       }
-
-      const responseContent = tdi.prepareContent(data.content);
+      var responseContent = prepareContent(data.content);
 
       // update the target element
       if (data.content) {
         if (data.replace === 'true') {
-          tdi.offAllEvents(data.target, true);
-
+          offAllEvents(data.target, true);
           data.target.replaceWith(responseContent);
           data.target = responseContent;
         } else if (data.append === 'true') {
@@ -1418,7 +1855,7 @@ const TDI = (function() {
           data.target.prepend(responseContent);
         } else {
           // data.target.find('*').off(); // detach all event handlers from the targets child nodes
-          tdi.offAllEvents(data.target, true);
+          offAllEvents(data.target, true);
           data.target.innerHTML = data.content;
         }
       }
@@ -1442,7 +1879,7 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        * @property {jQuery} tag The raw XML tag of the instruction
        */
-      tdi.trigger(data.target, 'tdi:ajax:update', data);
+      trigger(data.target, 'tdi:ajax:update', data);
     }
 
     /**
@@ -1466,18 +1903,16 @@ const TDI = (function() {
      *   </dl>
      */
     function _onInsertDefault(evt) {
-      const data = evt.detail;
+      var data = evt.detail;
       if (!data.content || !data.target || !data.position) {
         return null;
       }
-      const content = tdi.parseHtmlFromString(data.content).body.firstChild;
-
+      var content = parseHtmlFromString(data.content).body.firstChild;
       if (data.position === 'before') {
         data.target.parentNode.insertBefore(content, data.target);
       } else {
         data.target.parentNode.insertBefore(content, data.target.nextSibling);
       }
-
       data.inserted_node = content;
 
       // trigger the insert event
@@ -1496,7 +1931,7 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        * @property {jQuery} tag The raw XML tag of the instruction
        */
-      tdi.trigger(data.target, 'tdi:ajax:insert', data);
+      trigger(data.target, 'tdi:ajax:insert', data);
     }
 
     /**
@@ -1518,27 +1953,23 @@ const TDI = (function() {
      * </dl>
      */
     function _onScriptDefault(evt, data) {
-      const scripts = _scriptTags;
-      let download = true;
-      const onComplete = function(node) {
-        let s;
+      var scripts = _scriptTags;
+      var download = true;
+      var onComplete = function onComplete(node) {
+        var s;
 
         // execute inline script
         if (data.script_data) {
           s = document.createElement('script');
-
           if (NONCE) {
             s.setAttribute('nonce', NONCE);
             s.nonce = NONCE;
           }
-
           s.type = 'text/javascript';
           s.text = data.script_data;
-
           if (data.script_id) {
             s.id = data.script_id + '_inline';
           }
-
           document.getElementsByTagName('head')[0].appendChild(s);
         }
 
@@ -1560,7 +1991,7 @@ const TDI = (function() {
          * @property {Object} options Additional request options
          * @property {jQuery} tag The raw XML tag of the instruction
          */
-        tdi.trigger(document, 'tdi:ajax:script', data);
+        trigger(document, 'tdi:ajax:script', data);
 
         // process next script
         if (scripts.length) {
@@ -1575,12 +2006,11 @@ const TDI = (function() {
         if (data.script_id && document.getElementById(data.script_id)) {
           download = false;
         }
-
         if (download) {
-          tdi.getScript(data.script_src, {
+          getScript(data.script_src, {
             id: data.script_id,
             complete: onComplete,
-            nonce: NONCE,
+            nonce: NONCE
           });
         }
       } else {
@@ -1605,16 +2035,14 @@ const TDI = (function() {
      *   </dl>
      */
     function _onStyleDefault(evt, data) {
-      let download = true;
-
+      var download = true;
       if (data.style_id && document.getElementById(data.style_id)) {
         download = false;
       }
-
       if (download) {
-        tdi.getStyle(data.style_src, {
+        getStyle(data.style_src, {
           id: data.style_id,
-          complete: function(node) {
+          complete: function complete(node) {
             // trigger the style event
             data.style_node = node;
             /**
@@ -1629,8 +2057,8 @@ const TDI = (function() {
              * @property {Object} options Additional request options
              * @property {jQuery} tag The raw XML tag of the instruction
              */
-            tdi.trigger(document, 'tdi:ajax:style', data);
-          },
+            trigger(document, 'tdi:ajax:style', data);
+          }
         });
       }
     }
@@ -1687,34 +2115,26 @@ const TDI = (function() {
      *   </dl>
      */
     function _onDialogDefault(evt, data) {
-      const dialog = document.createElement('dialog');
-      const dialogContent = tdi.prepareContent(data.content);
-
+      var dialog = document.createElement('dialog');
+      var dialogContent = prepareContent(data.content);
       dialogContent.className = 'tdi-dialog-content';
       dialogContent.innerHTML = data.content;
 
       // create and append close button
       if (data.closable) {
-        const closeDialogButton = document.createElement('button');
+        var closeDialogButton = document.createElement('button');
         closeDialogButton.className = 'tdi-dialog-close';
         closeDialogButton.innerHTML = '&times;';
-        tdi.on(
-          'click',
-          () => {
-            dialog.close();
-            dialog.remove();
-          },
-          closeDialogButton
-        );
+        on('click', function () {
+          dialog.close();
+          dialog.remove();
+        }, closeDialogButton);
         dialog.appendChild(closeDialogButton);
       }
-
       dialog.appendChild(dialogContent);
-
       if (data.class_add) {
         dialog.classList.add(data.class_add);
       }
-
       document.body.appendChild(dialog);
       dialog.showModal();
 
@@ -1729,7 +2149,7 @@ const TDI = (function() {
        * @property {String} mode The mode of the dialog (popup|dialog)
        * @property {Object} options Additional request options
        */
-      tdi.trigger(document, 'tdi:ajax:dialog', data);
+      trigger(document, 'tdi:ajax:dialog', data);
     }
 
     /**
@@ -1759,7 +2179,7 @@ const TDI = (function() {
        * @property {Object} options Additional request options
        * @property {jQuery} tag The raw XML tag of the instruction
        */
-      tdi.trigger(document, `tdi:ajax:${data._name}`, data);
+      trigger(document, "tdi:ajax:" + data._name, data);
     }
 
     // TDI Ajax custom events -------------------------------------------------
@@ -1772,12 +2192,8 @@ const TDI = (function() {
      * @param {HTMLElement} eventTarget The target element
      */
     function _triggerDefault(eventName, eventData, eventTarget) {
-      const _event = tdi.customEvent(eventName, eventData);
-      const wasDefaultPrevented = !tdi.trigger(
-        eventTarget || document,
-        eventName,
-        eventData
-      );
+      var _event = customEvent(eventName, eventData);
+      var wasDefaultPrevented = !trigger(eventTarget || document, eventName, eventData);
 
       // If default event handler wasnt prevented via `evt.preventDefault()`
       if (wasDefaultPrevented) {
@@ -1786,7 +2202,6 @@ const TDI = (function() {
         customDefault(_event, eventData);
       }
     }
-
     customHandlers = {
       'tdi:ajax:beforeUpdate': _onUpdateDefault,
       'tdi:ajax:beforeInsert': _onInsertDefault,
@@ -1794,32 +2209,29 @@ const TDI = (function() {
       'tdi:ajax:beforeStyle': _onStyleDefault,
       'tdi:ajax:beforeReload': _onReloadDefault,
       'tdi:ajax:beforeRedirect': _onRedirectDefault,
-      'tdi:ajax:beforeDialog': _onDialogDefault,
+      'tdi:ajax:beforeDialog': _onDialogDefault
     };
-
-    customDefault = function(evt, data) {
+    customDefault = function customDefault(evt, data) {
       if (customHandlers[evt.type]) {
         customHandlers[evt.type].call(this, evt, data);
       } else {
         _onUnknownDefault.call(this, evt, data);
       }
     };
-
-    customPostDispatch = function(evt) {
+    customPostDispatch = function customPostDispatch(evt) {
       switch (evt.type) {
         case 'tdi:ajax:beforeScript':
           /*
-					 If this event was prevented, trigger the scriptsDone event immediately
-					 */
+          If this event was prevented, trigger the scriptsDone event immediately
+          */
           _scriptsDone = true;
           break;
         default:
-          throw new Error(`No postDispatch handler for event ${evt.type}`);
+          throw new Error("No postDispatch handler for event " + evt.type);
       }
     };
-
     for (i in customHandlers) {
-      tdi.on(i, customDefault);
+      on(i, customDefault);
     }
 
     // PUBLIC STUFF
@@ -1828,8 +2240,43 @@ const TDI = (function() {
 
   // initialization
   document.addEventListener('DOMContentLoaded', TDI.Ajax.Response);
-
   return TDI;
-})();
+}();
 
-export default TDI;
+/**
+ * Javascript library enabling communication between the UI and the application
+ * using the Infusion AJAX protocol.
+ */
+var _config = {
+  method: 'GET',
+  headers: {}
+};
+var TDIApi = TDI$1;
+function setup(newConfig) {
+  if (typeof newConfig === 'object' && newConfig !== null) {
+    Object.keys(newConfig).forEach(function (key) {
+      if (_config.hasOwnProperty(key)) {
+        _config[key] = newConfig[key];
+      }
+    });
+  }
+}
+Object.defineProperty(TDIApi, 'config', {
+  get: function get() {
+    return Object.freeze(_extends({}, _config));
+  },
+  set: function set() {
+    throw new Error('Use setup() to modify config.');
+  },
+  configurable: false,
+  enumerable: true
+});
+TDIApi.setup = setup;
+// TDI.Ajax = Ajax;
+// TDI.Ajax.Request = Request;
+if (window) {
+  window.TDI = TDI$1;
+}
+
+export default TDI$1;
+//# sourceMappingURL=tdi.esm.js.map

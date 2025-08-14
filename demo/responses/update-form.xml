@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update selector="form.form-to-be-updated">
+    <![CDATA[
+      <div>
+        obsah nahrazen z formulare
+      </div>
+      <fieldset>
+        <input type="text" name="test" class="trigger-group1">
+      </fieldset>
+      <fieldset>
+        <input type="button" name="test" value="submit" class="submit-action">
+      </fieldset>
+      <a href="./responses/update.xml" class="tdi">Update</a>
+    ]]>
+    </update>
+</response>  

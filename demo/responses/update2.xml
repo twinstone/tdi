@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="update-block">
+    <![CDATA[
+        <p>obsah odeslanim formulare</p>
+        <ul>
+            <li>1. polozka</li>
+            <li>2. polozka</li>
+            <li>3. polozka</li>
+        </ul>
+    ]]>  
+    </update>
+    <update selector="form" append="true">
+    <![CDATA[
+        <h3>appendnuty obsah</h3>
+    ]]>
+    </update>
+    <update selector="form" prepend="true">
+    <![CDATA[
+        <p>prependnuty obsah</p>
+    ]]>
+    </update>
+    <update selector="form:last-of-type h2">
+        novy text nadpisu od tlacitka 2
+    </update>
+    <script>
+        alert('update 2')
+    </script>
+</response>  
