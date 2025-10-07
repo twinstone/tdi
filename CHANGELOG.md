@@ -1,9 +1,16 @@
 # Changelog
 
-## 2.0.11-beta UNRELEASED
+## 2.0.12-beta 2025-10-07
+
+- FIX: default method value moved to `ajax` method
+- tdi-ajax changed to `.ts` for module export
+- tests for main TDI export (`index.ts`)
+
+## 2.0.11-beta 2025-09-26
 
 - Demo with responses added to TDI
 - App version and build date added automaticaly during build
+- Library built in esm, umd and cjs
 
 ### Breaking changes in 2.0.11-beta
 

@@ -1,19 +1,17 @@
 import * as tdi from '../src/tools';
 
-const TEST_SELECTOR = 'test-element';
-const TEST_CLASS = 'test-class';
-
 describe('batchClass', () => {
+  const TEST_SELECTOR = 'test-element';
+  const TEST_CLASS = 'test-class';
+
   beforeEach(() => {
     const fragment = document.createDocumentFragment();
     const element = document.createElement('div');
     element.className = TEST_SELECTOR;
-    const div1 = document.createElement('div');
-    const div2 = document.createElement('div');
-    const div3 = document.createElement('div');
-    element.appendChild(div1);
-    element.appendChild(div2);
-    element.appendChild(div3);
+    for (let i = 0; i < 3; i++) {
+      const div = document.createElement('div');
+      element.appendChild(div);
+    }
     fragment.appendChild(element);
     document.body.appendChild(fragment);
   });
@@ -44,5 +42,32 @@ describe('batchClass', () => {
     expect(elements[0].classList.contains(TEST_CLASS)).toBe(false);
     expect(elements[1].classList.contains(TEST_CLASS)).toBe(false);
     expect(elements[2].classList.contains(TEST_CLASS)).toBe(false);
+  });
+});
+
+describe('getDataAttr', () => {
+  const TEST_SELECTOR = 'test-element';
+
+  beforeAll(() => {
+    const fragment = document.createDocumentFragment();
+    const element = document.createElement('div');
+    element.className = TEST_SELECTOR;
+    element.setAttribute('data-test', 'test-value');
+    element.setAttribute('data-data-wrong', 'wrong-test-value');
+    fragment.appendChild(element);
+    document.body.appendChild(fragment);
+  });
+
+  it('Should return value of data attribute if exists', () => {
+    const element = document.querySelector(`.${TEST_SELECTOR}`) as HTMLElement;
+    expect(tdi.getDataAttr(element, 'test')).toBe('test-value');
+  });
+  it('Should return null if data attribute does not exist', () => {
+    const element = document.querySelector(`.${TEST_SELECTOR}`) as HTMLElement;
+    expect(tdi.getDataAttr(element, 'wrong')).toBeNull();
+  });
+  it('Should throw error if data attribute contains "data-"', () => {
+    const element = document.querySelector(`.${TEST_SELECTOR}`) as HTMLElement;
+    expect(() => tdi.getDataAttr(element, 'data-wrong')).toThrow();
   });
 });

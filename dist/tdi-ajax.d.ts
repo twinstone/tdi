@@ -1,3 +1,2 @@
-import { TdiAjax } from './types/types';
-declare const Ajax: TdiAjax;
-export default Ajax;
+declare const TDI: any;
+export default TDI;

@@ -31,13 +31,6 @@ export interface AjaxOptions {
   success?: (response: any) => void;
 }
 
-export interface Settings extends AjaxOptions {
-  beforeSend?: (settings: Settings) => boolean;
-  complete?: () => void;
-  error?: (xhr: XMLHttpRequest) => void;
-  success?: (xhr: XMLHttpRequest) => void;
-}
-
 export interface Request {
   send: (
     url: string,

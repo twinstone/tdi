@@ -1,5 +1,5 @@
 import replace from '@rollup/plugin-replace';
-import pkg from './package.json' assert { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 export function rollup(config, options) {
   config.plugins = config.plugins.map(plugin => plugin.name === 'replace'

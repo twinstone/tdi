@@ -108,8 +108,9 @@ export function trigger(
  */
 export function getDataAttr(elm: HTMLElement, dataAttr: string): string | null {
   if (elm && elm.dataset && dataAttr) {
-    if (dataAttr.indexOf('data-') === 0)
+    if (dataAttr.indexOf('data-') === 0) {
       throw new Error('getDataAttr: dataAttr should not begin with "data-"');
+    }
     return elm.getAttribute('data-' + dataAttr);
   }
   return null;
@@ -196,6 +197,9 @@ export async function ajax(
     options.beforeSend(options);
   }
 
+  if (!options.method) {
+    options.method = TDI.config.method;
+  }
   // prepare payload
   const fetchOptions = options.data ? prepareFormRequest(options) : options;
 

@@ -1,4 +1,5 @@
-import TDI from './tdi-ajax.js';
+import { requestSend, requestSendForm } from './request';
+import Ajax from './tdi-ajax';
 import { ITDI } from './types/types';
 
 /**
@@ -6,37 +7,45 @@ import { ITDI } from './types/types';
  * using the Infusion AJAX protocol.
  */
 
-const _config = {
+let TDI = {} as ITDI;
+
+// Create config with setup method to change read-only values
+const config = {
   method: 'GET',
   headers: {},
 };
-
-const TDIApi = (TDI as unknown) as ITDI;
-
-function setup(newConfig: Partial<typeof _config>) {
+function setup(newConfig: Partial<typeof config>) {
   if (typeof newConfig === 'object' && newConfig !== null) {
     Object.keys(newConfig).forEach(key => {
-      if (_config.hasOwnProperty(key)) {
-        (_config as any)[key] = (newConfig as any)[key];
+      if (config.hasOwnProperty(key)) {
+        (config as any)[key] = (newConfig as any)[key];
       }
     });
   }
 }
 
-Object.defineProperty(TDIApi, 'config', {
-  get: () => Object.freeze({ ..._config }),
+// set public methods to global TDI object
+TDI = {
+  ...TDI,
+  ...Ajax,
+  setup,
+  Request: {
+    send: requestSend,
+    sendForm: requestSendForm,
+  },
+};
+
+// Make config read-only
+Object.defineProperty(TDI, 'config', {
+  get: () => Object.freeze({ ...config }),
   set: () => {
-    throw new Error('Use setup() to modify config.');
+    throw new Error('Use TDI.setup() to modify config.');
   },
   configurable: false,
   enumerable: true,
 });
 
-TDIApi.setup = setup;
-
-// TDI.Ajax = Ajax;
-// TDI.Ajax.Request = Request;
-
+// Expose TDI globally if in a browser environment
 if (window) {
   window.TDI = TDI;
 }

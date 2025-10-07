@@ -1,6 +1,6 @@
 {
   "name": "tdi",
-  "version": "2.0.11-beta",
+  "version": "2.0.12-beta",
   "homepage": "https://github.com/twinstone/tdi",
   "author": "Ivan Čentéš & Pavel Hasala, Etnetera a.s.",
   "license": "Apache-2.0",
@@ -21,7 +21,8 @@
     "build": "tsdx build --format cjs,esm,umd",
     "test:watch": "tsdx test --watch",
     "test": "tsdx test",
-    "lint": "tsdx lint --fix",
+    "lint": "tsdx lint",
+    "lint:fix": "tsdx lint --fix",
     "prepare": "tsdx build --format cjs,esm,umd",
     "size": "size-limit",
     "analyze": "size-limit --why"
