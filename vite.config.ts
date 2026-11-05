@@ -6,6 +6,7 @@ const src = (file: string) => resolve(import.meta.dirname, 'src', file)
 // IIFE cannot be multi-entry, so the global bundles are built after the ESM pass
 const globalBundles = {
   name: 'tdi-global',
+  apply: 'build' as const,
   async closeBundle() {
     for (const minify of [false, true]) {
       await build({

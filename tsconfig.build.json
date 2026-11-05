@@ -8,5 +8,6 @@
     "rootDir": "src",
     "types": []
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/global.ts"]
 }
