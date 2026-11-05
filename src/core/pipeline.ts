@@ -32,7 +32,7 @@ export function createDefaultRegistry(opts: DefaultRegistryOptions = {}): Instru
 type Builder = (tag: Element, options: TdiRequestOptions) => any
 
 // Detail builders for the built-ins, whoever ends up handling them; anything else is unknown
-const builders: Record<string, Builder> = {
+const builders = new Map<string, Builder>(Object.entries({
   update: buildUpdateDetail,
   insert: buildInsertDetail,
   script: buildScriptDetail,
@@ -40,9 +40,9 @@ const builders: Record<string, Builder> = {
   popup: buildPopupDetail,
   reload: buildReloadDetail,
   redirect: buildRedirectDetail,
-}
+}))
 
-const beforeEvents: Record<string, string> = {
+const beforeEvents = new Map<string, string>(Object.entries({
   update: TdiEvents.beforeUpdate,
   insert: TdiEvents.beforeInsert,
   script: TdiEvents.beforeScript,
@@ -50,15 +50,15 @@ const beforeEvents: Record<string, string> = {
   popup: TdiEvents.beforePopup,
   reload: TdiEvents.beforeReload,
   redirect: TdiEvents.beforeRedirect,
-}
+}))
 
-const collectionKeys: Record<string, keyof TdiResponses> = {
+const collectionKeys = new Map<string, keyof TdiResponses>(Object.entries({
   update: 'updates',
   insert: 'inserts',
   script: 'scripts',
   style: 'styles',
   popup: 'popups',
-}
+} as const))
 
 // All state is local to the call, so nothing can accumulate across requests
 export async function applyResponse(
@@ -82,14 +82,14 @@ export async function applyResponse(
   for (const tag of parsed.instructions) {
     const name = tag.tagName.toLowerCase()
     await isolate(name, async () => {
-      const detail = (builders[name] ?? unknownDetail)(tag, options)
+      const detail = (builders.get(name) ?? unknownDetail)(tag, options)
       if (!detail) return // target missing or no href: skipped silently
 
-      const key = collectionKeys[name]
+      const key = collectionKeys.get(name)
       if (key) (responses[key] as unknown[]).push(detail)
-      else if (!(name in builders)) responses.unknowns.push(detail)
+      else if (!builders.has(name)) responses.unknowns.push(detail)
 
-      const before = beforeEvents[name] ?? unknownEventName(name)
+      const before = beforeEvents.get(name) ?? unknownEventName(name)
       // update/insert events go to the first target; the rest to document
       const target: EventTarget = name === 'update' || name === 'insert' ? detail.target[0] : document
       if (name === 'script') {

@@ -31,6 +31,7 @@ afterEach(() => {
   document.body.innerHTML = ''
   document.head.innerHTML = ''
   delete (window as any).__log
+  delete document.documentElement.dataset.ran
 })
 
 const log = (): string[] => (window as any).__log
@@ -72,8 +73,7 @@ describe('applyResponse', () => {
       [],
       r,
     )
-    // Everything non-script is applied during the synchronous-ish walk, before any script starts
-    await Promise.resolve()
+    // Pins walk-before-script: the document-order walk finishes before the first script starts
     await p
     expect(log()).toEqual(['update', 'insert', 'start:s1', 'end:s1', 'start:s2', 'end:s2'])
   })
@@ -260,5 +260,57 @@ describe('applyResponse', () => {
     expect(hits.beforeUpdate).toBe(document.getElementById('a'))
     expect(hits.beforeInsert).toBe(document.getElementById('b'))
     expect(hits.beforeScript).toBe(document)
+  })
+
+  test('before events for style, popup, reload and redirect dispatch on document', async () => {
+    const hits: Record<string, EventTarget | null> = {}
+    const names = ['beforeStyle', 'beforePopup', 'beforeReload', 'beforeRedirect']
+    for (const n of names) {
+      document.addEventListener('tdi:ajax:' + n, (e) => { hits[n] = e.target; e.preventDefault() }, { signal: ctl.signal })
+    }
+    await run(`<style/><popup href="/p"/><reload/><redirect href="/r"/>`)
+    for (const n of names) expect(hits[n], n).toBe(document)
+  })
+
+  test('a name that exists on Object.prototype is an unknown instruction', async () => {
+    const r = createDefaultRegistry()
+    const got: UnknownDetail[] = []
+    r.register('constructor', (d) => void got.push(d))
+    const res = await run(`<constructor foo="1"/>`, [], r)
+    expect(console.error).not.toHaveBeenCalled()
+    expect(got[0]).toMatchObject({ _name: 'constructor', foo: '1' })
+    expect(res.unknowns).toEqual(got)
+  })
+
+  describe('options reach the instruction handlers', () => {
+    const scriptIn = (attrs = ''): string => `<![CDATA[<script ${attrs}>document.documentElement.dataset.ran = (document.documentElement.dataset.ran || '') + 'r'</script>]]>`
+    const ran = (): string => document.documentElement.dataset.ran ?? ''
+
+    test('nonce lands on elements created by script and style instructions', async () => {
+      const p = run(`<script>1</script><style src="/x.css"/>`, [], createDefaultRegistry({ nonce: 'N1' }))
+      await tick()
+      const link = document.querySelector('link') as HTMLLinkElement
+      expect(link.nonce).toBe('N1')
+      link.dispatchEvent(new Event('load')) // resources are off in jsdom; settle the sheet by hand
+      await p
+      expect(document.querySelector('script')!.nonce).toBe('N1')
+    })
+
+    test('policy nonce-only blocks content scripts in update and insert, nonce admits them', async () => {
+      const blocked = createDefaultRegistry({ policy: 'nonce-only', nonce: 'N1' })
+      await run(`<update target="a">${scriptIn()}</update><insert target="b" position="after">${scriptIn()}</insert>`, [], blocked)
+      expect(ran()).toBe('')
+      await run(
+        `<update target="a">${scriptIn('nonce="N1"')}</update><insert target="b" position="after">${scriptIn('nonce="N1"')}</insert>`,
+        [],
+        blocked,
+      )
+      expect(ran()).toBe('rr')
+    })
+
+    test('default policy runs content scripts', async () => {
+      await run(`<update target="a">${scriptIn()}</update><insert target="b" position="after">${scriptIn()}</insert>`)
+      expect(ran()).toBe('rr')
+    })
   })
 })
