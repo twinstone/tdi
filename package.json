@@ -44,7 +44,7 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "^14.3.0",
     "@types/node": "^26.6.6",
-    "happy-dom": "^21.0.4",
+    "jsdom": "^31.0.0",
     "oxlint": "^1.91.0",
     "prettier": "^3.9.10",
     "size-limit": "^14.3.0",

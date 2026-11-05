@@ -33,6 +33,16 @@ describe('parseResponse', () => {
     expect(() => parseResponse('   ')).toThrow(TdiParseError)
   })
 
-  // happy-dom's XML parser has no CDATA support (parsererror on any <![CDATA[), so this needs a real browser
-  test.todo('preserves CDATA content verbatim')
+  test('throws TdiParseError on a well-formed HTML page (root is not <response>)', () => {
+    const html = '<!DOCTYPE html><html><body><h1>502 Bad Gateway</h1></body></html>'
+    expect(new DOMParser().parseFromString(html, 'application/xml').getElementsByTagName('parsererror')).toHaveLength(0)
+    expect(() => parseResponse(html)).toThrow(TdiParseError)
+  })
+
+  test('preserves CDATA content verbatim', () => {
+    const r = parseResponse(
+      '<response><status>OK</status><update target="t"><![CDATA[<li>hi & bye</li>]]></update></response>',
+    )
+    expect(r.instructions[0]?.textContent).toBe('<li>hi & bye</li>')
+  })
 })
