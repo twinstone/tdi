@@ -34,7 +34,7 @@ export function buildInsertDetail(tag: Element, options: TdiRequestOptions): Ins
 
 export async function applyInsert(detail: InsertDetail, scripts: InsertScriptOptions = {}): Promise<void> {
   const pending: HTMLScriptElement[] = []
-  const inserted: Element[] = []
+  let inserted: Element[] = []
 
   for (const el of detail.target) {
     const fragment = parseFragment(detail.content) // fresh copy per target
@@ -44,11 +44,12 @@ export async function applyInsert(detail: InsertDetail, scripts: InsertScriptOpt
     if (detail.position === 'before') el.before(fragment)
     else el.after(fragment)
   }
-  detail.inserted_node = inserted
 
   // Runs after insertion so scripts see the new DOM. An error here propagates before the
   // insert event fires, with the DOM already changed (registry contract: propagate, caller isolates).
   await runScriptsList(pending, scripts)
+  // Executed top-level scripts are removed from the DOM; keep only what is still attached
+  detail.inserted_node = inserted.filter((e) => e.isConnected)
 
   // v1 triggered on the whole target set, so every target gets the event (unlike update)
   for (const el of detail.target) dispatch(el, TdiEvents.insert, detail)

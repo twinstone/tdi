@@ -132,13 +132,45 @@ describe('insert', () => {
 
   // v1 triggers insert on the whole target set (unlike update, which fires on the first only)
   test('the insert event fires once on every target', async () => {
-    document.body.innerHTML = '<p class="s"></p><p class="s"></p><p class="s"></p>'
+    document.body.innerHTML = '<p class="s" id="p1"></p><p class="s" id="p2"></p><p class="s" id="p3"></p>'
     const seen: EventTarget[] = []
     const fn = (e: Event) => seen.push(e.target!)
     document.addEventListener('tdi:ajax:insert', fn)
     await run({ selector: '.s' }, '<b></b>')
     document.removeEventListener('tdi:ajax:insert', fn)
-    expect(seen).toEqual(Array.from(document.querySelectorAll('.s')))
+    // Identity, not structure: toEqual on DOM nodes would pass for three fires on one node
+    expect(seen).toHaveLength(3)
+    ;['p1', 'p2', 'p3'].forEach((id, i) => expect(seen[i]).toBe(document.getElementById(id)))
+  })
+
+  test('the event fires after scripts have run', async () => {
+    document.body.innerHTML = '<div id="a"></div>'
+    const flags: (string | undefined)[] = []
+    const fn = () => flags.push(document.documentElement.dataset.ran)
+    document.addEventListener('tdi:ajax:insert', fn)
+    await run({ target: 'a' }, '<script>document.documentElement.dataset.ran = "yes"</script>')
+    document.removeEventListener('tdi:ajax:insert', fn)
+    expect(flags).toEqual(["yes"])
+  })
+
+  test('position="before" with many targets inserts a copy before each', async () => {
+    document.body.innerHTML = '<p class="s"></p><p class="s"></p>'
+    const detail = await run({ selector: '.s', position: 'before' }, '<em></em>')
+    expect(document.body.innerHTML).toBe('<em></em><p class="s"></p><em></em><p class="s"></p>')
+    expect(detail.inserted_node).toHaveLength(2)
+  })
+
+  test('inserted_node excludes executed scripts', async () => {
+    document.body.innerHTML = '<div id="a"></div>'
+    const detail = await run({ target: 'a' }, '<b id="x"></b><script>1</script>')
+    expect(detail.inserted_node).toHaveLength(1)
+    expect(detail.inserted_node![0]).toBe(document.getElementById('x'))
+  })
+
+  test('script-only content leaves inserted_node empty', async () => {
+    document.body.innerHTML = '<div id="a"></div>'
+    const detail = await run({ target: 'a' }, '<script>1</script>')
+    expect(detail.inserted_node).toEqual([])
   })
 
   test('detail carries v1 keys', () => {
