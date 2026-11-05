@@ -1,5 +1,5 @@
 import { dispatch, TdiEvents } from '../events'
-import { parseFragment, runContentScripts } from '../dom/html'
+import { parseFragment, runScriptsList } from '../dom/html'
 import type { ContentScriptPolicy, TdiRequestOptions, UpdateDetail } from '../types'
 
 export interface UpdateScriptOptions {
@@ -13,6 +13,7 @@ export function buildUpdateDetail(tag: Element, options: TdiRequestOptions): Upd
   const targetId = tag.getAttribute('target')
   const selector = tag.getAttribute('selector')
   let target: Element[]
+  // An invalid selector throws (the caller isolates it); a valid one matching nothing returns null
   if (selector) target = Array.from(document.querySelectorAll(selector))
   else {
     const el = targetId ? document.getElementById(targetId) : null
@@ -41,16 +42,16 @@ export function buildUpdateDetail(tag: Element, options: TdiRequestOptions): Upd
 const classTokens = (s: string): string[] => s.split(/\s+/).filter(Boolean)
 
 export async function applyUpdate(detail: UpdateDetail, scripts: UpdateScriptOptions = {}): Promise<void> {
-  const inserted: Node[] = []
-  const replaced: Element[] = []
-  let eventTarget: EventTarget = detail.target[0] ?? document
+  const pending: HTMLScriptElement[] = []
+  let replaced: Element[] = []
 
   for (const el of detail.target) {
     el.classList.remove(...classTokens(detail.class_remove))
     el.classList.add(...classTokens(detail.class_add))
 
     const fragment = parseFragment(detail.content) // fresh copy per target
-    inserted.push(...Array.from(fragment.childNodes))
+    // Collected before insertion so only the new content's scripts run, never the page's own
+    pending.push(...Array.from(fragment.querySelectorAll('script')))
     if (detail.replace === 'true') {
       replaced.push(...Array.from(fragment.children))
       el.replaceWith(fragment)
@@ -59,20 +60,16 @@ export async function applyUpdate(detail: UpdateDetail, scripts: UpdateScriptOpt
     else el.replaceChildren(fragment)
   }
 
+  // Runs after insertion so scripts see the new DOM. An error here propagates before the
+  // update event fires, with the DOM already changed (registry contract: propagate, caller isolates).
+  await runScriptsList(pending, scripts)
+
   if (detail.replace === 'true') {
+    // Script-only content leaves detached nodes behind once the scripts are replayed
+    replaced = replaced.filter((e) => e.isConnected)
     detail.target = replaced
-    eventTarget = replaced[0] ?? document
   }
-
-  // Run after insertion so scripts see the new DOM. The scope covers only the new nodes,
-  // never scripts already in the page; top-level scripts are matched too.
-  const scope = {
-    querySelectorAll: (sel: string) =>
-      inserted.flatMap((n) =>
-        n instanceof Element ? [...(n.matches(sel) ? [n] : []), ...Array.from(n.querySelectorAll(sel))] : [],
-      ),
-  } as unknown as ParentNode
-  await runContentScripts(scope, scripts)
-
-  dispatch(eventTarget, TdiEvents.update, detail)
+  // v1 fired on the first target only; nothing to fire on when a replace produced no elements
+  const first = detail.target[0]
+  if (first) dispatch(first, TdiEvents.update, detail)
 }

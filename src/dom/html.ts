@@ -36,8 +36,15 @@ export async function runContentScripts(
   root: ParentNode,
   opts: { nonce?: string; policy?: ContentScriptPolicy } = {},
 ): Promise<void> {
+  await runScriptsList(Array.from(root.querySelectorAll('script')), opts)
+}
+
+/** Same as runContentScripts for an explicit, already-collected list (nodes may be live in the page). */
+export async function runScriptsList(
+  scripts: HTMLScriptElement[],
+  opts: { nonce?: string; policy?: ContentScriptPolicy } = {},
+): Promise<void> {
   const { nonce, policy = 'all' } = opts
-  const scripts = Array.from(root.querySelectorAll('script'))
   for (const old of scripts) {
     const type = scriptType(old)
     if (type === 'module') {

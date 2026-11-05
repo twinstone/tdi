@@ -13,10 +13,14 @@ function tag(attrs: Record<string, string>, body = ''): Element {
   return el
 }
 
-async function run(attrs: Record<string, string>, body = ''): Promise<UpdateDetail> {
+async function run(
+  attrs: Record<string, string>,
+  body = '',
+  scripts?: { nonce?: string; policy?: 'all' | 'nonce-only' },
+): Promise<UpdateDetail> {
   const detail = buildUpdateDetail(tag(attrs, body), options)
   if (!detail) throw new Error('no target')
-  await applyUpdate(detail)
+  await applyUpdate(detail, scripts)
   return detail
 }
 
@@ -82,11 +86,8 @@ describe('update', () => {
   })
 
   test('a missing target id is skipped without throwing', () => {
-    const received: Event[] = []
-    document.addEventListener('tdi:ajax:update', (e) => received.push(e), { once: true })
     expect(buildUpdateDetail(tag({ target: 'nope' }, 'x'), options)).toBeNull()
     expect(buildUpdateDetail(tag({ selector: '.nope' }, 'x'), options)).toBeNull()
-    expect(received).toHaveLength(0)
   })
 
   test('scripts in update content execute after insertion', async () => {
@@ -103,6 +104,10 @@ describe('update', () => {
     const detail = buildUpdateDetail(tag({ target: 'a' }, '<script>document.documentElement.dataset.ran = "1"</script>'), options)!
     await applyUpdate(detail, { policy: 'nonce-only' })
     expect(document.documentElement.dataset.ran).toBeUndefined()
+  })
+
+  test('an invalid selector throws', () => {
+    expect(() => buildUpdateDetail(tag({ selector: '[[' }, 'x'), options)).toThrow()
   })
 
   test('fires tdi:ajax:update on the target after applying', async () => {
@@ -133,5 +138,72 @@ describe('update', () => {
     // v1 strips literal "&nbsp;" before testing emptiness
     expect(d.content_empty).toBe(true)
     expect(buildUpdateDetail(tag({ target: 'a' }, 'x'), options)!.content_empty).toBe(false)
+  })
+
+  test('the nonce is passed through', async () => {
+    document.body.innerHTML = '<div id="a"></div>'
+    await run({ target: 'a' }, '<script>1</script>', { nonce: 'n1' })
+    expect(document.head.querySelector('script')!.getAttribute('nonce')).toBe('n1')
+  })
+
+  test('the update event fires on the first of many targets only', async () => {
+    document.body.innerHTML = '<p class="s"></p><p class="s"></p>'
+    const seen: EventTarget[] = []
+    const fn = (e: Event) => seen.push(e.target!)
+    document.addEventListener('tdi:ajax:update', fn)
+    await run({ selector: '.s' }, 'x')
+    document.removeEventListener('tdi:ajax:update', fn)
+    expect(seen).toEqual([document.querySelector('.s')])
+  })
+
+  test('replace with no elements fires no event and leaves target empty', async () => {
+    for (const body of ['', 'just text']) {
+      document.body.innerHTML = '<div id="a"></div>'
+      let fired = 0
+      const fn = () => fired++
+      document.addEventListener('tdi:ajax:update', fn)
+      const detail = await run({ target: 'a', replace: 'true' }, body)
+      document.removeEventListener('tdi:ajax:update', fn)
+      expect(fired).toBe(0)
+      expect(detail.target).toEqual([])
+      expect(document.getElementById('a')).toBeNull()
+    }
+  })
+
+  test('replace with a script-only body fires no event and keeps no detached target', async () => {
+    document.body.innerHTML = '<div id="a"></div>'
+    let fired = 0
+    const fn = () => fired++
+    document.addEventListener('tdi:ajax:update', fn)
+    const detail = await run({ target: 'a', replace: 'true' }, '<script>1</script>')
+    document.removeEventListener('tdi:ajax:update', fn)
+    expect(fired).toBe(0)
+    expect(detail.target).toEqual([])
+  })
+
+  describe('script scoping', () => {
+    const count = () => document.documentElement.dataset.cnt ?? ''
+    const mark = (v: string) =>
+      `<script>document.documentElement.dataset.cnt=(document.documentElement.dataset.cnt||'')+'${v}'</script>`
+    afterEach(() => delete document.documentElement.dataset.cnt)
+
+    test.each([
+      ['default', {}],
+      ['append', { append: 'true' }],
+      ['prepend', { prepend: 'true' }],
+      ['replace', { replace: 'true' }],
+    ])('a nested script runs exactly once (%s) and page scripts stay inert', async (_n, mode) => {
+      // Inert pre-existing script, as if parsed in a fragment: must not be replayed
+      document.body.innerHTML = `<div id="a"></div><div id="b">${mark('page')}</div>`
+      document.getElementById('b')!.innerHTML = mark('page')
+      await run({ target: 'a', ...mode }, `<p><span>${mark('n')}</span></p>`)
+      expect(count()).toBe('n')
+    })
+
+    test('a top-level script runs exactly once', async () => {
+      document.body.innerHTML = '<div id="a"></div>'
+      await run({ target: 'a' }, `<i></i>${mark('t')}`)
+      expect(count()).toBe('t')
+    })
   })
 })
