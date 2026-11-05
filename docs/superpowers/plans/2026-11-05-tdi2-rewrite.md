@@ -6,7 +6,9 @@
 
 **Architecture:** One instance-based core (`createTdi`) with three entry points over it — ESM, ESM auto-start, and an IIFE that parks an instance on `window.TDI`. Requests go through `fetch`; responses are parsed with `DOMParser` and applied by an instruction registry where every built-in is registered through the same path `registerInstruction` writes to. Every event is a native `CustomEvent`; `before*` events are `cancelable` and their default action is the DOM work.
 
-**Tech Stack:** TypeScript (strict), Vite library mode, Vitest + happy-dom, ESLint flat config, Prettier, GitHub Actions. Zero runtime dependencies.
+**Tech Stack:** TypeScript (strict), Vite library mode, Vitest + jsdom, Oxlint, Prettier, GitHub Actions. Zero runtime dependencies.
+
+> **Amended during execution.** Two toolchain decisions changed after this plan was written. (1) ESLint + typescript-eslint were replaced by **Oxlint** — a user decision that unblocked TypeScript 7, which typescript-eslint caps out below. (2) The test DOM is **jsdom**, not happy-dom: happy-dom emits a `parsererror` for *any* CDATA, and every real TDI response wraps its HTML in CDATA. Both rulings are recorded in the SDD ledger. Task 1 and Task 3 steps below retain their original wording as a historical record.
 
 **Spec:** `docs/superpowers/specs/2026-11-05-tdi2-rewrite-design.md`
 
@@ -83,7 +85,7 @@ Tests mirror the source tree under `test/`.
 
 - [ ] **Step 4: Run it and watch it fail.** Run: `npx vitest run test/build.test.ts`. Expected: FAIL, dist missing.
 
-- [ ] **Step 5: Write the configs and stub entries.** `vite.config.ts` builds all three entries in one `vite build` (library mode, ESM for `.`/`./auto`, IIFE named `TDI` for `./global`, sourcemaps on). `tsconfig.json` strict. `vitest.config.ts` uses `happy-dom`. `src/index.ts` exports a stub `createTdi` returning `{ version: '2.0.0' }`; `src/global.ts` assigns it to `window.TDI`; `src/auto.ts` creates an instance. The global entry emits both `dist/tdi.global.js` and a minified `dist/tdi.global.min.js` — the latter is what the size budget measures and what replaces v1's hand-downloaded `tdi-bundle.min.js`.
+- [ ] **Step 5: Write the configs and stub entries.** `vite.config.ts` builds all three entries in one `vite build` (library mode, ESM for `.`/`./auto`, IIFE named `TDI` for `./global`, sourcemaps on). `tsconfig.json` strict. `vitest.config.ts` uses `jsdom` (amended — see header). `src/index.ts` exports a stub `createTdi` returning `{ version: '2.0.0' }`; `src/global.ts` assigns it to `window.TDI`; `src/auto.ts` creates an instance. The global entry emits both `dist/tdi.global.js` and a minified `dist/tdi.global.min.js` — the latter is what the size budget measures and what replaces v1's hand-downloaded `tdi-bundle.min.js`.
 
 - [ ] **Step 6: Build, then run the test.** Run: `npx vite build && npx vitest run test/build.test.ts`. Expected: PASS.
 
@@ -149,7 +151,7 @@ git add src/net/url.ts test/net/url.test.ts && git commit -m "Add URL marking fo
 
 - [ ] **Step 2: Run and watch it fail.** Run: `npx vitest run test/net/parse.test.ts`. Expected: FAIL.
 
-- [ ] **Step 3: Implement `parseResponse`** in `src/net/parse.ts`. Use `DOMParser().parseFromString(text, 'application/xml')` and detect failure by querying for a `parsererror` element — happy-dom and browsers both signal malformed XML that way rather than throwing.
+- [ ] **Step 3: Implement `parseResponse`** in `src/net/parse.ts`. Use `DOMParser().parseFromString(text, 'application/xml')` and detect failure by querying for a `parsererror` element — jsdom and browsers both signal malformed XML that way rather than throwing. Note a `parsererror` check alone is NOT sufficient: a *well-formed* HTML page (a 502 or a session-expiry login page) parses cleanly as XML and yields zero instructions, so also reject a root element that is not `<response>`.
 
 - [ ] **Step 4: Run and watch it pass.** Run: `npx vitest run test/net/parse.test.ts`. Expected: PASS.
 
