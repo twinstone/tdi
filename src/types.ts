@@ -85,6 +85,7 @@ export interface PopupDetail {
   height: number
   options: TdiRequestOptions
   tag: Element
+  popup?: Window | null
 }
 
 // Other instruction: its XML attributes are spread as extra keys (values are strings)
