@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest'
-import { unknownEventName } from '../../src/events'
+import { unknownDoneEventName, unknownEventName } from '../../src/events'
 import { InstructionRegistry, runInstruction, unknownDetail } from '../../src/instructions/registry'
 import type { TdiRequestOptions } from '../../src/types'
 
@@ -60,13 +60,43 @@ describe('runInstruction', () => {
     expect(handler).toHaveBeenCalledOnce()
   })
 
-  test('an unknown instruction still fires its before event and runs no handler', async () => {
+  test('an unknown instruction still fires its before event', async () => {
     const registry = new InstructionRegistry()
     const seen: unknown[] = []
     listen('tdi:ajax:beforeCartBadge', (e) => seen.push(e.detail))
     const detail = { _name: 'cart-badge' }
     await runInstruction(registry, 'cart-badge', detail, document, unknownEventName('cart-badge'))
     expect(seen).toEqual([detail])
+  })
+})
+
+describe('unknown instruction past-tense event', () => {
+  test('fires tdi:ajax:<name> after the before event when no handler exists', async () => {
+    const registry = new InstructionRegistry()
+    const order: string[] = []
+    const detail = { _name: 'cart-badge' }
+    listen('tdi:ajax:beforeCartBadge', () => order.push('before'))
+    listen('tdi:ajax:cart-badge', (e) => order.push(e.detail === detail ? 'done' : 'wrong'))
+    await runInstruction(registry, 'Cart-Badge', detail, document, unknownEventName('cart-badge'))
+    expect(order).toEqual(['before', 'done'])
+  })
+
+  test('is not fired when the before event is prevented', async () => {
+    const registry = new InstructionRegistry()
+    const done = vi.fn()
+    listen('tdi:ajax:beforeCartBadge', (e) => e.preventDefault())
+    listen(unknownDoneEventName('cart-badge'), done)
+    await runInstruction(registry, 'cart-badge', {}, document, unknownEventName('cart-badge'))
+    expect(done).not.toHaveBeenCalled()
+  })
+
+  test('is not fired when a handler is registered', async () => {
+    const registry = new InstructionRegistry()
+    registry.register('update', vi.fn())
+    const done = vi.fn()
+    listen('tdi:ajax:update', done)
+    await runInstruction(registry, 'update', {}, document, 'tdi:ajax:beforeUpdate')
+    expect(done).not.toHaveBeenCalled()
   })
 })
 

@@ -1,4 +1,4 @@
-import { dispatch } from '../events'
+import { dispatch, unknownDoneEventName } from '../events'
 import type { TdiRequestOptions, UnknownDetail } from '../types'
 
 export type InstructionHandler<D = any> = (detail: D) => void | Promise<void>
@@ -19,7 +19,8 @@ export class InstructionRegistry {
   }
 }
 
-// Fires the cancelable before event; the handler is its default action
+// Fires the cancelable before event; the default action is the handler, or for
+// an unhandled instruction the past-tense `tdi:ajax:<name>` event
 export async function runInstruction<D>(
   registry: InstructionRegistry,
   name: string,
@@ -28,7 +29,9 @@ export async function runInstruction<D>(
   beforeEventName: string,
 ): Promise<void> {
   if (!dispatch(dispatchTarget, beforeEventName, detail, true)) return
-  await registry.resolve(name)?.(detail)
+  const handler = registry.resolve(name)
+  if (handler) await handler(detail)
+  else dispatch(dispatchTarget, unknownDoneEventName(normalise(name)), detail)
 }
 
 // Detail for an instruction without a handler: XML attributes are flattened onto it
