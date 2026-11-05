@@ -1,4 +1,4 @@
-interface AssetOptions {
+export interface AssetOptions {
   id?: string
   nonce?: string
 }
@@ -20,7 +20,9 @@ function settleOnLoad<T extends HTMLElement>(el: T): Promise<T> {
   })
 }
 
-export function injectScript(src: string, opts: AssetOptions): Promise<HTMLScriptElement> {
+export function injectScript(src: string, opts: AssetOptions = {}): Promise<HTMLScriptElement | null> {
+  // Empty src: nothing to load, and an empty link href fires no event
+  if (!src) return Promise.resolve(null)
   const el = document.createElement('script')
   el.src = src
   applyCommon(el, opts)
@@ -39,8 +41,9 @@ export function injectInlineScript(code: string, opts: AssetOptions): HTMLScript
 
 export function injectStyle(
   src: string,
-  opts: AssetOptions & { media?: string },
-): Promise<HTMLLinkElement> {
+  opts: AssetOptions & { media?: string } = {},
+): Promise<HTMLLinkElement | null> {
+  if (!src) return Promise.resolve(null)
   const el = document.createElement('link')
   el.rel = 'stylesheet'
   el.media = opts.media || 'screen'

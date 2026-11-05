@@ -30,6 +30,11 @@ describe('injectScript', () => {
     await expect(promise).resolves.toBe(el)
   })
 
+  test('injectScript with an empty src resolves and appends nothing', async () => {
+    await expect(injectScript('', {})).resolves.toBeNull()
+    expect(document.head.children.length).toBe(0)
+  })
+
   test('injectScript stays pending until load or error fires', async () => {
     let settled = false
     const promise = injectScript('/a.js', {}).then(() => {
@@ -72,6 +77,11 @@ describe('injectStyle', () => {
     expect(el.nonce).toBe('n2')
     el.dispatchEvent(new Event('load'))
     await expect(promise).resolves.toBe(el)
+  })
+
+  test('injectStyle with an empty href resolves and appends nothing', async () => {
+    await expect(injectStyle('', {})).resolves.toBeNull()
+    expect(document.head.children.length).toBe(0)
   })
 
   test('injectStyle honours an explicit media', () => {
