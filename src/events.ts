@@ -35,9 +35,12 @@ export const TdiEvents = {
   unknownsDone: 'tdi:ajax:unknownsDone',
 } as const
 
-// Unknown instructions fire `tdi:ajax:before<Name>` with a capitalized instruction name
+// Unknown instructions fire `tdi:ajax:before<Name>`; each hyphen segment is capitalized (cart-badge -> CartBadge)
 export const unknownEventName = (instruction: string): string =>
-  `tdi:ajax:before${instruction.charAt(0).toUpperCase()}${instruction.slice(1)}`
+  `tdi:ajax:before${instruction
+    .split('-')
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join('')}`
 
 // Past-tense form fired after an unknown instruction's default action: `tdi:ajax:<name>`
 export const unknownDoneEventName = (instruction: string): string => `tdi:ajax:${instruction}`
