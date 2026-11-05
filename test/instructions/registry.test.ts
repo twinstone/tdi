@@ -41,6 +41,14 @@ describe('runInstruction', () => {
     expect(handler).not.toHaveBeenCalled()
   })
 
+  test('a rejecting handler rejects runInstruction', async () => {
+    const registry = new InstructionRegistry()
+    registry.register('update', async () => {
+      throw new Error('boom')
+    })
+    await expect(runInstruction(registry, 'update', {}, document, 'tdi:ajax:beforeUpdate')).rejects.toThrow('boom')
+  })
+
   test('an async handler is awaited', async () => {
     const registry = new InstructionRegistry()
     let done = false
@@ -138,6 +146,17 @@ describe('unknownDetail', () => {
     expect(d.tag).toBe(el)
   })
 
+  test('structural keys win over colliding attributes', () => {
+    const el = new DOMParser()
+      .parseFromString('<r><foo options="x" tag="y" _name="z" contents="w"/></r>', 'application/xml')
+      .documentElement.firstElementChild as Element
+    const d = unknownDetail(el, options)
+    expect(d.options).toBe(options)
+    expect(d.tag).toBe(el)
+    expect(d._name).toBe('foo')
+    expect(d.contents).toBe('')
+  })
+
   test('the name is lowercased', () => {
     expect(unknownDetail(tag(), options)._name).toBe('cart-badge')
   })
@@ -147,5 +166,11 @@ describe('unknownEventName', () => {
   test('hyphenated names capitalise each segment', () => {
     expect(unknownEventName('cart-badge')).toBe('tdi:ajax:beforeCartBadge')
     expect(unknownEventName('cart')).toBe('tdi:ajax:beforeCart')
+  })
+
+  test('mixed-case names produce the same event names as lowercase', () => {
+    expect(unknownEventName('CART-Badge')).toBe(unknownEventName('cart-badge'))
+    expect(unknownEventName('UPDATE')).toBe('tdi:ajax:beforeUpdate')
+    expect(unknownDoneEventName('CART-Badge')).toBe('tdi:ajax:cart-badge')
   })
 })
