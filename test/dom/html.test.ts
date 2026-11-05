@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import { parseFragment, runContentScripts } from '../../src/dom/html'
 
 // Scripts run in jsdom's own context, not the Node global, so they report through the DOM
@@ -24,11 +24,15 @@ describe('parseFragment', () => {
 })
 
 describe('runContentScripts', () => {
-  test('scripts inserted via innerHTML do not self-execute', () => {
+  // Platform canary only: never calls our code, pins the native behaviour D10 compensates for
+  test('scripts inserted via innerHTML do not self-execute', async () => {
     const div = document.createElement('div')
     div.innerHTML = mark('x')
     document.body.appendChild(div)
     expect(order()).toBe('')
+    // Positive control: the same markup through runContentScripts does execute
+    await runContentScripts(parseFragment(mark('x')))
+    expect(order()).toBe('x')
   })
 
   test('runContentScripts executes inline scripts in document order', async () => {
@@ -78,7 +82,82 @@ describe('runContentScripts', () => {
 
   test('runContentScripts propagates the nonce', async () => {
     const frag = parseFragment(mark('n'))
-    await runContentScripts(frag, 'abc')
+    await runContentScripts(frag, { nonce: 'abc' })
     expect(document.head.querySelector('script')!.getAttribute('nonce')).toBe('abc')
+  })
+
+  test('runContentScripts propagates the nonce to src scripts', async () => {
+    const p = runContentScripts(parseFragment('<script src="/a.js"></script>'), { nonce: 'abc' })
+    await Promise.resolve()
+    const el = document.head.querySelector('script')!
+    expect(el.getAttribute('nonce')).toBe('abc')
+    el.dispatchEvent(new Event('load'))
+    await p
+  })
+
+  test('runContentScripts copies integrity, crossorigin, referrerpolicy and data-*, not async/defer', async () => {
+    const frag = parseFragment(
+      '<script src="/a.js" integrity="sha384-x" crossorigin="anonymous" referrerpolicy="no-referrer" data-k="v" async defer></script>',
+    )
+    const p = runContentScripts(frag)
+    await Promise.resolve()
+    const el = document.head.querySelector('script')!
+    expect(el.getAttribute('integrity')).toBe('sha384-x')
+    expect(el.getAttribute('crossorigin')).toBe('anonymous')
+    expect(el.getAttribute('referrerpolicy')).toBe('no-referrer')
+    expect(el.dataset.k).toBe('v')
+    expect(el.hasAttribute('async')).toBe(false)
+    expect(el.hasAttribute('defer')).toBe(false)
+    el.dispatchEvent(new Event('load'))
+    await p
+  })
+
+  test('runContentScripts copies data-* onto inline scripts', async () => {
+    await runContentScripts(parseFragment('<script data-k="v">1</script>'))
+    expect(document.head.querySelector('script')!.dataset.k).toBe('v')
+  })
+
+  test('runContentScripts keeps going after an inline script throws', async () => {
+    const frag = parseFragment(`<script>throw new Error('boom')</script>${mark('after')}`)
+    // jsdom reports the uncaught error on window; swallow it so vitest does not flag it
+    const swallow = (e: Event) => e.preventDefault()
+    window.addEventListener('error', swallow)
+    await runContentScripts(frag)
+    window.removeEventListener('error', swallow)
+    expect(order()).toBe('after')
+  })
+
+  test('runContentScripts warns about and skips type=module scripts', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const frag = parseFragment('<script type="module" src="/m.js"></script>')
+    await runContentScripts(frag)
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('/m.js'))
+    expect(document.head.querySelector('script')).toBeNull()
+    warn.mockRestore()
+  })
+
+  describe('policy', () => {
+    const nonceMark = (n: string, v: string) => mark(v).replace('<script>', `<script nonce="${n}">`)
+
+    test("'all' (default) replays scripts without a nonce", async () => {
+      await runContentScripts(parseFragment(mark('a')), { nonce: 'n1' })
+      expect(order()).toBe('a')
+    })
+
+    test("'nonce-only' replays only scripts carrying the page nonce", async () => {
+      const frag = parseFragment(`${mark('plain')}${nonceMark('n1', 'ok')}${nonceMark('other', 'bad')}`)
+      await runContentScripts(frag, { nonce: 'n1', policy: 'nonce-only' })
+      expect(order()).toBe('ok')
+    })
+
+    test("'nonce-only' skips everything when no page nonce is known", async () => {
+      await runContentScripts(parseFragment(nonceMark('n1', 'x')), { policy: 'nonce-only' })
+      expect(order()).toBe('')
+    })
+
+    test('jsdom nonce attribute/property probe', () => {
+      const el = parseFragment(nonceMark('n1', 'x')).querySelector('script')!
+      expect([el.getAttribute('nonce'), el.nonce]).toEqual(['n1', 'n1'])
+    })
   })
 })

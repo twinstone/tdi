@@ -1,7 +1,11 @@
 // Event detail key names are v1's, snake_case included (design R3); only value types are native.
 
+// 'nonce-only' replays only scripts that already carry the page nonce
+export type ContentScriptPolicy = 'all' | 'nonce-only'
+
 export interface TdiOptions {
   root?: Document | Element
+  contentScripts?: ContentScriptPolicy
 }
 
 export interface TdiRequestOptions {

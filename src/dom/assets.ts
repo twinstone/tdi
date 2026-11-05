@@ -1,10 +1,13 @@
 export interface AssetOptions {
   id?: string
   nonce?: string
+  // Extra attributes copied verbatim (integrity, crossorigin, data-*, ...)
+  attrs?: Record<string, string>
 }
 
 // Nonce goes on both attribute and property; some browsers need both for CSP
-function applyCommon(el: HTMLScriptElement | HTMLLinkElement, { id, nonce }: AssetOptions): void {
+function applyCommon(el: HTMLScriptElement | HTMLLinkElement, { id, nonce, attrs }: AssetOptions): void {
+  for (const [k, v] of Object.entries(attrs ?? {})) el.setAttribute(k, v)
   if (id) el.id = id
   if (nonce) {
     el.setAttribute('nonce', nonce)

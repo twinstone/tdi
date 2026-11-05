@@ -1,3 +1,4 @@
+import type { ContentScriptPolicy } from '../types'
 import { injectInlineScript, injectScript } from './assets'
 
 // <template> parses in a neutral context, so table parts like a bare <tr> survive
@@ -7,20 +8,49 @@ export function parseFragment(html: string): DocumentFragment {
   return tpl.content
 }
 
-// Only classic JavaScript is replayed; data blocks (JSON, templates) must not run
-function isJavaScript(el: HTMLScriptElement): boolean {
-  const type = (el.getAttribute('type') ?? '').trim().toLowerCase()
-  return type === '' || type === 'text/javascript' || type === 'application/javascript'
+const COPIED_ATTRS = ['integrity', 'crossorigin', 'referrerpolicy']
+
+function scriptType(el: HTMLScriptElement): string {
+  return (el.getAttribute('type') ?? '').trim().toLowerCase()
 }
 
-// Parser-inserted scripts never run, so replay each through a fresh element, in order
-export async function runContentScripts(root: ParentNode, nonce?: string): Promise<void> {
-  const scripts = Array.from(root.querySelectorAll('script')).filter(isJavaScript)
+// Browsers hide the nonce attribute after parsing but keep the property
+function carriesNonce(el: HTMLScriptElement, nonce: string | undefined): boolean {
+  return !!nonce && (el.nonce === nonce || el.getAttribute('nonce') === nonce)
+}
+
+function copiedAttrs(el: HTMLScriptElement): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const { name, value } of Array.from(el.attributes)) {
+    if (COPIED_ATTRS.includes(name) || name.startsWith('data-')) out[name] = value
+  }
+  return out
+}
+
+/**
+ * Parser-inserted scripts never run, so replay each through a fresh element, in order.
+ * Mutates the caller's tree: every replayed script node is removed from `root`.
+ * Non-JS types are left in place; type=module is skipped with a warning.
+ */
+export async function runContentScripts(
+  root: ParentNode,
+  opts: { nonce?: string; policy?: ContentScriptPolicy } = {},
+): Promise<void> {
+  const { nonce, policy = 'all' } = opts
+  const scripts = Array.from(root.querySelectorAll('script'))
   for (const old of scripts) {
+    const type = scriptType(old)
+    if (type === 'module') {
+      console.warn(`TDI: type=module script skipped in update content (${old.getAttribute('src') || old.id || 'inline'})`)
+      continue
+    }
+    if (type !== '' && type !== 'text/javascript' && type !== 'application/javascript') continue
+    if (policy === 'nonce-only' && !carriesNonce(old, nonce)) continue
     const src = old.getAttribute('src')
     const code = old.textContent ?? ''
+    const assetOpts = { nonce, attrs: copiedAttrs(old) }
     old.remove() // drop the inert node so nothing can re-run it
-    if (src) await injectScript(src, { nonce })
-    else injectInlineScript(code, { nonce })
+    if (src) await injectScript(src, assetOpts)
+    else injectInlineScript(code, assetOpts)
   }
 }
