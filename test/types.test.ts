@@ -73,8 +73,8 @@ describe('detail payload key names (R3, v1 verbatim)', () => {
   })
 
   test('PopupDetail', () => {
-    const d: PopupDetail = { href: '/x', mode: 'popup', width: 600, height: 500, options: {}, tag }
-    expect(keys(d)).toEqual(['href', 'mode', 'width', 'height', 'options', 'tag'].sort())
+    const d: PopupDetail = { href: '/x', mode: 'popup', width: 600, height: 500, popup: null, options: {}, tag }
+    expect(keys(d)).toEqual(['href', 'mode', 'width', 'height', 'popup', 'options', 'tag'].sort())
   })
 
   test('ErrorDetail', () => {

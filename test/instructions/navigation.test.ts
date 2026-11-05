@@ -110,7 +110,7 @@ describe('redirect', () => {
 })
 
 describe('stub hygiene', () => {
-  test('stubs are restored after each test', () => {
+  test('restore calls undo the stubs', () => {
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
     expect(vi.isMockFunction(window.open)).toBe(false)
