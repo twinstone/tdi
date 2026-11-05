@@ -111,7 +111,9 @@ Semantics that must be preserved exactly:
   id, not a selector.
 - `update` with no `replace`/`append`/`prepend` replaces the target's *contents*; with
   `replace="true"` it replaces the *element*.
-- An empty `update` body does not clear the target.
+- An empty `update` body **clears** the target, as v1's code actually does. (v1's 1.5.3
+  changelog claims otherwise and v1 computes an unused `content_empty` flag; the code is
+  authoritative. See R2.)
 - `insert` defaults to `position="after"`.
 - `script` instructions execute strictly in document order, each waiting for the previous
   to finish loading. An external `src` loads first, then the inline body runs.
@@ -242,8 +244,9 @@ forms are in live use and must keep working.
 
 ### D5 — fetch, with cancellation
 
-`fetch` replaces `XMLHttpRequest`. Every request gets an `AbortController`, so a trigger
-group can abort an in-flight request rather than race it — something v1 had no answer for.
+`fetch` replaces `XMLHttpRequest`. Every request gets an `AbortController`, exposed through
+the `signal` option and used by `stop()`. Requests are not auto-aborted; see R6 for
+`data-trigger-group`, which is unrelated to cancellation.
 The response is parsed with `DOMParser`, with explicit `parsererror` detection rather than
 v1's silent reliance on jQuery's XML handling.
 
@@ -372,3 +375,150 @@ drifted from this design.
 - Test file organisation and naming.
 - Whether the generated JSDoc API site under `docs/api/` is regenerated, replaced with
   something driven by the TypeScript types, or dropped in favour of the hand-written docs.
+
+## Builder review resolutions
+
+A fresh engineer was asked what they would still have to guess before planning this build.
+Nine points came back. Three were answered by the project owner (R1, R2, R6); the rest are
+the author's calls, marked as such, and are open to correction on reading.
+
+### R1 — Default request headers *(owner's decision)*
+
+v1 went through `$.ajax`, which silently added `X-Requested-With: XMLHttpRequest` and an
+`Accept: application/xml, text/xml, */*` header. `fetch` sends neither.
+
+**v2 sends `Accept` but not `X-Requested-With`.** The server identifies a TDI request by
+the `_infuse=1` query parameter, which is unchanged; dropping `X-Requested-With` avoids
+newly triggering CORS preflights on cross-origin endpoints.
+
+*Author's call, same area:* a POST with a string or object `data` must explicitly set
+`Content-Type: application/x-www-form-urlencoded; charset=UTF-8`. `fetch` defaults a
+string body to `text/plain;charset=UTF-8`, which would stop servers parsing the body — a
+silent, total breakage of every POST. A `FormData` body gets **no** explicit Content-Type,
+so the browser supplies `multipart/form-data` with its boundary. The `headers` option
+merges over these defaults and can override any of them.
+
+### R2 — Empty `<update>` clears the target *(owner's decision)*
+
+v1's shipped behaviour wins over v1's documentation. An `<update>` with an empty body
+clears the target's contents. The "Frozen: the wire protocol" section above has been
+corrected; `content_empty` remains in the event payload for consumers that read it, but no
+default action branches on it.
+
+### R6 — `data-trigger-group` is implemented, not ported *(owner's decision)*
+
+The attribute is broken in v1: `$triggerGroup.each(function (i, $trigger) { ... })` calls
+`.hasClass()` on what jQuery passes as a raw DOM element, throwing a `TypeError` whenever
+the selector matches anything (`src/tdi-ajax.js:364, 390`). It is also undocumented and
+untested.
+
+v2 implements the evident intent: **every element matched by `data-trigger-group` is
+disabled for the duration of the request and re-enabled on completion**, including the
+error and abort paths. It gets documentation and tests for the first time. This is
+independent of request cancellation.
+
+### R3 — Event `detail` is a key-for-key port *(author's call)*
+
+Key names stay **exactly** as v1, snake_case included: `target_id`, `selector`, `target`,
+`content`, `content_empty`, `replace`, `append`, `prepend`, `class_add`, `class_remove`,
+`position`, `inserted_node`, `script_src`, `script_data`, `script_id`, `script_node`,
+`script_node_inline`, `style_src`, `style_id`, `style_node`, `href`, `mode`, `width`,
+`height`, `options`, `tag`. Renaming them would multiply the migration cost for no gain.
+
+Only the value types go native:
+
+- `detail.target` is **always an `Element[]`** — `selector` may legitimately match many
+  elements, so a single-element type would be wrong. Consumers indexing `[0]` are the
+  common case.
+- `detail.tag` is the raw `Element` from the parsed XML document.
+- `inserted_node`, `script_node`, `script_node_inline`, `style_node` are `Element` (or
+  `Element[]` for `inserted_node`, which may insert a fragment).
+- On `tdi:ajax:error`, v1's `xhr` / `textStatus` / `status` are replaced by
+  `response: Response | null`, `status: number` (0 when there is no response), and
+  `message: string`.
+
+This makes the break list in D3 three entries, not two: handler signature,
+`options.trigger` as `Element`, and these value types.
+
+### R4 — `send()` promise semantics *(author's call)*
+
+Resolves with `{ response, responses }`, where `responses` is the same grouped collection
+carried by `tdi:ajax:done`.
+
+Rejects on exactly three conditions: transport failure, XML parse failure
+(`parsererror`), and abort. A non-`OK` `<status>` does **not** reject — v1 continues
+processing the response and fires `tdi:ajax:error`, and v2 matches that.
+
+Because `start()` calls `send()` internally on every intercepted click and submit, those
+internal call sites attach their own catch and route to `tdi:ajax:error`. v2 must not
+produce unhandled rejection noise in production on failed requests.
+
+An aborted request fires `tdi:ajax:end` but **not** `tdi:ajax:error`.
+
+### R5 — Dispatch targets preserved element-for-element *(author's call)*
+
+v1 is deliberate about which node each event fires on, and v2 preserves it exactly:
+
+| Events | Dispatched on |
+|---|---|
+| `start`, `end`, `*sDone`, `done` | involved elements (trigger + related), falling back to `document` when they have left the DOM |
+| `beforeUpdate`, `update`, `beforeInsert`, `insert` | the target element |
+| `beforeScript`, `beforeStyle`, `beforePopup`, `beforeRedirect`, `beforeReload`, `error` | `document` |
+
+All bubble. Dispatching everything from `document` instead would break delegated handlers
+with a selector filter — the pattern the current JS integration doc teaches — and change
+`evt.target` identity. "Involved elements" remains a concept in v2, including v1's
+removed-from-DOM fallback (v1 issue #6).
+
+### R7 — The `beforeStart` / `start` / `beforeEnd` / `end` option callbacks are dropped *(author's call)*
+
+Every use case is covered better elsewhere: custom headers by the `headers` option (the
+sole use in the current JS integration doc), cancellation by simply not calling `send`
+or by `signal`, and completion by the promise and the existing events.
+
+v1's internal plumbing — the `loading` class, trigger-group disabling, and the form's
+`submit-action` cleanup — hangs off these callbacks today. In v2 that moves to private
+internals and is not part of the public surface.
+
+This is a fourth break and needs a worked example in the migration guide.
+
+### R8 — Scripts inside `update` / `insert` content *(author's call)*
+
+Scope of D10, fully pinned:
+
+- Both inline and `src=` scripts execute.
+- On **every** content path: plain contents, `replace`, `append`, `prepend`, and `insert`.
+- In document order, after the content is in the DOM, as part of applying that
+  instruction. The response's own `<script>` instructions then run afterwards, matching
+  v1's ordering (v1 collects them and defers them to the end).
+- It is one ordered pipeline. `send()`'s promise and `tdi:ajax:scriptsDone` wait for all
+  of it.
+- They do **not** fire `tdi:ajax:script` and do **not** appear in the `scripts` array of
+  the `done` payload. Those belong to protocol instructions; content scripts are content.
+- They carry the TDI nonce.
+
+### R9 — `root` scopes event delegation only *(author's call)*
+
+Instruction targets resolve against `document`: `target` via `document.getElementById`,
+`selector` via `document.querySelectorAll`. Injected `<script>` and `<style>` go to
+`document.head` with the nonce. A response may legitimately update a region outside the
+instance's `root`.
+
+Multiple instances on one page are supported but expected to be rare. `detail` does not
+carry an instance identifier in v2.
+
+### Minor items settled
+
+- **Version:** `2.0.0`. The 2.0.x betas on `TDI2-main` were never published; public npm
+  `twinstone-tdi` is at 1.10.0.
+- **Global build continuity:** sites currently download `tdi-bundle.min.js`. v2 publishes
+  `dist/tdi.global.js` and a minified `dist/tdi.global.min.js`; the GitHub release asset
+  naming is the builder's call, but continuity for hand-downloading sites matters and
+  should be deliberate rather than accidental.
+- **`input.submit-action`:** v1 injects a hidden field into the form to carry the clicked
+  submit button's name/value. v2 should prefer `new FormData(form, submitter)`, which
+  produces the same bytes on the wire without mutating the page. Equivalent for GET, where
+  the parameters are serialised from the same source.
+- **npm package name stays `twinstone-tdi`.** v2 is published as a new major version of
+  the existing package, not under a new name. The bare `tdi` used on `TDI2-main` is
+  abandoned with that branch.
