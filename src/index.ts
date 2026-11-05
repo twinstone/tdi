@@ -1,6 +1,6 @@
-export interface TdiOptions {
-  root?: Document | Element
-}
+import type { TdiOptions } from './types'
+
+export type { TdiOptions }
 
 export interface Tdi {
   version: string
