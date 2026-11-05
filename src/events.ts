@@ -38,3 +38,6 @@ export const TdiEvents = {
 // Unknown instructions fire `tdi:ajax:before<Name>` with a capitalized instruction name
 export const unknownEventName = (instruction: string): string =>
   `tdi:ajax:before${instruction.charAt(0).toUpperCase()}${instruction.slice(1)}`
+
+// Past-tense form fired after an unknown instruction's default action: `tdi:ajax:<name>`
+export const unknownDoneEventName = (instruction: string): string => `tdi:ajax:${instruction}`

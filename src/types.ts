@@ -83,7 +83,7 @@ export interface PopupDetail {
   tag: Element
 }
 
-// Other instruction: its XML attributes are spread as extra string keys
+// Other instruction: its XML attributes are spread as extra keys (values are strings)
 export interface UnknownDetail {
   _name: string
   contents: string
