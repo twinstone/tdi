@@ -157,18 +157,29 @@ describe('applyResponse', () => {
       'tdi:ajax:update',
     ])
     await run(`<script>1</script><update target="a">x</update>`)
-    // script and update (walk, then scripts) precede every *Done; scriptsDone is last before done
+    // v1: five non-script Done events, then the script chain, then scriptsDone and done
     expect(seen).toEqual([
       'update',
-      'script',
       'updatesDone',
       'insertsDone',
       'stylesDone',
       'popupsDone',
       'unknownsDone',
+      'script',
       'scriptsDone',
       'done',
     ])
+  })
+
+  test('non-script Done events fire before the script chain starts', async () => {
+    const r = createDefaultRegistry()
+    r.register('script', () => {
+      log().push('script runs; unknownsDone fired: ' + log().includes('unknownsDone'))
+    })
+    for (const n of ['updatesDone', 'unknownsDone', 'scriptsDone'])
+      document.addEventListener('tdi:ajax:' + n, () => log().push(n), { signal: ctl.signal })
+    await run(`<script>s</script><update target="a">x</update>`, [], r)
+    expect(log()).toEqual(['updatesDone', 'unknownsDone', 'script runs; unknownsDone fired: true', 'scriptsDone'])
   })
 
   test('done fires on document when involved elements have left the DOM', async () => {

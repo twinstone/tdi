@@ -100,8 +100,6 @@ export async function applyResponse(
     })
   }
 
-  for (const run of scripts) await run()
-
   // Involved elements may have been replaced by an instruction; fall back to document (v1 issue #6)
   const live = involved.filter((el) => el.isConnected)
   const targets: EventTarget[] = live.length ? live : [document]
@@ -113,6 +111,8 @@ export async function applyResponse(
   fire(TdiEvents.stylesDone, { styles: responses.styles })
   fire(TdiEvents.popupsDone, { popups: responses.popups })
   fire(TdiEvents.unknownsDone, { unknowns: responses.unknowns })
+  // v1 order: the five non-script Done events fire before the script chain starts
+  for (const run of scripts) await run()
   fire(TdiEvents.scriptsDone, { scripts: responses.scripts })
   fire(TdiEvents.done, { responses })
 
