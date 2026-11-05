@@ -19,7 +19,6 @@ const tick = (): Promise<void> => new Promise((r) => setTimeout(r, 0))
 function listen(): ScriptDetail[] {
   const seen: ScriptDetail[] = []
   document.addEventListener('tdi:ajax:script', (e) => seen.push((e as CustomEvent<ScriptDetail>).detail), {
-    once: false,
     signal: ctl.signal,
   })
   return seen
@@ -72,6 +71,17 @@ describe('script', () => {
     expect(detail.script_node_inline).toBeDefined()
   })
 
+  test('the event fires only after src settles and the inline body ran', async () => {
+    const seen = listen()
+    const detail = build({ src: '/a.js' }, 'document.documentElement.dataset.ran = "1"')
+    const done = applyScript(detail)
+    await tick()
+    expect(seen.length).toBe(0) // src still pending
+    srcScript()!.dispatchEvent(new Event('load'))
+    await done
+    expect(seen.length).toBe(1)
+  })
+
   test('a failing src still settles, runs the body and fires the event', async () => {
     const seen = listen()
     const detail = build({ src: '/missing.js' }, 'document.documentElement.dataset.ran = "1"')
@@ -81,6 +91,7 @@ describe('script', () => {
     await done
     expect(seen.length).toBe(1)
     expect(document.documentElement.dataset.ran).toBe('1')
+    expect(detail.script_node).toBe(srcScript())
   })
 
   test('script_node and script_node_inline are set on detail', async () => {
@@ -113,7 +124,10 @@ describe('script', () => {
       },
       { signal: ctl.signal },
     )
-    await applyScript(build({}, 'document.documentElement.dataset.ran = "1"'))
+    const done = applyScript(build({ src: '/a.js' }, 'document.documentElement.dataset.ran = "1"'))
+    await tick()
+    srcScript()!.dispatchEvent(new Event('load'))
+    await done
     expect(ranAtEvent).toBe('1')
   })
 

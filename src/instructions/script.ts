@@ -23,6 +23,7 @@ export async function applyScript(detail: ScriptDetail, scripts: ScriptNonceOpti
 
   // An id already in the document means the script is loaded: skip the download but carry on (v1 stalled here)
   if (src && !(id && document.getElementById(id))) {
+    // `?? undefined` only satisfies the types: the `src` guard means inject never returns null here
     detail.script_node = (await injectScript(src, opts)) ?? undefined // resolves on error too
   }
   if (code) detail.script_node_inline = injectInlineScript(code, opts)

@@ -15,6 +15,7 @@ export async function applyStyle(detail: StyleDetail, scripts: StyleNonceOptions
 
   // An id already in the document means the sheet is loaded; v1 skipped the event here, v2 still fires it
   if (src && !(id && document.getElementById(id))) {
+    // `?? undefined` only satisfies the types: the `src` guard means inject never returns null here
     detail.style_node = (await injectStyle(src, { id: id || undefined, nonce: scripts.nonce })) ?? undefined
   }
 
