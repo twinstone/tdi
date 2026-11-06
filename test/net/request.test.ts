@@ -109,6 +109,17 @@ describe('body and query', () => {
     expect(url).not.toMatch(/&&|\?&/)
   })
 
+  test('a File in a GET FormData rejects, fires error and never calls fetch', async () => {
+    const fd = new FormData()
+    fd.append('up', new File(['x'], 'a.txt'))
+    const seen: string[] = []
+    for (const n of ['start', 'error', 'end'])
+      document.addEventListener(`tdi:ajax:${n}`, () => seen.push(n), { signal: ctl.signal })
+    await expect(send('/a', { data: fd })).rejects.toThrow(/file/)
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(seen).toEqual(['start', 'error', 'end'])
+  })
+
   test('POST keeps data out of the URL and marks the URL', async () => {
     await send('/a?q=1', { method: 'post', data: 'a=1' })
     const { url, init } = call()
@@ -118,15 +129,20 @@ describe('body and query', () => {
 })
 
 describe('init', () => {
-  test('credentials defaults to same-origin and data-ajax-credentials overrides it', async () => {
+  test('credentials defaults to same-origin and options.credentials is passed through', async () => {
     await send('/a')
     expect(call().init.credentials).toBe('same-origin')
 
     fetchMock.mockClear()
+    await send('/a', { credentials: 'include' })
+    expect(call().init.credentials).toBe('include')
+  })
+
+  test('the request does not read data-ajax-credentials itself', async () => {
     const trigger = document.getElementById('trigger')!
     trigger.setAttribute('data-ajax-credentials', 'include')
     await send('/a', { trigger })
-    expect(call().init.credentials).toBe('include')
+    expect(call().init.credentials).toBe('same-origin')
   })
 
   test('passes mode, cache, redirect through and links a caller signal', async () => {
@@ -135,7 +151,6 @@ describe('init', () => {
     const { init } = call()
     expect(init).toMatchObject({ mode: 'cors', cache: 'no-store', redirect: 'manual', credentials: 'omit' })
     expect(init.signal).toBeInstanceOf(AbortSignal)
-    expect(init.signal).not.toBe(own.signal)
   })
 
   test('a caller signal aborts the fetch signal, also when already aborted', async () => {

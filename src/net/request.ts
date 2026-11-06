@@ -10,7 +10,10 @@ const FORM_TYPE = 'application/x-www-form-urlencoded; charset=UTF-8'
 const toParams = (data: Record<string, unknown> | FormData): URLSearchParams => {
   const params = new URLSearchParams()
   const entries = data instanceof FormData ? data.entries() : Object.entries(data)
-  for (const [k, v] of entries) params.append(k, v == null ? '' : String(v))
+  for (const [k, v] of entries) {
+    if (v instanceof Blob) throw new TypeError(`Cannot serialise a file ("${k}") into a query string; use POST`)
+    params.append(k, v == null ? '' : String(v))
+  }
   return params
 }
 
@@ -33,7 +36,12 @@ function targetsOf(involved: Element[]): EventTarget[] {
   return live.length ? live : [document]
 }
 
-// No deadline by design: a per-request timeout would be a policy v1 never had; callers pass AbortSignal.timeout()
+/**
+ * The internal AbortController is an implementation detail: it links `options.signal` and detects aborts during the body read.
+ * Cancellation requires the caller to supply `options.signal`; without one the request cannot be cancelled.
+ * No deadline by design: callers can pass `AbortSignal.timeout(ms)`.
+ * Data values are stringified: nested objects/arrays are not supported, and a File in a GET FormData rejects.
+ */
 export async function sendRequest(
   url: string,
   options: TdiRequestOptions,
@@ -55,20 +63,13 @@ export async function sendRequest(
   }
   new Headers(options.headers).forEach((v, k) => headers.set(k, v))
 
-  const target = data !== undefined && isGet ? withQuery(url, serialize(data)) : url
-
   const controller = new AbortController()
   const { signal } = options
   const onAbort = (): void => controller.abort(signal!.reason)
   if (signal?.aborted) onAbort()
   else signal?.addEventListener('abort', onAbort, { once: true })
 
-  const credentials =
-    options.credentials ??
-    (options.trigger?.getAttribute('data-ajax-credentials') as RequestCredentials | null) ??
-    'same-origin'
-
-  const init: RequestInit = { method, headers, body, credentials, signal: controller.signal }
+  const init: RequestInit = { method, headers, body, credentials: options.credentials ?? 'same-origin', signal: controller.signal }
   if (options.mode) init.mode = options.mode
   if (options.cache) init.cache = options.cache
   if (options.redirect) init.redirect = options.redirect
@@ -83,6 +84,7 @@ export async function sendRequest(
   let response: Response | null = null
   try {
     try {
+      const target = data !== undefined && isGet ? withQuery(url, serialize(data)) : url
       response = await fetch(ajaxifyUrl(target), init)
       const text = await response.text()
       const parsed = parseResponse(text)
