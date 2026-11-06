@@ -25,7 +25,7 @@ const NONCE = script ? script.nonce || script.getAttribute('nonce') || undefined
 // An unknown value must not widen the policy, so it falls back to the strict one
 function validPolicy(value: unknown): ContentScriptPolicy {
   if (value === undefined || value === 'all' || value === 'nonce-only') return value ?? 'all'
-  console.warn(`TDI: invalid contentScripts "${String(value)}" ignored (use all or nonce-only); using nonce-only`)
+  console.warn(`TDI: invalid contentScripts "${String(value)}" ignored (use all or nonce-only); using nonce-only (scripts without a matching nonce will not run)`)
   return 'nonce-only'
 }
 
@@ -33,7 +33,7 @@ export function createTdi(options: TdiOptions = {}): Tdi {
   const policy = validPolicy(options.contentScripts)
   const registry = createDefaultRegistry({ nonce: NONCE, policy })
   const live = new Set<AbortController>()
-  const senders = createSenders(registry, live)
+  const senders = createSenders(registry, live, options.allowedOrigins)
   let unbind: (() => void) | null = null
 
   const stop = (): void => {

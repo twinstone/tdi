@@ -1,3 +1,4 @@
+import { dispatch, TdiEvents } from '../events'
 import { disableTriggerGroup, involvedElements, setLoading } from '../dom/elements'
 import type { InstructionRegistry } from '../instructions/registry'
 import { sendRequest } from '../net/request'
@@ -13,7 +14,29 @@ export interface Senders {
 }
 
 // `live` holds one controller per in-flight request so stop() can abort them all
-export function createSenders(registry: InstructionRegistry, live: Set<AbortController>): Senders {
+export function createSenders(
+  registry: InstructionRegistry,
+  live: Set<AbortController>,
+  allowedOrigins?: string[],
+): Senders {
+  const allowed = allowedOrigins?.map((o) => {
+    try {
+      return new URL(o).origin
+    } catch {
+      return o
+    }
+  })
+
+  // Runs before any state change; a violation fires tdi:ajax:error and rejects
+  function checkOrigin(url: string, target: EventTarget, options: TdiRequestOptions): void {
+    if (!allowed) return
+    const origin = new URL(url, location.href).origin
+    if (origin === location.origin || allowed.includes(origin)) return
+    const message = `Origin ${origin} is not in allowedOrigins`
+    dispatch(target, TdiEvents.error, { response: null, status: 0, message, options })
+    throw new Error(`TDI: ${message}`)
+  }
+
   async function run(
     el: Element,
     options: TdiRequestOptions,
@@ -21,6 +44,7 @@ export function createSenders(registry: InstructionRegistry, live: Set<AbortCont
     extra: Element[] = [],
   ): Promise<TdiResult> {
     options.signal?.throwIfAborted() // an already-aborted signal sends nothing
+    checkOrigin(url, el, options)
     // Selector lookups may throw SyntaxError; all of them run before any state changes, so a throw leaves nothing behind
     const involved = [...new Set([...involvedElements(el), ...extra])]
     const restore = disableTriggerGroup(el)
@@ -50,6 +74,7 @@ export function createSenders(registry: InstructionRegistry, live: Set<AbortCont
 
   async function send(url: string, options: TdiRequestOptions = {}): Promise<TdiResult> {
     options.signal?.throwIfAborted()
+    checkOrigin(url, document, options)
     return tracked(url, options, [])
   }
 

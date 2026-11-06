@@ -30,13 +30,32 @@ const submit = (form: Element): Event => {
   return evt
 }
 
+// Records defaultPrevented as TDI left it, then blocks jsdom's unimplemented navigation
+const prevented = new WeakMap<Event, boolean>()
+const wasPrevented = (evt: Event): boolean => prevented.get(evt)!
+const record = (e: Event): void => {
+  prevented.set(e, e.defaultPrevented)
+  // A button click must keep its activation (the submit event), which is blocked in turn
+  if (!(e.target as Element).closest('button')) e.preventDefault()
+}
+const cleanups: (() => void)[] = []
+const listen = (name: string, fn: (e: Event) => void): void => {
+  document.addEventListener(name, fn)
+  cleanups.push(() => document.removeEventListener(name, fn))
+}
+
 beforeEach(() => {
+  window.addEventListener('click', record)
+  window.addEventListener('submit', record)
   fetchMock = vi.fn(async () => new Response(OK, { status: 200 }))
   vi.stubGlobal('fetch', fetchMock)
   tdi = createTdi()
   tdi.start()
 })
 afterEach(() => {
+  window.removeEventListener('click', record)
+  window.removeEventListener('submit', record)
+  cleanups.splice(0).forEach((c) => c())
   tdi.stop()
   vi.unstubAllGlobals()
   vi.restoreAllMocks()
@@ -50,7 +69,7 @@ describe('clicks', () => {
     await tick()
     expect(urls()).toHaveLength(1)
     expect(urls()[0]).toContain('/x')
-    expect(evt.defaultPrevented).toBe(true)
+    expect(wasPrevented(evt)).toBe(true)
   })
 
   test.each([
@@ -63,7 +82,7 @@ describe('clicks', () => {
     const evt = click($('a'), init)
     await tick()
     expect(fetchMock).not.toHaveBeenCalled()
-    expect(evt.defaultPrevented).toBe(false)
+    expect(wasPrevented(evt)).toBe(false)
     click($('a')) // control: delegation is live, so the silence above is the modifier check
     await tick()
     expect(fetchMock).toHaveBeenCalledTimes(1)
@@ -79,7 +98,9 @@ describe('clicks', () => {
     document.addEventListener('tdi:ajax:beforeLinkClick', listener)
     click($('a'))
     await tick()
-    expect(seen).toEqual([$('a')])
+    const evt = click($('a'))
+    expect(wasPrevented(evt)).toBe(true) // cancelling beforeLinkClick still blocks navigation
+    expect(seen).toEqual([$('a'), $('a')])
     expect(fetchMock).not.toHaveBeenCalled()
     document.removeEventListener('tdi:ajax:beforeLinkClick', listener)
     click($('a'))
@@ -95,7 +116,7 @@ describe('submits', () => {
     await tick()
     expect(urls()).toHaveLength(1)
     expect(urls()[0]).toContain('/f?q=1')
-    expect(evt.defaultPrevented).toBe(true)
+    expect(wasPrevented(evt)).toBe(true)
   })
 
   test('the clicked submit button is sent with the form', async () => {
@@ -119,7 +140,7 @@ describe('submits', () => {
     await tick()
     expect(seen).toEqual([$('form')])
     expect(fetchMock).not.toHaveBeenCalled()
-    expect(evt.defaultPrevented).toBe(true) // the browser must not navigate either
+    expect(wasPrevented(evt)).toBe(true) // the browser must not navigate either
     document.removeEventListener('tdi:ajax:beforeFormSubmit', listener)
     submit($('form'))
     await tick()
@@ -131,7 +152,7 @@ describe('fields', () => {
   test('change on select.tdi submits its form when it has no data-ajax-url', async () => {
     html('<form action="/f"><select class="tdi" name="s"><option value="a">a</option><option value="b" selected>b</option></select></form>')
     const forms: unknown[] = []
-    document.addEventListener('tdi:ajax:beforeFormSubmit', (e) => forms.push((e as CustomEvent).detail.form))
+    listen('tdi:ajax:beforeFormSubmit', (e) => forms.push((e as CustomEvent).detail.form))
     change($('select'))
     await tick()
     expect(urls()).toHaveLength(1)
@@ -142,7 +163,7 @@ describe('fields', () => {
   test('change on a field with data-ajax-url sends the field itself, not the form', async () => {
     html('<form action="/f"><input type="checkbox" class="tdi" name="c" value="1" data-ajax-url="/own" checked></form>')
     const forms: unknown[] = []
-    document.addEventListener('tdi:ajax:beforeFormSubmit', (e) => forms.push(e))
+    listen('tdi:ajax:beforeFormSubmit', (e) => forms.push(e))
     change($('input'))
     await tick()
     expect(urls()).toHaveLength(1)
@@ -189,8 +210,8 @@ describe('dropped v1 classes', () => {
     change($('select'))
     await tick()
     expect(fetchMock).not.toHaveBeenCalled()
-    expect(link.defaultPrevented).toBe(false)
-    expect(form.defaultPrevented).toBe(false)
+    expect(wasPrevented(link)).toBe(false)
+    expect(wasPrevented(form)).toBe(false)
     click($('a.tdi')) // control: delegation is live
     await tick()
     expect(urls()).toHaveLength(1)
@@ -217,7 +238,7 @@ describe('start and stop', () => {
     keydown($('input'), 'Enter')
     await tick()
     expect(fetchMock).toHaveBeenCalledTimes(4)
-    expect(evts.some((e) => e.defaultPrevented)).toBe(false)
+    expect(evts.some((e) => wasPrevented(e))).toBe(false)
   })
 
   test('start is idempotent: twice does not double-send, and one stop removes it all', async () => {
@@ -280,7 +301,7 @@ describe('root boundary', () => {
     const evt = click($('#in'))
     await tick()
     expect(fetchMock).not.toHaveBeenCalled()
-    expect(evt.defaultPrevented).toBe(false)
+    expect(wasPrevented(evt)).toBe(false)
     scoped.stop()
   })
 })

@@ -154,6 +154,7 @@ describe('contentScripts validation', () => {
     expect(await run('nonce_only')).toBe(false)
     expect(warn).toHaveBeenCalledTimes(1)
     expect(String(warn.mock.calls[0]![0])).toContain('nonce_only')
+    expect(String(warn.mock.calls[0]![0])).toContain('will not run')
   })
 })
 
@@ -180,30 +181,100 @@ describe('entry points', () => {
     vi.resetModules()
     await import('../../src/global')
     const tdi = (window as unknown as { TDI: Tdi }).TDI
+    started.push(tdi)
     expect(typeof tdi.sendElement).toBe('function')
     html('<a class="tdi" href="/x">a</a>')
     $('a').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
     await tick()
     expect(fetchMock).toHaveBeenCalledTimes(1)
-    tdi.stop()
   })
 
   test('the auto entry exports a started instance', async () => {
     vi.resetModules()
     const { tdi } = await import('../../src/auto')
+    started.push(tdi)
     html('<a class="tdi" href="/x">a</a>')
     $('a').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
     await tick()
     expect(fetchMock).toHaveBeenCalledTimes(1)
-    tdi.stop()
   })
 
   test('createTdi alone does not bind anything until start', async () => {
     make()
     html('<a class="tdi" href="/x">a</a>')
+    const block = (e: Event): void => e.preventDefault() // jsdom would try to navigate
+    window.addEventListener('click', block)
+    $('a').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    window.removeEventListener('click', block)
+    await tick()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('allowedOrigins', () => {
+  const errors = (): CustomEvent[] => {
+    const seen: CustomEvent[] = []
+    const fn = (e: Event): void => void seen.push(e as CustomEvent)
+    document.addEventListener('tdi:ajax:error', fn)
+    cleanup.push(() => document.removeEventListener('tdi:ajax:error', fn))
+    return seen
+  }
+  const cleanup: (() => void)[] = []
+  afterEach(() => cleanup.splice(0).forEach((c) => c()))
+
+  const OTHER = 'https://evil.example/x'
+
+  test('undefined allows any origin', async () => {
+    await make().send(OTHER)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  test('a listed origin passes', async () => {
+    await make({ allowedOrigins: ['https://cdn.example'] }).send('https://cdn.example/x')
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  test('same-origin passes without being listed', async () => {
+    const t = make({ allowedOrigins: ['https://cdn.example'] })
+    await t.send('/rel')
+    await t.send(`${location.origin}/abs`)
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
+
+  test('send to an unlisted origin rejects, fires tdi:ajax:error and does not fetch', async () => {
+    const seen = errors()
+    const t = make({ allowedOrigins: ['https://cdn.example'] })
+    await expect(t.send(OTHER)).rejects.toThrow(/evil\.example/)
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(seen).toHaveLength(1)
+    expect(seen[0]!.detail).toMatchObject({ response: null, status: 0 })
+    expect(seen[0]!.detail.message).toContain('https://evil.example')
+  })
+
+  test('sendElement and sendForm are covered and leave no state behind', async () => {
+    const seen = errors()
+    html(`<a id="a" href="${OTHER}" data-related-element="#r" data-trigger-group="button"></a>
+      <form id="f" action="${OTHER}"></form><div id="r"></div><button id="g"></button>`)
+    const t = make({ allowedOrigins: [] })
+    await expect(t.sendElement($('#a'))).rejects.toThrow()
+    await expect(t.sendForm($('#f'))).rejects.toThrow()
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(seen).toHaveLength(2)
+    expect(seen[0]!.target).toBe($('#a'))
+    for (const el of ['#a', '#r', '#f']) expect($(el).classList.contains('loading'), el).toBe(false)
+    expect($<HTMLButtonElement>('#g').disabled).toBe(false)
+    expect($('#g').classList.contains('disabled')).toBe(false)
+  })
+
+  test('a delegated click to an unlisted origin is rejected without noise beyond one report', async () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {})
+    html(`<a class="tdi" href="${OTHER}">a</a>`)
+    const t = make({ allowedOrigins: [] })
+    t.start()
     $('a').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
     await tick()
     expect(fetchMock).not.toHaveBeenCalled()
+    expect(err).toHaveBeenCalledTimes(1)
   })
 })
 

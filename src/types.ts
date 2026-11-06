@@ -6,6 +6,8 @@ export type ContentScriptPolicy = 'all' | 'nonce-only'
 export interface TdiOptions {
   root?: Document | Element
   contentScripts?: ContentScriptPolicy
+  // Undefined means no check; same-origin is always allowed
+  allowedOrigins?: string[]
 }
 
 export interface TdiRequestOptions {
