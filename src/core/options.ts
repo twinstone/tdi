@@ -29,6 +29,9 @@ export function optionsFromElement(el: Element): ElementOptions {
   const confirm = attr('data-confirm')
   if (confirm) options.confirm = confirm
   const credentials = attr('data-ajax-credentials')
-  if (credentials && CREDENTIALS.includes(credentials)) options.credentials = credentials as RequestCredentials
+  if (credentials) {
+    if (CREDENTIALS.includes(credentials)) options.credentials = credentials as RequestCredentials
+    else console.warn(`TDI: invalid data-ajax-credentials "${credentials}" ignored (use omit, same-origin or include)`)
+  }
   return options
 }

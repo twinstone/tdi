@@ -18,7 +18,7 @@ export function relatedElements(el: Element): Element[] {
 }
 
 export function involvedElements(el: Element): Element[] {
-  return [el, ...relatedElements(el)]
+  return [el, ...relatedElements(el).filter((e) => e !== el)]
 }
 
 export function setLoading(els: Element[], on: boolean): void {

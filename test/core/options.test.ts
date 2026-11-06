@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import { optionsFromElement } from '../../src/core/options'
 import { involvedElements, relatedElements } from '../../src/dom/elements'
 
@@ -68,6 +68,23 @@ describe('optionsFromElement', () => {
     expect('credentials' in optionsFromElement(el)).toBe(false)
   })
 
+  test('an unrecognised data-ajax-credentials value warns and is not applied', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const el = mount('<a href="/u" data-ajax-credentials="Include"></a>')
+    expect('credentials' in optionsFromElement(el)).toBe(false)
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(warn.mock.calls[0]![0]).toContain('Include')
+    warn.mockClear()
+    for (const ok of ['include', 'omit', '']) {
+      el.setAttribute('data-ajax-credentials', ok)
+      optionsFromElement(el)
+    }
+    el.removeAttribute('data-ajax-credentials')
+    optionsFromElement(el)
+    expect(warn).not.toHaveBeenCalled()
+    warn.mockRestore()
+  })
+
   test('data-ajax-xhr-fields is ignored', () => {
     const el = mount('<a href="/u" data-ajax-xhr-fields=\'{"withCredentials":true}\'></a>')
     expect('credentials' in optionsFromElement(el)).toBe(false)
@@ -84,7 +101,7 @@ describe('optionsFromElement', () => {
 
 describe('related elements', () => {
   test('related elements come from data-related-element and data-related-ancestor', () => {
-    const el = mount(
+    mount(
       '<section class="box"><a id="t" data-related-element=".peer" data-related-ancestor=".box"></a></section>' +
         '<p class="peer" id="p1"></p><p class="peer" id="p2"></p><p id="other"></p>',
     )
@@ -92,7 +109,16 @@ describe('related elements', () => {
     const ids = relatedElements(t).map((e) => e.id || e.className)
     expect(ids).toEqual(['box', 'p1', 'p2'])
     expect(involvedElements(t)).toEqual([t, ...relatedElements(t)])
-    expect(el).toBeTruthy()
+  })
+
+  test('an element matched by both selectors, or by its own selector, appears once', () => {
+    mount(
+      '<section class="box peer"><a id="t" class="peer" data-related-element=".peer" data-related-ancestor=".box"></a></section>',
+    )
+    const t = document.getElementById('t')!
+    expect(relatedElements(t).filter((e) => e.classList.contains('box'))).toHaveLength(1)
+    expect(involvedElements(t).filter((e) => e === t)).toHaveLength(1)
+    expect(involvedElements(t)).toHaveLength(2)
   })
 
   test('involved is just the trigger when nothing is related', () => {

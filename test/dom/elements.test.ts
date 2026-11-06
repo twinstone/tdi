@@ -112,8 +112,9 @@ describe('disableTriggerGroup', () => {
     document.body.innerHTML = '<a id="t" data-trigger-group=".g"></a><a class="g" id="x"></a>'
     const undo = disableTriggerGroup($('t'))
     expect($('x').classList.contains('disabled')).toBe(true)
+    expect($('x').hasAttribute('disabled')).toBe(false)
     undo()
-    expect($('x').hasAttribute('class')).toBe(true)
     expect($('x').classList.contains('disabled')).toBe(false)
+    expect($('x').hasAttribute('disabled')).toBe(false)
   })
 })
