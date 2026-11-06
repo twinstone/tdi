@@ -86,6 +86,7 @@ export async function sendRequest(
     try {
       const target = data !== undefined && isGet ? withQuery(url, serialize(data)) : url
       response = await fetch(ajaxifyUrl(target), init)
+      if (response.url) options.validateOrigin?.(response.url) // redirects land here
       const text = await response.text()
       const parsed = parseResponse(text)
       if (!parsed.ok) fail(response, `Response status: ${parsed.status}`)

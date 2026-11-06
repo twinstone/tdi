@@ -266,6 +266,106 @@ describe('allowedOrigins', () => {
     expect($('#g').classList.contains('disabled')).toBe(false)
   })
 
+  describe('<base href>', () => {
+    beforeEach(() => {
+      document.head.innerHTML = '<base href="https://cdn.example/">'
+    })
+
+    test('a relative URL is checked against the base origin, not location.origin', async () => {
+      const t = make({ allowedOrigins: ['https://other.example'] })
+      await expect(t.send('/x')).rejects.toThrow(/cdn\.example/)
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+
+    test('a relative URL passes when the base origin is listed', async () => {
+      await make({ allowedOrigins: ['https://cdn.example'] }).send('/x')
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+    })
+
+    test('the element path is checked the same way', async () => {
+      html('<a id="a" href="/x"></a>')
+      await expect(make({ allowedOrigins: [] }).sendElement($('#a'))).rejects.toThrow(/cdn\.example/)
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('redirects', () => {
+    const redirected = (finalUrl: string): { text: ReturnType<typeof vi.fn> } => {
+      const res = new Response('<response><status>OK</status><update target="t">HACKED</update></response>')
+      Object.defineProperty(res, 'url', { value: finalUrl })
+      const text = vi.spyOn(res, 'text')
+      fetchMock.mockImplementation(async () => res)
+      return { text }
+    }
+
+    test('a redirect from an allowed origin to an unlisted one rejects before the body is read or applied', async () => {
+      html('<div id="t">safe</div>')
+      const seen = errors()
+      const updates = vi.fn()
+      document.addEventListener('tdi:ajax:update', updates)
+      cleanup.push(() => document.removeEventListener('tdi:ajax:update', updates))
+      const { text } = redirected('https://evil.example/y')
+      const t = make({ allowedOrigins: ['https://cdn.example'] })
+      await expect(t.send('https://cdn.example/x')).rejects.toThrow(/evil\.example/)
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+      expect(text).not.toHaveBeenCalled()
+      expect($('#t').textContent).toBe('safe')
+      expect(updates).not.toHaveBeenCalled()
+      expect(seen).toHaveLength(1)
+      expect(seen[0]!.detail.message).toContain('https://evil.example')
+    })
+
+    test('the same holds through sendElement, which also leaves no loading state', async () => {
+      html('<a id="a" href="https://cdn.example/x"></a><div id="t">safe</div>')
+      redirected('https://evil.example/y')
+      const t = make({ allowedOrigins: ['https://cdn.example'] })
+      await expect(t.sendElement($('#a'))).rejects.toThrow()
+      expect($('#t').textContent).toBe('safe')
+      expect($('#a').classList.contains('loading')).toBe(false)
+    })
+
+    test('a redirect to another allowed origin succeeds and is applied', async () => {
+      html('<div id="t">safe</div>')
+      redirected('https://other.example/y')
+      await make({ allowedOrigins: ['https://cdn.example', 'https://other.example'] }).send('https://cdn.example/x')
+      expect($('#t').textContent).toBe('HACKED')
+    })
+
+    test('with allowedOrigins undefined a redirect anywhere still works', async () => {
+      html('<div id="t">safe</div>')
+      redirected('https://evil.example/y')
+      await make().send('https://cdn.example/x')
+      expect($('#t').textContent).toBe('HACKED')
+    })
+  })
+
+  test('an unparseable allowedOrigins entry warns naming it', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    make({ allowedOrigins: ['https://ok.example', 'cdn.example'] })
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(String(warn.mock.calls[0]![0])).toContain('cdn.example')
+  })
+
+  test('a valid-only list does not warn', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    make({ allowedOrigins: ['https://ok.example'] })
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  test('a refused origin is rejected before any confirm dialog', async () => {
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true)
+    html(`<a id="a" href="${OTHER}" data-confirm="sure?"></a><form id="f" action="${OTHER}" data-confirm="sure?"></form>`)
+    const t = make({ allowedOrigins: [] })
+    await expect(t.sendElement($('#a'))).rejects.toThrow()
+    await expect(t.sendForm($('#f'))).rejects.toThrow()
+    expect(confirm).not.toHaveBeenCalled()
+  })
+
+  test('a suppressed element resolves to null even for a refused origin', async () => {
+    html(`<a id="a" class="disabled" href="${OTHER}"></a>`)
+    expect(await make({ allowedOrigins: [] }).sendElement($('#a'))).toBeNull()
+  })
+
   test('a delegated click to an unlisted origin is rejected without noise beyond one report', async () => {
     const err = vi.spyOn(console, 'error').mockImplementation(() => {})
     html(`<a class="tdi" href="${OTHER}">a</a>`)

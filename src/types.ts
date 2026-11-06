@@ -20,6 +20,8 @@ export interface TdiRequestOptions {
   cache?: RequestCache
   redirect?: RequestRedirect
   signal?: AbortSignal
+  // Called with the final response URL before the body is read; throws to abort
+  validateOrigin?: (url: string) => void
 }
 
 export interface UpdateDetail {

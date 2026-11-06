@@ -23,18 +23,26 @@ export function createSenders(
     try {
       return new URL(o).origin
     } catch {
+      console.warn(`TDI: allowedOrigins entry "${o}" is not a valid origin and will never match (include the scheme, e.g. https://${o})`)
       return o
     }
   })
 
-  // Runs before any state change; a violation fires tdi:ajax:error and rejects
-  function checkOrigin(url: string, target: EventTarget, options: TdiRequestOptions): void {
+  function verifyOrigin(url: string): void {
     if (!allowed) return
-    const origin = new URL(url, location.href).origin
+    const origin = new URL(url, document.baseURI).origin // the base fetch resolves against
     if (origin === location.origin || allowed.includes(origin)) return
-    const message = `Origin ${origin} is not in allowedOrigins`
-    dispatch(target, TdiEvents.error, { response: null, status: 0, message, options })
-    throw new Error(`TDI: ${message}`)
+    throw new Error(`TDI: Origin ${origin} is not in allowedOrigins`)
+  }
+
+  // Pre-flight, before any state change: fires tdi:ajax:error and rejects
+  function checkOrigin(url: string, target: EventTarget, options: TdiRequestOptions): void {
+    try {
+      verifyOrigin(url)
+    } catch (err) {
+      dispatch(target, TdiEvents.error, { response: null, status: 0, message: (err as Error).message.slice(5), options })
+      throw err
+    }
   }
 
   async function run(
@@ -65,7 +73,7 @@ export function createSenders(
     try {
       signal?.addEventListener('abort', onAbort, { once: true })
       live.add(controller)
-      return await sendRequest(url, { ...options, signal: controller.signal }, registry, involved)
+      return await sendRequest(url, { ...options, signal: controller.signal, validateOrigin: verifyOrigin }, registry, involved)
     } finally {
       live.delete(controller)
       signal?.removeEventListener('abort', onAbort)
@@ -78,13 +86,21 @@ export function createSenders(
     return tracked(url, options, [])
   }
 
-  function declined({ suppressed, confirm }: { suppressed: boolean; confirm?: string }): boolean {
-    return suppressed || (confirm !== undefined && !window.confirm(confirm))
+  // The origin check comes before the confirm so nobody confirms a request that is refused anyway
+  function declined(
+    el: Element,
+    url: string,
+    options: TdiRequestOptions,
+    { suppressed, confirm }: { suppressed: boolean; confirm?: string },
+  ): boolean {
+    if (suppressed) return true
+    checkOrigin(url, el, options)
+    return confirm !== undefined && !window.confirm(confirm)
   }
 
   async function sendForm(form: HTMLFormElement, options: TdiRequestOptions = {}): Promise<TdiResult | null> {
     const { url, method: attrMethod, ...base } = optionsFromElement(form)
-    if (declined(base)) return null
+    if (declined(form, url, options, base)) return null
 
     // The trigger counts as the submitter only when it is a submit control of this form
     const t = options.trigger
@@ -105,7 +121,7 @@ export function createSenders(
   async function sendElement(el: Element, options: TdiRequestOptions = {}): Promise<TdiResult | null> {
     if (el instanceof HTMLFormElement) return sendForm(el, options)
     const { url, confirm, suppressed, ...rest } = optionsFromElement(el)
-    if (declined({ confirm, suppressed })) return null
+    if (declined(el, url, options, { confirm, suppressed })) return null
     return run(el, { ...rest, ...options }, url)
   }
 
