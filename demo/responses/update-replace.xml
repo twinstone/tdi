@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="u-replace" replace="true"><![CDATA[<p id="u-replace" class="box">The element itself was replaced.</p>]]></update>
+</response>

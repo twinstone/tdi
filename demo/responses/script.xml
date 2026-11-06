@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <script src="responses/demo-script.js" id="demo-script">
+        demoScriptReport('inline body ran after the external script loaded');
+    </script>
+</response>

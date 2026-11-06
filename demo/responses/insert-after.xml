@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <insert target="i-anchor"><![CDATA[<li>inserted after (default position)</li>]]></insert>
+</response>

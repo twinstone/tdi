@@ -1,60 +1,122 @@
 # Web Page Integration - Javascript API
 
-In case it is not possible to use TDI elements the usual way or it is required to manage TDI directly from the javascript, you can use the Javascript API ([API reference](http://twinstone.github.io/tdi/docs/api/)).
+In case it is not possible to use TDI elements the usual way or it is required to manage TDI directly from JavaScript, you can use the JavaScript API. It is the same for every entry point; only how you obtain the instance differs.
+
+* **Classic script** (`dist/tdi.global.min.js`): the instance is `window.TDI`, already started.
+* **ESM, one line:** `import 'twinstone-tdi/auto'` creates and starts an instance. Import `{ tdi }` from it if you need the object: `import { tdi } from 'twinstone-tdi/auto'`.
+* **ESM, explicit:** `import { createTdi } from 'twinstone-tdi'`, then `const tdi = createTdi(options); tdi.start();`.
+
+The examples below use `TDI`. TypeScript types ship with the package (`dist/index.d.ts`).
+
+Upgrading from v1? See the [migration guide](../migration-v1-to-v2.md).
 
 API is separated into two parts:
 
 * API methods
 * API events
 
+## `createTdi(options)`
+
+| Option | Meaning |
+|---|---|
+| `root` | `Document` or `Element` whose clicks and submits TDI intercepts. Default `document`. It scopes **event delegation only**; instruction targets resolve against the whole document. |
+| `contentScripts` | `'all'` (default) or `'nonce-only'`: which scripts inside `update`/`insert` content are executed. An invalid value warns and falls back to `'nonce-only'`. |
+| `allowedOrigins` | Origins a response may come from (e.g. `['https://api.example.com']`). Undefined: no check. Same-origin always passes; `[]` means same-origin only. Checked before the request and against the final URL after redirects. It prevents the response being **applied**, not the request being **sent**. |
+
 ## API methods
 
-* **[TDI.Ajax.send(elm, callbacks)](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.html#.send__anchor)** - Simulates usual TDI behaviour - sending a request using TDI element
-  * **`elm`** - HTML element, which contains TDI info (see. [Web Page Integration](README.md))
-  * `callbacks` - can contain different callback functions
-* **[TDI.Ajax.Request.send(url, options)](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.send__anchor)** - Sends a TDI request to the specified URL
+* **`TDI.start()`** / **`TDI.stop()`** - Attach / remove the delegated listeners. `stop()` also aborts in-flight requests. It is the only teardown; there is no `unload` handling.
+* **`TDI.sendElement(el, options)`** - Simulates usual TDI behaviour: sends a request using a TDI element
+  * **`el`** - HTML element, which contains TDI info (see [Web Page Integration](README.md)). A form is sent with `sendForm`.
+  * `options` - request options (below)
+  * Resolves to `null` when nothing was sent (a `data-confirm` was declined, or the element is `disabled`).
+* **`TDI.send(url, options)`** - Sends a TDI request to the specified URL
   * **`url`** - target of a TDI request
-  * `options` - can contain further setings
-* **[TDI.Ajax.Request.sendForm(form, options)](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.sendForm__anchor)** - Sends a TDI form using hidden `<iframe>` tag. Used when the browser does not support `FormData` and the form cannot be sent using `XHR`.
-  * **`form`** - HTML form
-  * `options` - can contain further setings
-* **[TDI.Ajax.Request.ajaxifyUrl(url)](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.ajaxifyUrl__anchor)** - Marks the URL for TDI usage - a GET parameter `_infuse=1` is added to the request
-  * **`url`** - The URL to mark
+  * `options` - request options (below)
+  * Resolves to `{ response, responses }` once every instruction has been applied, including scripts. Rejects on transport failure, malformed XML and abort. A non-`OK` `<status>` does not reject.
+* **`TDI.sendForm(form, options)`** - Sends a TDI form using `FormData` and `fetch`. A form with a file input is sent as a `multipart/form-data` POST. Resolves to `null` like `sendElement`.
+* **`TDI.ajaxifyUrl(url)`** - Marks the URL for TDI usage - a GET parameter `_infuse=1` (and `_ts`) is added to the request
+* **`TDI.registerInstruction(name, handler)`** - Handle a custom server instruction (see below)
+
+### Request options
+
+| Option | Meaning |
+|---|---|
+| `method` | HTTP method. Default `GET` |
+| `data` | String, plain object or `FormData`. Query string for GET, body otherwise |
+| `trigger` | The DOM `Element` that is considered the source of the request |
+| `headers` | Extra headers. Merged over the defaults (`Accept`; `Content-Type` for string/object bodies) |
+| `credentials`, `mode`, `cache`, `redirect` | Passed to `fetch` unchanged. `credentials` defaults to `same-origin` |
+| `signal` | An `AbortSignal` to cancel the request. There is no built-in timeout: use `AbortSignal.timeout(ms)` |
 
 ### Examples of usage
 
 ```javascript
-TDI.Ajax.send($("#buy-link"), {
-    end : function() {
-        alert("Thank you.");  
-    }
+// Send the request of an existing TDI element
+TDI.sendElement(document.querySelector('#buy-link'), { headers: { 'X-Foo': 'Bar' } })
+    .then((result) => {
+        if (result) alert('Thank you.');   // null when confirm was declined
+    });
+
+// Send a request directly
+await TDI.send('/path/to/action', {
+    method: 'POST',
+    data: { id: 42 },
+    signal: AbortSignal.timeout(10000),
 });
- 
-TDI.Ajax.Request.send("/path/to/action", {
-    method : "POST"
+```
+
+### Custom instructions
+
+An unknown XML element in the response is forwarded as a `tdi:ajax:before<Name>` event (`<cart-badge>` becomes `tdi:ajax:beforeCartBadge`). To handle it directly:
+
+```javascript
+TDI.registerInstruction('cart-badge', (detail) => {
+    // detail.count and the other XML attributes are strings
+    document.querySelector('#badge').textContent = detail.count;
 });
-````
+```
+
+The handler becomes the default action. It is still preceded by the cancelable `before*` event.
 
 ## API events
 
-TDI uses so-called Custom events for notifications about TDI process flow. Events in TDI can be separated into two groups:
+TDI uses native `CustomEvent`s for notifications about TDI process flow. The payload is in `evt.detail`. All events bubble, so listen on `document`. Events in TDI can be separated into two groups:
 
 * **process**  - informs about the flow and state of TDI process
-  * [`tdi:ajax:beforeLinkClick`](http://twinstone.github.io/tdi/docs/api/TDI.html#.event:tdi:ajax:beforeLinkClick) - allows suspending default action (sending a  TDI request)
-  * [`tdi:ajax:beforeFormSubmit`](http://twinstone.github.io/tdi/docs/api/TDI.html#.event:tdi:ajax:beforeFormSubmit) - allows suspending default action (sending a form)
-  * [`tdi:ajax:start`](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.event:tdi:ajax:start)
-  * [`tdi:ajax:error`](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.event:tdi:ajax:error)
-  * [`tdi:ajax:end`](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Request.html#.event:tdi:ajax:end)
-  * [`tdi:ajax:done`](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:done)
+  * `tdi:ajax:beforeLinkClick` - allows suspending default action (sending a TDI request). `detail`: `{ link }`
+  * `tdi:ajax:beforeFormSubmit` - allows suspending default action (sending a form). `detail`: `{ form }`
+  * `tdi:ajax:start` - `detail`: `{ options }`
+  * `tdi:ajax:error` - `detail`: `{ response: Response | null, status: number, message: string, options }`
+  * `tdi:ajax:end` - always fires, also after an error or an abort
+  * `tdi:ajax:done` - `detail`: `{ responses, options }`
 * **protocol** - informs about separate server instructions (see [Infusing Protocol](../infusing-protocol/README.md))
-  * [all other events from TDI.Ajax.Response](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#toc2__anchor) - all before* actions allow suspending of the default action
+  * `tdi:ajax:beforeUpdate`, `update`, `beforeInsert`, `insert`, `beforeScript`, `script`, `beforeStyle`, `style`, `beforePopup`, `popup`, `beforeReload`, `beforeRedirect` - all `before*` events are cancelable and allow suspending of the default action
+  * `tdi:ajax:updatesDone`, `insertsDone`, `scriptsDone`, `stylesDone`, `popupsDone`, `unknownsDone` - once per response, after all instructions of that kind
+
+Detail keys are snake_case (`target_id`, `class_add`, `script_node`, ...). `detail.target` is always an `Element[]`; `tag` is the raw XML `Element`; `inserted_node` is an `Element[]`; `script_node`, `script_node_inline` and `style_node` are `Element`s. `tdi:ajax:style` fires with `style_node` undefined when the stylesheet was already on the page. `detail.options.trigger` is a plain `Element`.
 
 ### Events usage
 
 ```javascript
-$(document).on("tdi:ajax:start", function(evt, data) {
-    // evt - Event object
-    // data - Additional data  
+document.addEventListener('tdi:ajax:start', (evt) => {
+    // evt - CustomEvent
+    // evt.detail - Additional data
+    console.log(evt.detail.options);
+});
+
+// react to every update, whichever element it targets
+document.addEventListener('tdi:ajax:update', (evt) => {
+    evt.detail.target.forEach((el) => el.classList.add('updated'));
+});
+```
+
+For a delegated handler that only cares about some elements, filter on `evt.target`:
+
+```javascript
+document.addEventListener('tdi:ajax:beforeLinkClick', (evt) => {
+    if (!evt.target.closest('a.special')) return;
+    /* ... */
 });
 ```
 
@@ -63,26 +125,33 @@ $(document).on("tdi:ajax:start", function(evt, data) {
 Some events allow preventing the default behaviour:
 
 ```javascript
-$(document).on('tdi:ajax:beforeLinkClick', 'a',  function(evt, data) {
+document.addEventListener('tdi:ajax:beforeLinkClick', (evt) => {
     evt.preventDefault();
 
     // Set custom HTTP headers and then send the request manually
-    TDI.Ajax.send(evt.target, {
-        beforeStart : function(xhr, settings, ajaxOptions) {
-            xhr.setRequestHeader('X-Foo', 'Bar');
-            return true; // allow the TDI sending process to go on
-        }
-    });
+    TDI.sendElement(evt.detail.link, { headers: { 'X-Foo': 'Bar' } });
 });
 ```
 
 ```javascript
-$(document).on("tdi:ajax:beforeFormSubmit", function(evt, data) {
+document.addEventListener('tdi:ajax:beforeFormSubmit', (evt) => {
     evt.preventDefault(); // prevent the default action, eg. submiting the form
-    
+
     // process form data
     // set http headers
-    // send form some other way
+    // send form some other way, e.g. TDI.sendForm(evt.detail.form, { ... })
     // ...
 });
 ```
+
+Note that `preventDefault()` on `beforeLinkClick` stops TDI only; the link itself has already been kept from navigating.
+
+### Cancelling and timeouts
+
+```javascript
+const controller = new AbortController();
+TDI.send('/slow', { signal: controller.signal });
+controller.abort();        // fires tdi:ajax:end, not tdi:ajax:error
+```
+
+Two overlapping requests that share an element are not refcounted: the first to finish removes the `loading` class.

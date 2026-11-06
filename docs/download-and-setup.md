@@ -1,19 +1,36 @@
 # Download and Setup
 
-## Dependencies and Download
+TDI 2 has no dependencies. Coming from TDI 1? Read the [migration guide](migration-v1-to-v2.md) first.
 
-TDI library depends on [jQuery](http://jquery.com/download/). The minimum supported version of jQuery is 1.10.2 (see issues [TDI#8](https://github.com/twinstone/tdi/issues/8) and [jQuery#13936](https://bugs.jquery.com/ticket/13936)).
+## Download
 
-You can download the [latest release](https://github.com/twinstone/tdi/releases/latest) here on GitHub.
+* **npm:** `npm install twinstone-tdi`
+* **Classic script:** take `dist/tdi.global.min.js` from the npm package, or from the [latest release](https://github.com/twinstone/tdi/releases/latest) on GitHub. It replaces v1's `tdi-bundle.min.js`.
 
 ## Setup
 
-Now include both jQuery and TDI scripts to your page.
+Classic script (sets `window.TDI` and starts TDI):
 
 ```html
-<script src="your-jquery.js"></script>
-<script src="tdi-bundle.min.js"></script>
+<script src="tdi.global.min.js"></script>
 ```
+
+ES module, one line:
+
+```javascript
+import 'twinstone-tdi/auto';
+```
+
+ES module, explicit:
+
+```javascript
+import { createTdi } from 'twinstone-tdi';
+
+const tdi = createTdi();
+tdi.start();
+```
+
+See [Javascript API](web-page-integration/web-page-integration-js.md) for the options.
 
 ## Basic Usage
 

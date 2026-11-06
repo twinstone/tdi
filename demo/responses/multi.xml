@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="m-out"><![CDATA[Several instructions in one response]]></update>
+    <insert target="m-out" position="after"><![CDATA[<p>...and an insert</p>]]></insert>
+    <script>document.getElementById('m-out').classList.add('flash')</script>
+</response>

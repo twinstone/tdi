@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="u-script"><![CDATA[
+        <p>Inline script inside update content ran: <span id="u-script-out">not yet</span></p>
+        <script>document.getElementById('u-script-out').textContent = 'yes, in <head>: ' + (document.currentScript && document.currentScript.parentNode.tagName);</script>
+    ]]></update>
+</response>

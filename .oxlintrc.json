@@ -1,5 +1,5 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "ignorePatterns": ["dist", "node_modules", "tests", "src/**/*.js", "src/polyfills"],
+  "ignorePatterns": ["dist", "node_modules"],
   "categories": { "correctness": "error" }
 }

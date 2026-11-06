@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TDI 2 demo</title>
+<style>
+  body { font: 14px/1.4 system-ui, sans-serif; margin: 0; padding: 1rem; max-width: 62rem; }
+  h1 { margin-top: 0 } h2 { margin: 1.5rem 0 .4rem; font-size: 1.05rem }
+  section { border-top: 1px solid #ccc; padding: .3rem 0 .8rem }
+  .box { border: 2px solid #999; padding: .4rem; margin: .4rem 0; min-height: 1.4rem }
+  .flash { background: #cfe8ff; border-color: #2b7bd1 }
+  .loading { opacity: .5; cursor: progress }
+  .loading::after { content: " (loading...)" }
+  .disabled, [disabled] { opacity: .4 }
+  a.tdi, button { margin-right: .6rem }
+  #log { background: #111; color: #9f9; padding: .5rem; height: 14rem; overflow: auto; font: 12px/1.3 monospace; white-space: pre-wrap }
+  #badge { display: inline-block; background: #c33; color: #fff; border-radius: 1em; padding: 0 .6em }
+  code { background: #eee; padding: 0 .2em }
+</style>
+<script src="../dist/tdi.global.min.js"></script>
+</head>
+<body>
+<h1>TDI 2 demo</h1>
+<p>Serve the repository root over HTTP (<code>fetch</code> does not work from <code>file://</code>) and open
+<code>/demo/</code>. Build first: <code>npm run build</code>. Every action is logged below.</p>
+
+<section>
+  <h2>update</h2>
+  <p>
+    <a class="tdi" href="responses/update-contents.xml">contents + class-add/remove</a>
+    <a class="tdi" href="responses/update-append.xml">append</a>
+    <a class="tdi" href="responses/update-prepend.xml">prepend</a>
+    <a class="tdi" href="responses/update-replace.xml">replace</a>
+    <a class="tdi" href="responses/update-selector.xml">selector (many)</a>
+    <a class="tdi" href="responses/update-empty.xml">empty (clears)</a>
+  </p>
+  <div id="u-box" class="box idle">contents target</div>
+  <ul id="u-list" class="box"><li>list item</li></ul>
+  <p id="u-replace" class="box">replace target</p>
+  <div class="box u-many">selector match 1</div><div class="box u-many">selector match 2</div>
+  <div id="u-clear" class="box">I will be emptied<br>(an empty update clears)</div>
+  <p><a class="tdi" href="responses/update-script.xml">update with a script in its content</a></p>
+  <div id="u-script" class="box">script target</div>
+</section>
+
+<section>
+  <h2>insert</h2>
+  <p><a class="tdi" href="responses/insert-before.xml">before</a> <a class="tdi" href="responses/insert-after.xml">after</a></p>
+  <ul class="box"><li id="i-anchor">anchor</li></ul>
+</section>
+
+<section>
+  <h2>script</h2>
+  <p><a class="tdi" href="responses/script.xml">external + inline</a> (second click: deduped by id, still fires the event)</p>
+  <div id="s-out" class="box">no script ran yet</div>
+</section>
+
+<section>
+  <h2>style</h2>
+  <p><a class="tdi" href="responses/style.xml">external stylesheet</a> (second click: deduped, <code>style_node</code> undefined)</p>
+  <div id="st-box" class="box">styled by the loaded stylesheet</div>
+</section>
+
+<section>
+  <h2>popup, reload, redirect</h2>
+  <p>
+    <a class="tdi" href="responses/popup.xml">popup</a> (blockers may refuse it: no user activation after an async response)
+    <a class="tdi" href="responses/reload.xml">reload</a>
+    <a class="tdi" href="responses/redirect.xml">redirect</a>
+  </p>
+</section>
+
+<section>
+  <h2>custom instruction (hyphenated) and registerInstruction</h2>
+  <p><a class="tdi" href="responses/custom.xml">&lt;cart-badge&gt;</a> <span id="badge">0 items</span></p>
+</section>
+
+<section>
+  <h2>status other than OK, several instructions</h2>
+  <p><a class="tdi" href="responses/error-status.xml">status FAILED</a> <a class="tdi" href="responses/multi.xml">update + insert + script</a></p>
+  <div id="e-out" class="box">-</div><div id="m-out" class="box">-</div>
+</section>
+
+<section>
+  <h2>Form controls, confirm, related element, trigger group, data-ajax-credentials</h2>
+  <form class="tdi" action="responses/form-result.xml" method="get">
+    <input type="text" name="q" value="hello" class="tdi" data-ajax-url="responses/form-result.xml">
+    <select name="s" class="tdi"><option value="1">one</option><option value="2">two</option></select>
+    <label><input type="checkbox" name="c" value="1" class="tdi" data-ajax-url="responses/form-result.xml"> checkbox</label>
+    <button type="submit" name="go" value="1">submit form</button>
+  </form>
+  <div id="f-out" class="box">-</div>
+  <p>
+    <a class="tdi" href="responses/update-contents.xml" data-confirm="Really send?">with data-confirm</a>
+    <a class="tdi" id="rel" href="responses/update-contents.xml" data-related-element="#u-box">related element gets .loading</a>
+    <a class="tdi" href="responses/update-contents.xml" data-trigger-group="#grp a, #grp button">disables the group</a>
+    <a class="tdi" href="responses/update-contents.xml" data-ajax-credentials="include">credentials include</a>
+    <a class="tdi" href="responses/update-contents.xml" data-ajax-credentials="bogus">invalid credentials (warns)</a>
+  </p>
+  <p id="grp"><a class="tdi" href="responses/update-contents.xml">group member</a> <button type="button">group button</button></p>
+  <p><a class="tdi" href="responses/does-not-exist.xml">404 (error event)</a>
+     <button id="manual" type="button">TDI.send() from JS</button>
+     <button id="stop" type="button">TDI.stop()</button></p>
+</section>
+
+<h2>Event log</h2>
+<div id="log"></div>
+
+<script>
+  const log = document.getElementById('log')
+  const names = ['beforeLinkClick','beforeFormSubmit','start','end','error','done','beforeUpdate','update','beforeInsert','insert',
+    'beforeScript','script','beforeStyle','style','beforePopup','popup','beforeReload','beforeRedirect','updatesDone','insertsDone',
+    'scriptsDone','stylesDone','popupsDone','unknownsDone','beforeCartBadge','cart-badge']
+  for (const n of names) document.addEventListener('tdi:ajax:' + n, (evt) => {
+    const d = evt.detail || {}
+    const extra = d.status !== undefined ? ' status=' + d.status + ' ' + d.message : d.style_src ? ' style_node=' + d.style_node : ''
+    log.textContent += evt.type + ' on <' + evt.target.nodeName.toLowerCase() + (evt.target.id ? '#' + evt.target.id : '') + '>' + extra + '\n'
+    log.scrollTop = log.scrollHeight
+  })
+
+  TDI.registerInstruction('cart-badge', (detail) => {
+    document.getElementById('badge').textContent = detail.count + ' ' + detail.label
+  })
+  document.getElementById('manual').addEventListener('click', () =>
+    TDI.send('responses/update-contents.xml').then((r) => log.textContent += 'send() resolved, status ' + r.response.status + '\n'))
+  document.getElementById('stop').addEventListener('click', () => { TDI.stop(); log.textContent += 'TDI.stop() called, links are no longer intercepted\n' })
+</script>
+</body>
+</html>

@@ -1,7 +1,5 @@
 # TDI - Turbocharged DOM Infusion
 
-[![Build Status](https://travis-ci.org/twinstone/tdi.svg?branch=master)](https://travis-ci.org/twinstone/tdi)
-
 Twinstone TDI is a JavaScript library which makes all of the "AJAX stuff" for you. With TDI, you will no longer need pieces of application logic replicated in JavaScript. TDI moves all decisions to the server side, because the server has all the relevant data.
 
 * TDI automatically processes user actions (link clicks, form submissions).
@@ -24,15 +22,13 @@ As a result, TDI allows you to have just one concise piece of JavaScript at the 
 ## Documentation
 
 * [Download and Setup](docs/download-and-setup.md)
+* [Migrating from TDI 1](docs/migration-v1-to-v2.md)
 * [Web page integration](docs/web-page-integration)
 * [Infusing Protocol](docs/infusing-protocol)
-* [API Reference](http://twinstone.github.io/tdi/docs/api/)
+* [JavaScript API](docs/web-page-integration/web-page-integration-js.md)
+* [Demo](demo/index.html) (serve the repository over HTTP, after `npm run build`)
+* [Changelog](CHANGELOG.md)
 
 ## Supported browsers
 
-* Internet Explorer 7+
-* Firefox<sup>*</sup>
-* Chrome<sup>*</sup>
-* Opera<sup>*</sup>
-
-<sup>*</sup> 2 latest major releases
+Current evergreen browsers (the 2 latest major releases of Chrome, Edge, Firefox and Safari). Internet Explorer is not supported. TDI 2 has no runtime dependencies; jQuery is not required.
