@@ -20,6 +20,7 @@ A rewrite: TypeScript, no runtime dependencies (jQuery is gone), `fetch` instead
 ### Added
 
 * Entry points `twinstone-tdi` (ESM), `twinstone-tdi/auto`, `twinstone-tdi/global`; `dist/tdi.global.min.js` replaces `tdi-bundle.min.js`.
+* Every build is a single self-contained file; no entry imports another and no shared chunk is emitted, so one file can be deployed on its own.
 * `TDI.start()`, `TDI.stop()`, `TDI.registerInstruction()`; `createTdi({ root, contentScripts, allowedOrigins, nonce })`. The classic-script build reads `data-content-scripts` and `data-allowed-origins` (comma-separated) from its own script tag; ESM consumers pass `nonce` explicitly.
 * `send` returns a promise that resolves when every instruction, scripts included, has been applied.
 * `data-ajax-credentials="omit|same-origin|include"`; the `signal` and other `RequestInit` options.

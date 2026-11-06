@@ -500,6 +500,10 @@ An empty `data-allowed-origins=""` means same-origin only. An invalid `data-cont
 
 The npm package name is unchanged (`twinstone-tdi`); v2 is a new major version of it.
 
+Every build is a **single self-contained file**: no entry imports another, and no shared chunk is
+emitted. Deploy just the one you use. This matters for a CMS that serves assets from generated URLs,
+where a relative import between bundles could not be resolved.
+
 **`dist/tdi.global.min.js` is what replaces v1's hand-downloaded `tdi-bundle.min.js`.** An unminified `dist/tdi.global.js` ships beside it.
 
 Before:
