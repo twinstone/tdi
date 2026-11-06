@@ -111,7 +111,7 @@
   const log = document.getElementById('log')
   const names = ['beforeLinkClick','beforeFormSubmit','start','end','error','done','beforeUpdate','update','beforeInsert','insert',
     'beforeScript','script','beforeStyle','style','beforePopup','popup','beforeReload','beforeRedirect','updatesDone','insertsDone',
-    'scriptsDone','stylesDone','popupsDone','unknownsDone','beforeCartBadge','cart-badge']
+    'scriptsDone','stylesDone','popupsDone','unknownsDone','beforeCartBadge']
   for (const n of names) document.addEventListener('tdi:ajax:' + n, (evt) => {
     const d = evt.detail || {}
     const extra = d.status !== undefined ? ' status=' + d.status + ' ' + d.message : d.style_src ? ' style_node=' + d.style_node : ''

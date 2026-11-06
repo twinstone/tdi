@@ -55,7 +55,8 @@ export async function runScriptsList(
     if (policy === 'nonce-only' && !carriesNonce(old, nonce)) continue
     const src = old.getAttribute('src')
     const code = old.textContent ?? ''
-    const assetOpts = { nonce, attrs: copiedAttrs(old) }
+    // TDI's own nonce wins; without one, honour a nonce the server put on the script
+    const assetOpts = { nonce: nonce ?? (old.nonce || old.getAttribute('nonce') || undefined), attrs: copiedAttrs(old) }
     old.remove() // drop the inert node so nothing can re-run it
     if (src) await injectScript(src, assetOpts)
     else injectInlineScript(code, assetOpts)

@@ -251,6 +251,8 @@ TDI.registerInstruction('cart-badge', (detail) => {
 });
 ```
 
+Attributes of an unknown instruction are copied onto `detail` as strings, but can no longer override the structural keys `options`, `tag`, `contents` and `_name` (v1 let an attribute with one of those names win; this is a deliberate change).
+
 The handler becomes the default action. It is still preceded by the cancelable `before*` event, so `preventDefault()` still suppresses it. The XML attributes are available on `detail` as strings.
 
 ### 10. Content scripts execute in `<head>`, and the original node is removed
@@ -259,7 +261,7 @@ See also [scripts in `update` content still execute](#scripts-inside-update--ins
 
 * The script runs in `<head>`, not at its position in the inserted markup. `document.currentScript.parentNode` is `HEAD`.
 * After the update, `#target.querySelector('script')` finds nothing.
-* Only `src`, `id`, `nonce`, `integrity`, `crossorigin`, `referrerpolicy` and `data-*` attributes are carried to the new element. Anything else (`defer`, `async`, `class`, ...) is not.
+* Only `src`, `integrity`, `crossorigin`, `referrerpolicy` and `data-*` attributes are carried to the new element. Anything else (`id`, `defer`, `async`, `class`, ...) is not, as in v1. The element gets **TDI's** CSP nonce (see below); if TDI has none, a nonce the server put on the script is kept.
 * `type="module"` content scripts are **not executed**. Modules are always deferred, which would break the ordering guarantee. A console warning names the skipped script. Scripts with a non-JavaScript type (`application/json`, templates) are left alone in place.
 
 Before (v1 with jQuery `.html()`, script ran where it sat):
@@ -406,6 +408,8 @@ tdi.start();
 
 Restricts which origins a response may come from. Undefined by default: no check, v1 parity.
 
+**What it covers.** Only the URL of the **XML response** (the request URL and the final URL after redirects). It is *not* a script-source or other resource allowlist: `<script src>` and `<style src>` instructions, `src` of content scripts, `<redirect href>` and `<popup href>` are not checked. Use a Content Security Policy for those.
+
 ```javascript
 import { createTdi } from 'twinstone-tdi';
 const tdi = createTdi({ allowedOrigins: ['https://api.example.com'] });
@@ -425,9 +429,9 @@ An empty `data-allowed-origins=""` means same-origin only. An invalid `data-cont
 
 * Entries are origins with a scheme (`https://api.example.com`). An entry that is not a valid origin warns and never matches.
 * Same-origin always passes without being listed. `[]` means same-origin only.
-* Checked **before** the request, and again against the **final URL after redirects**. A refusal fires `tdi:ajax:error` and rejects.
+* Checked **before** the request, and again against the **final URL after redirects**. A refusal fires `tdi:ajax:error` and rejects. For a click or submit that TDI intercepts, the rejection is also logged as `console.error("TDI: request failed", ...)`; that line appears for any failed delegated request, origin refusals included, and is not a separate problem.
 
-**Limitation, stated plainly.** The allowlist prevents the response from being **applied**. It does **not** prevent the request from being **sent**. If a same-origin endpoint redirects to a disallowed origin, the browser still contacts that origin, with whatever referrer and cookies that implies, and only then is the response discarded. Preventing the contact would need `redirect: 'manual'`, which would break legitimate redirects, so v2 does not do it. Do not treat `allowedOrigins` as a network firewall.
+**Limitation, stated plainly.** The allowlist prevents the response from being **applied**. It does **not** prevent the request from being **sent**. If a same-origin endpoint redirects to a disallowed origin, the browser still contacts that origin, with the referrer that implies (and cookies too if you set `credentials: 'include'`; the default `same-origin` sends none to another origin), and only then is the response discarded. Preventing the contact would need `redirect: 'manual'`, which would break legitimate redirects, so v2 does not do it. Do not treat `allowedOrigins` as a network firewall.
 
 ---
 
@@ -436,7 +440,7 @@ An empty `data-allowed-origins=""` means same-origin only. An invalid `data-cont
 * **No refcounting.** If two overlapping requests share an element (the same trigger, or an overlapping related element), the first to finish removes `loading` while the second is still in flight, and a trigger-group restore can re-enable elements early. v1 behaved the same way.
 * **No timeout.** A stalled connection hangs the promise. Pass a signal: `TDI.send(url, { signal: AbortSignal.timeout(10000) })`. v1 had none either.
 * **`data-trigger-group` now works.** It was broken in v1: it threw a `TypeError` whenever its selector matched anything, so nobody could have depended on it. In v2 it disables every element matched by the selector for the duration of the request, and re-enables only those it actually changed (including on error and abort). This is new behaviour, not a regression.
-* **ESM consumers and the nonce.** A `type="module"` script has a null `document.currentScript`, so an ESM consumer must pass `nonce` to `createTdi` itself; without one, nothing carries a matching nonce and `contentScripts: 'nonce-only'` would skip every content script.
+* **ESM consumers and the nonce.** A `type="module"` script has a null `document.currentScript`, so an ESM consumer must pass `nonce` to `createTdi` itself. Without one, TDI adds no nonce of its own: under `'all'` a content script that already carries a nonce keeps it (and one without runs unnonced, which a nonce-based CSP blocks), and `'nonce-only'` skips every content script.
 * **`popup` is a plain `window.open`.** It runs from the response handler, long after the click lost user activation, so popup blockers will usually block it. This is inherent to doing it asynchronously.
 
 ---

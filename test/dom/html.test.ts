@@ -86,6 +86,26 @@ describe('runContentScripts', () => {
     expect(document.head.querySelector('script')!.getAttribute('nonce')).toBe('abc')
   })
 
+  test("runContentScripts inherits the original script's nonce when TDI has none", async () => {
+    await runContentScripts(parseFragment('<script nonce="srv">1</script>'))
+    expect(document.head.querySelector('script')!.getAttribute('nonce')).toBe('srv')
+  })
+
+  test("runContentScripts prefers TDI's nonce over the original's", async () => {
+    await runContentScripts(parseFragment('<script nonce="srv">1</script>'), { nonce: 'tdi' })
+    expect(document.head.querySelector('script')!.getAttribute('nonce')).toBe('tdi')
+  })
+
+  test('runContentScripts adds no nonce when neither side has one', async () => {
+    await runContentScripts(parseFragment('<script>1</script>'))
+    expect(document.head.querySelector('script')!.hasAttribute('nonce')).toBe(false)
+  })
+
+  test('runContentScripts does not carry id across (v1 parity)', async () => {
+    await runContentScripts(parseFragment('<script id="mine">1</script>'))
+    expect(document.head.querySelector('script')!.hasAttribute('id')).toBe(false)
+  })
+
   test('runContentScripts propagates the nonce to src scripts', async () => {
     const p = runContentScripts(parseFragment('<script src="/a.js"></script>'), { nonce: 'abc' })
     await Promise.resolve()
