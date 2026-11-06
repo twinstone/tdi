@@ -340,4 +340,16 @@ describe('events and results', () => {
 		expect(result.responses.updates).toHaveLength(1)
 		expect(result.responses.updates[0]!.content).toBe('hi')
 	})
+
+	test('exposes the marked URL as detail.options.url on start, end and error', async () => {
+		respond('<html>nope', { status: 200 })
+		const urls: Record<string, unknown> = {}
+		for (const n of names)
+			document.addEventListener(n, (e) => (urls[n] = (e as CustomEvent).detail.options.url), {
+				signal: ctl.signal,
+			})
+		await expect(send('/a?x=1')).rejects.toThrow()
+		for (const n of names) expect(urls[n]).toMatch(/_infuse=1&_ts=\d+/)
+		expect(urls['tdi:ajax:start']).toMatch(/^\/a\?x=1&/)
+	})
 })

@@ -48,12 +48,14 @@ function targetsOf(involved: Element[]): EventTarget[] {
  */
 export async function sendRequest(
 	url: string,
-	options: TdiRequestOptions,
+	callerOptions: TdiRequestOptions,
 	registry: InstructionRegistry,
 	involved: Element[],
 	// Internal: called with the final response URL before the body is read; throws to reject
 	validateResponseUrl?: (url: string) => void,
 ): Promise<TdiResult> {
+	// One shared object for every event; `url` is the marked URL, as in v1
+	const options: TdiRequestOptions = { ...callerOptions }
 	const method = (options.method ?? 'GET').toUpperCase()
 	const isGet = method === 'GET'
 	const { data } = options
@@ -87,6 +89,14 @@ export async function sendRequest(
 	if (options.cache) init.cache = options.cache
 	if (options.redirect) init.redirect = options.redirect
 
+	const markedUrl = (): string =>
+		ajaxifyUrl(data !== undefined && isGet ? withQuery(url, serialize(data)) : url)
+	try {
+		options.url = markedUrl()
+	} catch {
+		// Serialisation failure resurfaces below as an error event
+	}
+
 	const fire = (name: string, targets: EventTarget[], detail: object): void => {
 		for (const t of targets) dispatch(t, name, detail)
 	}
@@ -102,8 +112,7 @@ export async function sendRequest(
 	let response: Response | null = null
 	try {
 		try {
-			const target = data !== undefined && isGet ? withQuery(url, serialize(data)) : url
-			response = await fetch(ajaxifyUrl(target), init)
+			response = await fetch(options.url ?? markedUrl(), init)
 			if (response.url && validateResponseUrl) {
 				try {
 					validateResponseUrl(response.url) // redirects land here

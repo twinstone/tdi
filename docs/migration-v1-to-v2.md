@@ -46,7 +46,7 @@ After (v2):
 ```javascript
 document.addEventListener('tdi:ajax:start', (evt) => {
     const data = evt.detail;
-    console.log(data.options);
+    console.log(data.options.url);
 });
 
 // delegated, with a selector filter
@@ -379,7 +379,7 @@ A `<select multiple>` with its own `data-ajax-url` sends `m[]=a&m[]=c` (jQuery's
 
 ### `sendForm` ignores `options.data`
 
-`TDI.sendForm(form, { data })` discards `data`: the form's own fields are the data. `sendElement` merges your `data`. v1 behaved the same way; v2 documents it.
+`TDI.sendForm(form, { data })` discards `data`: the form's own fields are the data. `sendElement` does not merge: your options replace the element-derived ones wholesale, `data` included. v1 behaved the same way; v2 documents it.
 
 ### A link with no URL sends nothing
 

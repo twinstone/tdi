@@ -22,6 +22,8 @@ export interface TdiRequestOptions {
 	cache?: RequestCache
 	redirect?: RequestRedirect
 	signal?: AbortSignal
+	// Set on event details: the marked URL actually requested (with _infuse and _ts)
+	url?: string
 }
 
 export interface UpdateDetail {
