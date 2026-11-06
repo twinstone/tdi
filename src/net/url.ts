@@ -1,5 +1,8 @@
 const OWN = /^(_infuse|_ts)(=|$)/
 
+/** Origin a request for `url` actually targets: fetch resolves against the base URI, not the location. */
+export const originOf = (url: string): string => new URL(url, document.baseURI).origin
+
 /** Marks a URL so the server answers with TDI XML; `_ts` defeats caching. Other query bytes are left untouched. */
 export function ajaxifyUrl(url: string): string {
 	const hashAt = url.indexOf('#')

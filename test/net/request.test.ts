@@ -44,12 +44,36 @@ afterEach(() => {
 })
 
 describe('headers', () => {
-	test('sends Accept but not X-Requested-With', async () => {
+	test('same-origin sends Accept and X-Requested-With: XMLHttpRequest', async () => {
 		await send('/a')
 		const h = call().init.headers
 		expect(h.get('accept')).toBe('application/xml, text/xml, */*')
+		expect(h.get('x-requested-with')).toBe('XMLHttpRequest')
+		expect([...h.keys()].sort()).toEqual(['accept', 'x-requested-with'])
+	})
+
+	test('cross-origin omits X-Requested-With', async () => {
+		await send('https://other.example/a')
+		const h = call().init.headers
 		expect(h.has('x-requested-with')).toBe(false)
 		expect([...h.keys()]).toEqual(['accept'])
+	})
+
+	test('a caller X-Requested-With wins', async () => {
+		await send('/a', { headers: { 'X-Requested-With': 'custom' } })
+		expect(call().init.headers.get('x-requested-with')).toBe('custom')
+	})
+
+	test('a <base href> on another origin makes a relative URL cross-origin', async () => {
+		const base = document.createElement('base')
+		base.href = 'https://other.example/'
+		document.head.append(base)
+		try {
+			await send('/a')
+			expect([...call().init.headers.keys()]).toEqual(['accept'])
+		} finally {
+			base.remove()
+		}
 	})
 
 	test('a string body sets urlencoded Content-Type', async () => {

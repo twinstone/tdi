@@ -522,7 +522,7 @@ tdi.start();
 
 `options` is a pass-through subset of `RequestInit` (`credentials`, `headers`, `mode`, `cache`, `redirect`, `signal`) plus `method`, `data` (string, plain object or `FormData`, as in v1) and `trigger`. It replaces v1's vague "jQuery.ajax() settings".
 
-Request headers: v2 sends `Accept: application/xml, text/xml, */*` but **not** `X-Requested-With`. `$.ajax` added that one silently, `fetch` does not, and omitting it avoids newly triggering CORS preflights. The server identifies a TDI request by `_infuse=1`, which is unchanged. If your server checks `X-Requested-With`, add it: `headers: { 'X-Requested-With': 'XMLHttpRequest' }`. A POST with string or object `data` is sent as `application/x-www-form-urlencoded; charset=UTF-8`, as in v1.
+Request headers: v2 sends `Accept: application/xml, text/xml, */*` and `X-Requested-With: XMLHttpRequest` on same-origin requests only; it is omitted cross-origin. `$.ajax` did the same, `fetch` does not. Preflights only happen cross-origin, so none is triggered either way, and servers that sniff `X-Requested-With` keep working. "Same-origin" is judged against `document.baseURI`, as `fetch` resolves it. A `headers` entry of your own overrides it. The server also identifies a TDI request by `_infuse=1`, which is unchanged. A POST with string or object `data` is sent as `application/x-www-form-urlencoded; charset=UTF-8`, as in v1.
 
 ### Promises
 

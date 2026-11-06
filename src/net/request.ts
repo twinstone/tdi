@@ -3,7 +3,7 @@ import { dispatch, TdiEvents } from '../events'
 import type { InstructionRegistry } from '../instructions/registry'
 import type { TdiRequestOptions, TdiResult } from '../types'
 import { parseResponse } from './parse'
-import { ajaxifyUrl } from './url'
+import { ajaxifyUrl, originOf } from './url'
 
 const FORM_TYPE = 'application/x-www-form-urlencoded; charset=UTF-8'
 
@@ -69,6 +69,11 @@ export async function sendRequest(
 			body = serialize(data)
 			headers.set('Content-Type', FORM_TYPE)
 		}
+	}
+	try {
+		if (originOf(url) === location.origin) headers.set('X-Requested-With', 'XMLHttpRequest')
+	} catch {
+		// Unparseable URL: fetch rejects it below as an error event
 	}
 	new Headers(options.headers).forEach((v, k) => headers.set(k, v))
 

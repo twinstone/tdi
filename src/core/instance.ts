@@ -2,6 +2,7 @@ import { dispatch, TdiEvents } from '../events'
 import { disableTriggerGroup, involvedElements, setLoading } from '../dom/elements'
 import type { InstructionRegistry } from '../instructions/registry'
 import { sendRequest, toParams } from '../net/request'
+import { originOf } from '../net/url'
 import type { TdiRequestOptions, TdiResult } from '../types'
 import { optionsFromElement } from './options'
 
@@ -32,7 +33,7 @@ export function createSenders(
 
 	function verifyOrigin(url: string): void {
 		if (!allowed) return
-		const origin = new URL(url, document.baseURI).origin // the base fetch resolves against
+		const origin = originOf(url)
 		if (origin === location.origin || allowed.includes(origin)) return
 		throw new Error(`Origin ${origin} is not in allowedOrigins`)
 	}

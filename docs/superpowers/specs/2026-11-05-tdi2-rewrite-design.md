@@ -396,6 +396,12 @@ v1 went through `$.ajax`, which silently added `X-Requested-With: XMLHttpRequest
 the `_infuse=1` query parameter, which is unchanged; dropping `X-Requested-With` avoids
 newly triggering CORS preflights on cross-origin endpoints.
 
+*Refinement, owner-approved:* v2 sends `X-Requested-With: XMLHttpRequest` on same-origin
+requests only (resolved against `document.baseURI`, one shared origin check) and omits it
+cross-origin. Preflights only occur cross-origin, so R1's reasoning stands and is met more
+completely: no preflight, and header-sniffing servers keep working. A caller `headers` entry
+still overrides.
+
 *Author's call, same area:* a POST with a string or object `data` must explicitly set
 `Content-Type: application/x-www-form-urlencoded; charset=UTF-8`. `fetch` defaults a
 string body to `text/plain;charset=UTF-8`, which would stop servers parsing the body — a

@@ -16,7 +16,6 @@ A rewrite: TypeScript, no runtime dependencies (jQuery is gone), `fetch` instead
 * Scripts in `update`/`insert` content run in `<head>`; the original node is removed; `type=module` ones are skipped with a warning.
 * Removed: synchronous requests, the hidden-iframe upload fallback, `rel` as a related-element selector, the `.ajaxlink`/`.ajaxform`/`.ajaxselect` classes, `data-ajax-xhr-fields`, the `loading-target` class (silently), IE support.
 * API flattened: `TDI.Ajax.Request.send` is `TDI.send`, `TDI.Ajax.send` is `TDI.sendElement`, `TDI.Ajax.Request.sendForm` is `TDI.sendForm`, `TDI.Ajax.Request.ajaxifyUrl` is `TDI.ajaxifyUrl`; `TDI.Tools.*` is internal.
-* `X-Requested-With` is no longer sent.
 
 ### Added
 
@@ -24,6 +23,7 @@ A rewrite: TypeScript, no runtime dependencies (jQuery is gone), `fetch` instead
 * `TDI.start()`, `TDI.stop()`, `TDI.registerInstruction()`; `createTdi({ root, contentScripts, allowedOrigins, nonce })`. The classic-script build reads `data-content-scripts` and `data-allowed-origins` (comma-separated) from its own script tag; ESM consumers pass `nonce` explicitly.
 * `send` returns a promise that resolves when every instruction, scripts included, has been applied.
 * `data-ajax-credentials="omit|same-origin|include"`; the `signal` and other `RequestInit` options.
+* `X-Requested-With: XMLHttpRequest` is sent on same-origin requests and omitted cross-origin (no CORS preflight either way); `Accept` is sent as before.
 * `data-trigger-group` now works (it threw a `TypeError` in v1).
 * `tdi:ajax:style` fires for a style deduped by id and for a `<style>` with no `src`; `tdi:ajax:script` fires for a deduped script.
 * Preventing `tdi:ajax:beforeScript` skips only that script; v1 dropped the rest of the chain too.
