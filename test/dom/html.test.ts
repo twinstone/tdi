@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test, vi } from 'vitest'
+import { afterEach, describe, expect, test } from 'vitest'
 import { parseFragment, runContentScripts } from '../../src/dom/html'
 
 // Scripts run in jsdom's own context, not the Node global, so they report through the DOM
@@ -154,13 +154,70 @@ describe('runContentScripts', () => {
 		expect(order()).toBe('after')
 	})
 
-	test('runContentScripts warns about and skips type=module scripts', async () => {
-		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-		const frag = parseFragment('<script type="module" src="/m.js"></script>')
-		await runContentScripts(frag)
-		expect(warn).toHaveBeenCalledWith(expect.stringContaining('/m.js'))
-		expect(document.head.querySelector('script')).toBeNull()
-		warn.mockRestore()
+	test('runContentScripts replays a src type=module script as a module and awaits its load', async () => {
+		let settled = false
+		const p = runContentScripts(
+			parseFragment('<script type="module" src="/m.js" data-k="v"></script>'),
+		).then(() => (settled = true))
+		await Promise.resolve()
+		const el = document.head.querySelector('script')!
+		expect(el.type).toBe('module')
+		expect(el.getAttribute('src')).toBe('/m.js')
+		expect(el.dataset.k).toBe('v')
+		await Promise.resolve()
+		expect(settled).toBe(false)
+		el.dispatchEvent(new Event('load'))
+		await p
+		expect(settled).toBe(true)
+	})
+
+	test('runContentScripts settles on a src module error', async () => {
+		const p = runContentScripts(parseFragment('<script type="module" src="/m.js"></script>'))
+		await Promise.resolve()
+		document.head.querySelector('script')!.dispatchEvent(new Event('error'))
+		await p
+	})
+
+	test('runContentScripts replays an inline type=module script without awaiting it', async () => {
+		await runContentScripts(parseFragment('<script type="module">1</script>'))
+		const el = document.head.querySelector('script')!
+		expect(el.type).toBe('module')
+		expect(el.textContent).toBe('1')
+	})
+
+	test('runContentScripts does not leak type onto classic scripts', async () => {
+		await runContentScripts(parseFragment('<script type="text/javascript">1</script>'))
+		expect(document.head.querySelector('script')!.hasAttribute('type')).toBe(false)
+	})
+
+	test('runContentScripts applies the nonce rules to module scripts', async () => {
+		const own = runContentScripts(
+			parseFragment('<script type="module" nonce="own" src="/a.js"></script>'),
+		)
+		const tdi = runContentScripts(
+			parseFragment('<script type="module" nonce="own" src="/b.js"></script>'),
+			{ nonce: 'tdi' },
+		)
+		await Promise.resolve()
+		const [a, b] = Array.from(document.head.querySelectorAll('script')) as [
+			HTMLScriptElement,
+			HTMLScriptElement,
+		]
+		expect(a.getAttribute('nonce')).toBe('own')
+		expect(b.getAttribute('nonce')).toBe('tdi')
+		a.dispatchEvent(new Event('load'))
+		b.dispatchEvent(new Event('load'))
+		await Promise.all([own, tdi])
+	})
+
+	test("'nonce-only' gates module scripts on the page nonce", async () => {
+		const frag = parseFragment(
+			'<script type="module" nonce="bad">1</script><script type="module" nonce="n1">2</script><script type="module">3</script>',
+		)
+		await runContentScripts(frag, { nonce: 'n1', policy: 'nonce-only' })
+		const els = Array.from(document.head.querySelectorAll('script'))
+		expect(els.map((e) => e.textContent)).toEqual(['2'])
+		expect(els[0]?.type).toBe('module')
 	})
 
 	describe('policy', () => {

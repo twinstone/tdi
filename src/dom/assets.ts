@@ -3,13 +3,16 @@ export interface AssetOptions {
 	nonce?: string
 	// Extra attributes copied verbatim (integrity, crossorigin, data-*, ...)
 	attrs?: Record<string, string>
+	// Scripts only: set type="module" explicitly (`type` is not in the copied attributes)
+	module?: boolean
 }
 
 // Nonce goes on both attribute and property; some browsers need both for CSP
 function applyCommon(
 	el: HTMLScriptElement | HTMLLinkElement,
-	{ id, nonce, attrs }: AssetOptions,
+	{ id, nonce, attrs, module }: AssetOptions,
 ): void {
+	if (module && el instanceof HTMLScriptElement) el.type = 'module'
 	for (const [k, v] of Object.entries(attrs ?? {})) {
 		if (k !== 'src' && k !== 'nonce') el.setAttribute(k, v) // those have dedicated paths
 	}

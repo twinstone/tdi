@@ -326,6 +326,28 @@ Injected scripts carry the TDI nonce. This needs a worked example in the migrati
 even though behaviour is *preserved*, because it is the kind of thing a reader will assume
 changed.
 
+**Amendment (reverses the earlier ruling that `type=module` scripts are skipped).** The
+first design skipped module scripts with a warning, on the assumption that their deferral
+would break script ordering. The project owner then confirmed that production CMS responses
+ship `type="module"` scripts, so skipping would silently break migrating sites. Modules now
+run. The replayed element gets `type="module"` explicitly (`type` is not in the copied
+attribute allowlist); `policy` and nonce rules are unchanged.
+
+Chromium (real browser, dynamically inserted scripts) showed:
+
+- A `src` module fires `load` after its module graph is fetched and synchronously
+  evaluated, and `error` on a 404 or a failed import. Awaiting it therefore orders the
+  chain, the same as a classic script.
+- `load` does not wait for top-level `await`, and still fires when evaluation throws (the
+  error goes to `window.onerror`, not the element).
+- An inline module fires neither `load` nor `error`, even when it throws, and it runs after
+  later classic scripts. It cannot be awaited and is injected without waiting.
+- `async = false` changes none of this for awaited modules; it only forces insertion order
+  among modules that are not awaited, so TDI does not set it.
+
+Consequence: `tdi:ajax:scriptsDone` and `send()` can resolve before an inline module, or
+the top-level-`await` part of a `src` module, has finished.
+
 ### D11 — Tooling
 
 - **Vite** library mode, all three entries from one config. Sourcemaps published.

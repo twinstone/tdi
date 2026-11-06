@@ -30,7 +30,11 @@ function copiedAttrs(el: HTMLScriptElement): Record<string, string> {
 /**
  * Parser-inserted scripts never run, so replay each through a fresh element, in order.
  * Mutates the caller's tree: every replayed script node is removed from `root`.
- * Non-JS types are left in place; type=module is skipped with a warning.
+ * Non-JS types are left in place.
+ * type=module replays as a module. Chromium findings (design doc D10):
+ * - a src module fires `load` once its graph is fetched and synchronously evaluated, `error` on a
+ *   failed fetch, so awaiting it orders the chain; top-level await and a throwing module do not delay `load`
+ * - an inline module fires neither event and runs after later classic scripts, so it cannot be awaited
  */
 export async function runContentScripts(
 	root: ParentNode,
@@ -47,13 +51,14 @@ export async function runScriptsList(
 	const { nonce, policy = 'all' } = opts
 	for (const old of scripts) {
 		const type = scriptType(old)
-		if (type === 'module') {
-			console.warn(
-				`TDI: type=module script skipped in update content (${old.getAttribute('src') || old.id || 'inline'})`,
-			)
+		const isModule = type === 'module'
+		if (
+			!isModule &&
+			type !== '' &&
+			type !== 'text/javascript' &&
+			type !== 'application/javascript'
+		)
 			continue
-		}
-		if (type !== '' && type !== 'text/javascript' && type !== 'application/javascript') continue
 		if (policy === 'nonce-only' && !carriesNonce(old, nonce)) continue
 		const src = old.getAttribute('src')
 		const code = old.textContent ?? ''
@@ -61,6 +66,7 @@ export async function runScriptsList(
 		const assetOpts = {
 			nonce: nonce ?? (old.nonce || old.getAttribute('nonce') || undefined),
 			attrs: copiedAttrs(old),
+			module: isModule,
 		}
 		old.remove() // drop the inert node so nothing can re-run it
 		if (src) await injectScript(src, assetOpts)

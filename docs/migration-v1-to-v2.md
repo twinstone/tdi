@@ -275,7 +275,7 @@ See also [scripts in `update` content still execute](#scripts-inside-update--ins
 - The script runs in `<head>`, not at its position in the inserted markup. `document.currentScript.parentNode` is `HEAD`.
 - After the update, `#target.querySelector('script')` finds nothing.
 - Only `src`, `integrity`, `crossorigin`, `referrerpolicy` and `data-*` attributes are carried to the new element. Anything else (`id`, `defer`, `async`, `class`, ...) is not, as in v1. The element gets **TDI's** CSP nonce (see below); if TDI has none, a nonce the server put on the script is kept.
-- `type="module"` content scripts are **not executed**. Modules are always deferred, which would break the ordering guarantee. A console warning names the skipped script. Scripts with a non-JavaScript type (`application/json`, templates) are left alone in place.
+- `type="module"` content scripts **are executed**, as modules (the replayed element gets `type="module"`; the `policy` gate and nonce rules apply as for classic scripts). A `src` module is awaited like a classic one: the next script starts once it has loaded and its imports have evaluated. Two limits, both from the browser: top-level `await` is not waited for, and an inline module has no `load` event, so it is not awaited and runs after later classic scripts. `tdi:ajax:scriptsDone` and `send()`'s promise can therefore resolve before such a module has finished. Scripts with a non-JavaScript type (`application/json`, templates) are left alone in place.
 
 Before (v1 with jQuery `.html()`, script ran where it sat):
 

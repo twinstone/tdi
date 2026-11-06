@@ -13,7 +13,7 @@ A rewrite: TypeScript, no runtime dependencies (jQuery is gone), `fetch` instead
 * `tdi:ajax:start` no longer carries `xhr`/`settings`; `tdi:ajax:error` carries `response`, `status`, `message` instead of `xhr`/`textStatus`.
 * `tdi:ajax:style` / `stylesDone` fire after the stylesheet loads.
 * Hyphenated custom instructions fire `tdi:ajax:beforeCartBadge`, not `tdi:ajax:beforeCart-badge`.
-* Scripts in `update`/`insert` content run in `<head>`; the original node is removed; `type=module` ones are skipped with a warning.
+* Scripts in `update`/`insert` content run in `<head>`; the original node is removed; `type=module` ones run as modules (a `src` module is awaited, an inline one is not).
 * Removed: synchronous requests, the hidden-iframe upload fallback, `rel` as a related-element selector, the `.ajaxlink`/`.ajaxform`/`.ajaxselect` classes, `data-ajax-xhr-fields`, the `loading-target` class (silently), IE support.
 * API flattened: `TDI.Ajax.Request.send` is `TDI.send`, `TDI.Ajax.send` is `TDI.sendElement`, `TDI.Ajax.Request.sendForm` is `TDI.sendForm`, `TDI.Ajax.Request.ajaxifyUrl` is `TDI.ajaxifyUrl`; `TDI.Tools.*` is internal.
 
