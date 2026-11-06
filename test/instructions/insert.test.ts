@@ -7,177 +7,198 @@ const options = {} as TdiRequestOptions
 
 // Builds an <insert> tag the way the XML parser would
 function tag(attrs: Record<string, string>, body = ''): Element {
-  const el = new DOMParser().parseFromString('<insert/>', 'application/xml').documentElement
-  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v)
-  el.textContent = body
-  return el
+	const el = new DOMParser().parseFromString('<insert/>', 'application/xml').documentElement
+	for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v)
+	el.textContent = body
+	return el
 }
 
 async function run(
-  attrs: Record<string, string>,
-  body = '',
-  scripts?: { nonce?: string; policy?: 'all' | 'nonce-only' },
+	attrs: Record<string, string>,
+	body = '',
+	scripts?: { nonce?: string; policy?: 'all' | 'nonce-only' },
 ): Promise<InsertDetail> {
-  const detail = buildInsertDetail(tag(attrs, body), options)
-  if (!detail) throw new Error('no target')
-  await applyInsert(detail, scripts)
-  return detail
+	const detail = buildInsertDetail(tag(attrs, body), options)
+	if (!detail) throw new Error('no target')
+	await applyInsert(detail, scripts)
+	return detail
 }
 
 afterEach(() => {
-  document.body.innerHTML = ''
-  document.head.innerHTML = ''
-  delete document.documentElement.dataset.ran
+	document.body.innerHTML = ''
+	document.head.innerHTML = ''
+	delete document.documentElement.dataset.ran
 })
 
 describe('insert', () => {
-  test('inserts after the target by default', async () => {
-    document.body.innerHTML = '<div id="a"></div><i></i>'
-    await run({ target: 'a' }, '<b></b>')
-    expect(document.body.innerHTML).toBe('<div id="a"></div><b></b><i></i>')
-  })
+	test('inserts after the target by default', async () => {
+		document.body.innerHTML = '<div id="a"></div><i></i>'
+		await run({ target: 'a' }, '<b></b>')
+		expect(document.body.innerHTML).toBe('<div id="a"></div><b></b><i></i>')
+	})
 
-  test('position="before" inserts before the target', async () => {
-    document.body.innerHTML = '<i></i><div id="a"></div>'
-    await run({ target: 'a', position: 'before' }, '<b></b>')
-    expect(document.body.innerHTML).toBe('<i></i><b></b><div id="a"></div>')
-  })
+	test('position="before" inserts before the target', async () => {
+		document.body.innerHTML = '<i></i><div id="a"></div>'
+		await run({ target: 'a', position: 'before' }, '<b></b>')
+		expect(document.body.innerHTML).toBe('<i></i><b></b><div id="a"></div>')
+	})
 
-  test('an unknown position falls back to after', async () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    const detail = await run({ target: 'a', position: 'sideways' }, '<b></b>')
-    expect(document.body.innerHTML).toBe('<div id="a"></div><b></b>')
-    expect(detail.position).toBe('sideways')
-  })
+	test('an unknown position falls back to after', async () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		const detail = await run({ target: 'a', position: 'sideways' }, '<b></b>')
+		expect(document.body.innerHTML).toBe('<div id="a"></div><b></b>')
+		expect(detail.position).toBe('sideways')
+	})
 
-  test('inserted_node carries the inserted elements', async () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    const detail = await run({ target: 'a' }, '<b id="x"></b>text<u id="y"></u>')
-    expect(detail.inserted_node).toEqual([document.getElementById('x'), document.getElementById('y')])
-    expect(detail.inserted_node![0]!.isConnected).toBe(true)
-  })
+	test('inserted_node carries the inserted elements', async () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		const detail = await run({ target: 'a' }, '<b id="x"></b>text<u id="y"></u>')
+		expect(detail.inserted_node).toEqual([
+			document.getElementById('x'),
+			document.getElementById('y'),
+		])
+		expect(detail.inserted_node![0]!.isConnected).toBe(true)
+	})
 
-  test('inserted_node is absent before apply', () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    expect(buildInsertDetail(tag({ target: 'a' }, '<b></b>'), options)!.inserted_node).toBeUndefined()
-  })
+	test('inserted_node is absent before apply', () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		expect(
+			buildInsertDetail(tag({ target: 'a' }, '<b></b>'), options)!.inserted_node,
+		).toBeUndefined()
+	})
 
-  test('a missing target is skipped without throwing', () => {
-    expect(buildInsertDetail(tag({ target: 'nope' }, 'x'), options)).toBeNull()
-    expect(buildInsertDetail(tag({ selector: '.nope' }, 'x'), options)).toBeNull()
-  })
+	test('a missing target is skipped without throwing', () => {
+		expect(buildInsertDetail(tag({ target: 'nope' }, 'x'), options)).toBeNull()
+		expect(buildInsertDetail(tag({ selector: '.nope' }, 'x'), options)).toBeNull()
+	})
 
-  test('an invalid selector throws', () => {
-    expect(() => buildInsertDetail(tag({ selector: '[[' }, 'x'), options)).toThrow()
-  })
+	test('an invalid selector throws', () => {
+		expect(() => buildInsertDetail(tag({ selector: '[[' }, 'x'), options)).toThrow()
+	})
 
-  test('selector takes precedence over target', async () => {
-    document.body.innerHTML = '<div id="a"></div><div class="s"></div>'
-    await run({ target: 'a', selector: '.s' }, '<b></b>')
-    expect(document.body.innerHTML).toBe('<div id="a"></div><div class="s"></div><b></b>')
-  })
+	test('selector takes precedence over target', async () => {
+		document.body.innerHTML = '<div id="a"></div><div class="s"></div>'
+		await run({ target: 'a', selector: '.s' }, '<b></b>')
+		expect(document.body.innerHTML).toBe('<div id="a"></div><div class="s"></div><b></b>')
+	})
 
-  test('many targets each get their own copy and inserted_node holds all', async () => {
-    document.body.innerHTML = '<p class="s"></p><p class="s"></p>'
-    const detail = await run({ selector: '.s' }, '<em></em>')
-    expect(document.body.innerHTML).toBe('<p class="s"></p><em></em><p class="s"></p><em></em>')
-    expect(detail.inserted_node).toHaveLength(2)
-    expect(new Set(detail.inserted_node).size).toBe(2)
-    expect(detail.inserted_node!.every((e) => e.isConnected)).toBe(true)
-  })
+	test('many targets each get their own copy and inserted_node holds all', async () => {
+		document.body.innerHTML = '<p class="s"></p><p class="s"></p>'
+		const detail = await run({ selector: '.s' }, '<em></em>')
+		expect(document.body.innerHTML).toBe('<p class="s"></p><em></em><p class="s"></p><em></em>')
+		expect(detail.inserted_node).toHaveLength(2)
+		expect(new Set(detail.inserted_node).size).toBe(2)
+		expect(detail.inserted_node!.every((e) => e.isConnected)).toBe(true)
+	})
 
-  test('scripts in insert content execute after insertion', async () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    await run(
-      { target: 'a' },
-      '<span id="n"></span><script>document.documentElement.dataset.ran = String(!!document.getElementById("n"))</script>',
-    )
-    expect(document.documentElement.dataset.ran).toBe('true')
-  })
+	test('scripts in insert content execute after insertion', async () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		await run(
+			{ target: 'a' },
+			'<span id="n"></span><script>document.documentElement.dataset.ran = String(!!document.getElementById("n"))</script>',
+		)
+		expect(document.documentElement.dataset.ran).toBe('true')
+	})
 
-  test('only the new content scripts run, once per target copy', async () => {
-    const mark = '<script>document.documentElement.dataset.ran=(document.documentElement.dataset.ran||"")+"n"</script>'
-    document.body.innerHTML = '<p class="s"></p><p class="s"></p>'
-    document.body.append(document.createElement('div'))
-    document.body.lastElementChild!.innerHTML = mark.replace('"n"', '"page"')
-    await run({ selector: '.s' }, mark)
-    expect(document.documentElement.dataset.ran).toBe('nn')
-  })
+	test('only the new content scripts run, once per target copy', async () => {
+		const mark =
+			'<script>document.documentElement.dataset.ran=(document.documentElement.dataset.ran||"")+"n"</script>'
+		document.body.innerHTML = '<p class="s"></p><p class="s"></p>'
+		document.body.append(document.createElement('div'))
+		document.body.lastElementChild!.innerHTML = mark.replace('"n"', '"page"')
+		await run({ selector: '.s' }, mark)
+		expect(document.documentElement.dataset.ran).toBe('nn')
+	})
 
-  test('the contentScripts policy and nonce are passed through', async () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    const d1 = buildInsertDetail(tag({ target: 'a' }, '<script>document.documentElement.dataset.ran = "1"</script>'), options)!
-    await applyInsert(d1, { policy: 'nonce-only' })
-    expect(document.documentElement.dataset.ran).toBeUndefined()
-    await run({ target: 'a' }, '<script>1</script>', { nonce: 'n1' })
-    expect(document.head.querySelector('script')!.getAttribute('nonce')).toBe('n1')
-  })
+	test('the contentScripts policy and nonce are passed through', async () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		const d1 = buildInsertDetail(
+			tag({ target: 'a' }, '<script>document.documentElement.dataset.ran = "1"</script>'),
+			options,
+		)!
+		await applyInsert(d1, { policy: 'nonce-only' })
+		expect(document.documentElement.dataset.ran).toBeUndefined()
+		await run({ target: 'a' }, '<script>1</script>', { nonce: 'n1' })
+		expect(document.head.querySelector('script')!.getAttribute('nonce')).toBe('n1')
+	})
 
-  test('fires tdi:ajax:insert on the target after applying', async () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    let seen: { target: EventTarget | null; html: string; detail: InsertDetail } | undefined
-    document.addEventListener(
-      'tdi:ajax:insert',
-      (e) => {
-        seen = { target: e.target, html: document.body.innerHTML, detail: (e as CustomEvent).detail }
-      },
-      { once: true },
-    )
-    const detail = await run({ target: 'a' }, '<b></b>')
-    expect(seen!.target).toBe(document.getElementById('a'))
-    expect(seen!.html).toBe('<div id="a"></div><b></b>')
-    expect(seen!.detail).toBe(detail)
-    expect(detail.inserted_node).toHaveLength(1)
-  })
+	test('fires tdi:ajax:insert on the target after applying', async () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		let seen: { target: EventTarget | null; html: string; detail: InsertDetail } | undefined
+		document.addEventListener(
+			'tdi:ajax:insert',
+			(e) => {
+				seen = {
+					target: e.target,
+					html: document.body.innerHTML,
+					detail: (e as CustomEvent).detail,
+				}
+			},
+			{ once: true },
+		)
+		const detail = await run({ target: 'a' }, '<b></b>')
+		expect(seen!.target).toBe(document.getElementById('a'))
+		expect(seen!.html).toBe('<div id="a"></div><b></b>')
+		expect(seen!.detail).toBe(detail)
+		expect(detail.inserted_node).toHaveLength(1)
+	})
 
-  // v1 triggers insert on the whole target set (unlike update, which fires on the first only)
-  test('the insert event fires once on every target', async () => {
-    document.body.innerHTML = '<p class="s" id="p1"></p><p class="s" id="p2"></p><p class="s" id="p3"></p>'
-    const seen: EventTarget[] = []
-    const fn = (e: Event) => seen.push(e.target!)
-    document.addEventListener('tdi:ajax:insert', fn)
-    await run({ selector: '.s' }, '<b></b>')
-    document.removeEventListener('tdi:ajax:insert', fn)
-    // Identity, not structure: toEqual on DOM nodes would pass for three fires on one node
-    expect(seen).toHaveLength(3)
-    ;['p1', 'p2', 'p3'].forEach((id, i) => expect(seen[i]).toBe(document.getElementById(id)))
-  })
+	// v1 triggers insert on the whole target set (unlike update, which fires on the first only)
+	test('the insert event fires once on every target', async () => {
+		document.body.innerHTML =
+			'<p class="s" id="p1"></p><p class="s" id="p2"></p><p class="s" id="p3"></p>'
+		const seen: EventTarget[] = []
+		const fn = (e: Event) => seen.push(e.target!)
+		document.addEventListener('tdi:ajax:insert', fn)
+		await run({ selector: '.s' }, '<b></b>')
+		document.removeEventListener('tdi:ajax:insert', fn)
+		// Identity, not structure: toEqual on DOM nodes would pass for three fires on one node
+		expect(seen).toHaveLength(3)
+		;['p1', 'p2', 'p3'].forEach((id, i) => expect(seen[i]).toBe(document.getElementById(id)))
+	})
 
-  test('the event fires after scripts have run', async () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    const flags: (string | undefined)[] = []
-    const fn = () => flags.push(document.documentElement.dataset.ran)
-    document.addEventListener('tdi:ajax:insert', fn)
-    await run({ target: 'a' }, '<script>document.documentElement.dataset.ran = "yes"</script>')
-    document.removeEventListener('tdi:ajax:insert', fn)
-    expect(flags).toEqual(["yes"])
-  })
+	test('the event fires after scripts have run', async () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		const flags: (string | undefined)[] = []
+		const fn = () => flags.push(document.documentElement.dataset.ran)
+		document.addEventListener('tdi:ajax:insert', fn)
+		await run({ target: 'a' }, '<script>document.documentElement.dataset.ran = "yes"</script>')
+		document.removeEventListener('tdi:ajax:insert', fn)
+		expect(flags).toEqual(['yes'])
+	})
 
-  test('position="before" with many targets inserts a copy before each', async () => {
-    document.body.innerHTML = '<p class="s"></p><p class="s"></p>'
-    const detail = await run({ selector: '.s', position: 'before' }, '<em></em>')
-    expect(document.body.innerHTML).toBe('<em></em><p class="s"></p><em></em><p class="s"></p>')
-    expect(detail.inserted_node).toHaveLength(2)
-  })
+	test('position="before" with many targets inserts a copy before each', async () => {
+		document.body.innerHTML = '<p class="s"></p><p class="s"></p>'
+		const detail = await run({ selector: '.s', position: 'before' }, '<em></em>')
+		expect(document.body.innerHTML).toBe('<em></em><p class="s"></p><em></em><p class="s"></p>')
+		expect(detail.inserted_node).toHaveLength(2)
+	})
 
-  test('inserted_node excludes executed scripts', async () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    const detail = await run({ target: 'a' }, '<b id="x"></b><script>1</script>')
-    expect(detail.inserted_node).toHaveLength(1)
-    expect(detail.inserted_node![0]).toBe(document.getElementById('x'))
-  })
+	test('inserted_node excludes executed scripts', async () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		const detail = await run({ target: 'a' }, '<b id="x"></b><script>1</script>')
+		expect(detail.inserted_node).toHaveLength(1)
+		expect(detail.inserted_node![0]).toBe(document.getElementById('x'))
+	})
 
-  test('script-only content leaves inserted_node empty', async () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    const detail = await run({ target: 'a' }, '<script>1</script>')
-    expect(detail.inserted_node).toEqual([])
-  })
+	test('script-only content leaves inserted_node empty', async () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		const detail = await run({ target: 'a' }, '<script>1</script>')
+		expect(detail.inserted_node).toEqual([])
+	})
 
-  test('detail carries v1 keys', () => {
-    document.body.innerHTML = '<div id="a"></div>'
-    const t = tag({ target: 'a', position: 'before' }, ' <b></b> ')
-    const d = buildInsertDetail(t, options)!
-    expect(d).toMatchObject({ target_id: 'a', selector: null, content: '<b></b>', position: 'before', options, tag: t })
-    expect(d.target).toEqual([document.getElementById('a')])
-  })
+	test('detail carries v1 keys', () => {
+		document.body.innerHTML = '<div id="a"></div>'
+		const t = tag({ target: 'a', position: 'before' }, ' <b></b> ')
+		const d = buildInsertDetail(t, options)!
+		expect(d).toMatchObject({
+			target_id: 'a',
+			selector: null,
+			content: '<b></b>',
+			position: 'before',
+			options,
+			tag: t,
+		})
+		expect(d.target).toEqual([document.getElementById('a')])
+	})
 })
