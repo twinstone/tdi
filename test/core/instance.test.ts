@@ -1,0 +1,250 @@
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import { createSenders } from '../../src/core/instance'
+import { createDefaultRegistry } from '../../src/core/pipeline'
+import { createTdi, type Tdi } from '../../src/index'
+
+const OK = '<response><status>OK</status></response>'
+let fetchMock: ReturnType<typeof vi.fn>
+let started: Tdi[] = []
+
+const html = (h: string): void => {
+  document.body.innerHTML = h
+}
+const $ = <T extends Element>(sel: string): T => document.querySelector(sel) as T
+const tick = (): Promise<void> => new Promise((r) => setTimeout(r, 0))
+const make = (...args: Parameters<typeof createTdi>): Tdi => {
+  const t = createTdi(...args)
+  started.push(t)
+  return t
+}
+const respond = (body: string): void => {
+  fetchMock.mockImplementation(async () => new Response(`<response><status>OK</status>${body}</response>`))
+}
+
+beforeEach(() => {
+  fetchMock = vi.fn(async () => new Response(OK, { status: 200 }))
+  vi.stubGlobal('fetch', fetchMock)
+})
+afterEach(() => {
+  started.forEach((t) => t.stop())
+  started = []
+  vi.unstubAllGlobals()
+  vi.restoreAllMocks()
+  vi.resetModules()
+  delete (window as unknown as Record<string, unknown>).TDI
+  delete document.documentElement.dataset.ran
+  document.body.innerHTML = ''
+  document.head.innerHTML = ''
+})
+
+describe('public surface', () => {
+  test('exposes the D4 methods', () => {
+    const t = make()
+    for (const m of ['start', 'stop', 'send', 'sendElement', 'sendForm', 'ajaxifyUrl', 'registerInstruction'] as const) {
+      expect(typeof t[m], m).toBe('function')
+    }
+  })
+
+  test('send always sends and resolves to a TdiResult', async () => {
+    const t = make()
+    const res = await t.send('/u')
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(String(fetchMock.mock.calls[0]![0])).toContain('/u')
+    expect(res!.response).toBeInstanceOf(Response)
+    expect(res.responses).toBeDefined()
+  })
+
+  test('ajaxifyUrl is the url helper', () => {
+    expect(make().ajaxifyUrl('/a')).toMatch(/^\/a\?_infuse=1&_ts=\d+$/)
+  })
+
+  test('registerInstruction on the instance reaches the pipeline', async () => {
+    const t = make()
+    const handler = vi.fn()
+    t.registerInstruction('cart-badge', handler)
+    respond('<cart-badge count="3">x</cart-badge>')
+    await t.send('/u')
+    expect(handler).toHaveBeenCalledTimes(1)
+    expect(handler.mock.calls[0]![0]).toMatchObject({ _name: 'cart-badge', count: '3' })
+  })
+
+  test('registerInstruction is per instance', async () => {
+    const a = make()
+    const b = make()
+    const handler = vi.fn()
+    a.registerInstruction('only-a', handler)
+    respond('<only-a>x</only-a>')
+    await b.send('/u')
+    expect(handler).not.toHaveBeenCalled()
+  })
+})
+
+describe('stop aborts live requests', () => {
+  const hang = (): AbortSignal[] => {
+    const signals: AbortSignal[] = []
+    fetchMock.mockImplementation((_u: string, init: RequestInit) => {
+      signals.push(init.signal!)
+      return new Promise((_res, rej) => init.signal!.addEventListener('abort', () => rej(init.signal!.reason)))
+    })
+    return signals
+  }
+
+  test('stop aborts send, sendElement and sendForm in flight', async () => {
+    const signals = hang()
+    html('<a id="a" href="/a"></a><form id="f" action="/f"></form>')
+    const t = make()
+    const ps = [t.send('/s'), t.sendElement($('#a')), t.sendForm($('#f'))].map((p) => p!.catch((e) => e))
+    await tick()
+    expect(signals).toHaveLength(3)
+    expect(signals.some((s) => s.aborted)).toBe(false)
+    t.stop()
+    const errs = await Promise.all(ps)
+    expect(signals.every((s) => s.aborted)).toBe(true)
+    expect(errs.map((e) => e.name)).toEqual(['AbortError', 'AbortError', 'AbortError'])
+  })
+
+  test('stop only aborts its own instance', async () => {
+    const signals = hang()
+    const a = make()
+    const b = make()
+    const pa = a.send('/a').catch((e) => e)
+    const pb = b.send('/b').catch((e) => e)
+    await tick()
+    a.stop()
+    expect((await pa).name).toBe('AbortError')
+    expect(signals.map((s) => s.aborted)).toEqual([true, false])
+    b.stop()
+    await pb
+  })
+
+  test('a finished request leaves nothing behind for stop to abort', async () => {
+    const t = make()
+    await t.send('/u')
+    const abort = vi.spyOn(AbortController.prototype, 'abort')
+    t.stop()
+    expect(abort).not.toHaveBeenCalled()
+  })
+})
+
+describe('contentScripts validation', () => {
+  const run = async (opt: unknown): Promise<boolean> => {
+    html('<div id="t"></div>')
+    respond('<update target="t"><![CDATA[<script>document.documentElement.dataset.ran = "1"</script>]]></update>')
+    await make({ contentScripts: opt as 'all' }).send('/u')
+    const ran = document.documentElement.dataset.ran === '1'
+    delete document.documentElement.dataset.ran
+    return ran
+  }
+
+  test('all is the default and runs content scripts without warning', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(await run(undefined)).toBe(true)
+    expect(await run('all')).toBe(true)
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  test('nonce-only is accepted without warning and blocks un-nonced scripts', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(await run('nonce-only')).toBe(false)
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  test('an unrecognised value warns naming it and falls back to the strict policy', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(await run('nonce_only')).toBe(false)
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(String(warn.mock.calls[0]![0])).toContain('nonce_only')
+  })
+})
+
+describe('nonce', () => {
+  test('is read once from document.currentScript at module initialisation', async () => {
+    const fake = { nonce: 'n-1', getAttribute: () => null }
+    Object.defineProperty(document, 'currentScript', { configurable: true, get: () => fake })
+    vi.resetModules()
+    const mod = await import('../../src/index')
+    fake.nonce = 'n-2' // later changes, and a different currentScript, must not leak in
+    Object.defineProperty(document, 'currentScript', { configurable: true, get: () => null })
+    const t = mod.createTdi({ contentScripts: 'nonce-only' })
+    html('<div id="t"></div>')
+    respond('<script>window.__ran = true</script>')
+    await t.send('/u')
+    const node = document.querySelector('script')!
+    expect(node.getAttribute('nonce')).toBe('n-1')
+    delete (document as unknown as Record<string, unknown>).currentScript
+  })
+})
+
+describe('entry points', () => {
+  test('the global entry sets window.TDI and auto-starts', async () => {
+    vi.resetModules()
+    await import('../../src/global')
+    const tdi = (window as unknown as { TDI: Tdi }).TDI
+    expect(typeof tdi.sendElement).toBe('function')
+    html('<a class="tdi" href="/x">a</a>')
+    $('a').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    await tick()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    tdi.stop()
+  })
+
+  test('the auto entry exports a started instance', async () => {
+    vi.resetModules()
+    const { tdi } = await import('../../src/auto')
+    html('<a class="tdi" href="/x">a</a>')
+    $('a').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    await tick()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    tdi.stop()
+  })
+
+  test('createTdi alone does not bind anything until start', async () => {
+    make()
+    html('<a class="tdi" href="/x">a</a>')
+    $('a').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    await tick()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('overlapping requests (v1 parity: no refcounting)', () => {
+  const pending = (): (() => void)[] => {
+    const releases: (() => void)[] = []
+    fetchMock.mockImplementation(() => new Promise((res) => releases.push(() => res(new Response(OK)))))
+    return releases
+  }
+
+  test('the first completion clears loading from an element a second request still involves', async () => {
+    const releases = pending()
+    html('<a id="a" href="/a" data-related-element="#r"></a><a id="b" href="/b" data-related-element="#r"></a><div id="r"></div>')
+    const s = createSenders(createDefaultRegistry(), new Set())
+    const first = s.sendElement($('#a'))
+    const second = s.sendElement($('#b'))
+    await tick()
+    expect($('#r').classList.contains('loading')).toBe(true)
+    releases[0]!()
+    await first
+    expect($('#r').classList.contains('loading')).toBe(false) // known limitation: #b's request is still in flight
+    expect($('#b').classList.contains('loading')).toBe(true)
+    releases[1]!()
+    await second
+    expect($('#b').classList.contains('loading')).toBe(false)
+  })
+
+  test('the first completion re-enables a shared trigger group while the second is in flight', async () => {
+    const releases = pending()
+    html('<a id="a" href="/a" data-trigger-group="button"></a><a id="b" href="/b" data-trigger-group="button"></a><button id="g"></button>')
+    const s = createSenders(createDefaultRegistry(), new Set())
+    const first = s.sendElement($('#a'))
+    await tick()
+    expect($<HTMLButtonElement>('#g').disabled).toBe(true)
+    const second = s.sendElement($('#b'))
+    await tick()
+    releases[0]!()
+    await first
+    expect($<HTMLButtonElement>('#g').disabled).toBe(false) // known limitation: restored although #b is still in flight
+    releases[1]!()
+    await second
+    expect($<HTMLButtonElement>('#g').disabled).toBe(false)
+  })
+})

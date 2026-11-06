@@ -5,6 +5,8 @@ import type { TdiRequestOptions, TdiResult } from '../types'
 import { optionsFromElement } from './options'
 
 export interface Senders {
+  /** Always sends; unlike the element senders it has no confirm or suppression step. */
+  send(url: string, options?: TdiRequestOptions): Promise<TdiResult>
   /** Resolves to null when nothing was sent (suppressed element or declined confirm). */
   sendElement(el: Element, options?: TdiRequestOptions): Promise<TdiResult | null>
   sendForm(form: HTMLFormElement, options?: TdiRequestOptions): Promise<TdiResult | null>
@@ -23,20 +25,32 @@ export function createSenders(registry: InstructionRegistry, live: Set<AbortCont
     const involved = [...new Set([...involvedElements(el), ...extra])]
     const restore = disableTriggerGroup(el)
 
+    try {
+      setLoading(involved, true)
+      return await tracked(url, options, involved)
+    } finally {
+      setLoading(involved, false)
+      restore()
+    }
+  }
+
+  async function tracked(url: string, options: TdiRequestOptions, involved: Element[]): Promise<TdiResult> {
     const controller = new AbortController()
     const { signal } = options
     const onAbort = (): void => controller.abort(signal!.reason)
     try {
       signal?.addEventListener('abort', onAbort, { once: true })
       live.add(controller)
-      setLoading(involved, true)
       return await sendRequest(url, { ...options, signal: controller.signal }, registry, involved)
     } finally {
       live.delete(controller)
       signal?.removeEventListener('abort', onAbort)
-      setLoading(involved, false)
-      restore()
     }
+  }
+
+  async function send(url: string, options: TdiRequestOptions = {}): Promise<TdiResult> {
+    options.signal?.throwIfAborted()
+    return tracked(url, options, [])
   }
 
   function declined({ suppressed, confirm }: { suppressed: boolean; confirm?: string }): boolean {
@@ -70,5 +84,5 @@ export function createSenders(registry: InstructionRegistry, live: Set<AbortCont
     return run(el, { ...rest, ...options }, url)
   }
 
-  return { sendElement, sendForm }
+  return { send, sendElement, sendForm }
 }
