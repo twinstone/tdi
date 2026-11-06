@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test} from 'vitest'
+import { afterEach, describe, expect, test } from 'vitest'
 import { disableTriggerGroup, setLoading } from '../../src/dom/elements'
 
 afterEach(() => {
