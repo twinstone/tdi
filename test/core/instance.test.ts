@@ -290,12 +290,13 @@ describe('allowedOrigins', () => {
   })
 
   describe('redirects', () => {
-    const redirected = (finalUrl: string): { text: ReturnType<typeof vi.fn> } => {
+    const redirected = (finalUrl: string): { text: ReturnType<typeof vi.fn>; cancel: ReturnType<typeof vi.fn> } => {
       const res = new Response('<response><status>OK</status><update target="t">HACKED</update></response>')
       Object.defineProperty(res, 'url', { value: finalUrl })
       const text = vi.spyOn(res, 'text')
+      const cancel = vi.spyOn(res.body!, 'cancel')
       fetchMock.mockImplementation(async () => res)
-      return { text }
+      return { text, cancel }
     }
 
     test('a redirect from an allowed origin to an unlisted one rejects before the body is read or applied', async () => {
@@ -304,11 +305,12 @@ describe('allowedOrigins', () => {
       const updates = vi.fn()
       document.addEventListener('tdi:ajax:update', updates)
       cleanup.push(() => document.removeEventListener('tdi:ajax:update', updates))
-      const { text } = redirected('https://evil.example/y')
+      const { text, cancel } = redirected('https://evil.example/y')
       const t = make({ allowedOrigins: ['https://cdn.example'] })
       await expect(t.send('https://cdn.example/x')).rejects.toThrow(/evil\.example/)
       expect(fetchMock).toHaveBeenCalledTimes(1)
       expect(text).not.toHaveBeenCalled()
+      expect(cancel).toHaveBeenCalledTimes(1)
       expect($('#t').textContent).toBe('safe')
       expect(updates).not.toHaveBeenCalled()
       expect(seen).toHaveLength(1)
@@ -344,6 +346,27 @@ describe('allowedOrigins', () => {
     make({ allowedOrigins: ['https://ok.example', 'cdn.example'] })
     expect(warn).toHaveBeenCalledTimes(1)
     expect(String(warn.mock.calls[0]![0])).toContain('cdn.example')
+  })
+
+  test('an unparseable request URL fires the error with the real message', async () => {
+    const seen = errors()
+    await expect(make({ allowedOrigins: [] }).send('http://')).rejects.toThrow(TypeError)
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(seen).toHaveLength(1)
+    expect(seen[0]!.detail.message).toMatch(/^Invalid URL/)
+  })
+
+  test('error details never carry internals: no validateOrigin on start or error', async () => {
+    const details: Record<string, unknown>[] = []
+    const fn = (e: Event): void => void details.push((e as CustomEvent).detail.options)
+    for (const n of ['tdi:ajax:start', 'tdi:ajax:error']) document.addEventListener(n, fn)
+    cleanup.push(() => ['tdi:ajax:start', 'tdi:ajax:error'].forEach((n) => document.removeEventListener(n, fn)))
+    const res = new Response('<response><status>OK</status></response>')
+    Object.defineProperty(res, 'url', { value: 'https://evil.example/y' })
+    fetchMock.mockImplementation(async () => res)
+    await expect(make({ allowedOrigins: ['https://cdn.example'] }).send('https://cdn.example/x')).rejects.toThrow()
+    expect(details.length).toBe(2) // start and error
+    for (const o of details) expect(Object.keys(o)).not.toContain('validateOrigin')
   })
 
   test('a valid-only list does not warn', () => {

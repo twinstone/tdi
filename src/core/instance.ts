@@ -32,15 +32,16 @@ export function createSenders(
     if (!allowed) return
     const origin = new URL(url, document.baseURI).origin // the base fetch resolves against
     if (origin === location.origin || allowed.includes(origin)) return
-    throw new Error(`TDI: Origin ${origin} is not in allowedOrigins`)
+    throw new Error(`Origin ${origin} is not in allowedOrigins`)
   }
 
-  // Pre-flight, before any state change: fires tdi:ajax:error and rejects
+  // Pre-flight, before any state change. The event carries no response (none exists) and fires on the
+  // trigger; the post-flight failure goes through sendRequest instead, with the real response, on document.
   function checkOrigin(url: string, target: EventTarget, options: TdiRequestOptions): void {
     try {
       verifyOrigin(url)
     } catch (err) {
-      dispatch(target, TdiEvents.error, { response: null, status: 0, message: (err as Error).message.slice(5), options })
+      dispatch(target, TdiEvents.error, { response: null, status: 0, message: (err as Error).message, options })
       throw err
     }
   }
@@ -73,7 +74,7 @@ export function createSenders(
     try {
       signal?.addEventListener('abort', onAbort, { once: true })
       live.add(controller)
-      return await sendRequest(url, { ...options, signal: controller.signal, validateOrigin: verifyOrigin }, registry, involved)
+      return await sendRequest(url, { ...options, signal: controller.signal }, registry, involved, verifyOrigin)
     } finally {
       live.delete(controller)
       signal?.removeEventListener('abort', onAbort)
