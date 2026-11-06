@@ -545,7 +545,7 @@ tdi.start()
 | `TDI.Tools.getScript`, `TDI.Tools.getStyle` | internal (they only served the `script` and `style` instructions)     |
 | (none)                                      | `TDI.start()`, `TDI.stop()`, `TDI.registerInstruction(name, handler)` |
 
-`options` is a pass-through subset of `RequestInit` (`credentials`, `headers`, `mode`, `cache`, `redirect`, `signal`) plus `method`, `data` (string, plain object or `FormData`, as in v1) and `trigger`. Event details additionally carry `url` and `involvedElms`, set by TDI. It replaces v1's vague "jQuery.ajax() settings".
+`options` is a pass-through subset of `RequestInit` (`credentials`, `headers`, `mode`, `cache`, `redirect`, `signal`) plus `method`, `data` (string, plain object or `FormData`, as in v1) and `trigger`. `url` and `involvedElms` are not options you can pass: TDI sets them, you only read them on event details, and a value you pass is ignored. It replaces v1's vague "jQuery.ajax() settings".
 
 Request headers: v2 sends `Accept: application/xml, text/xml, */*` and `X-Requested-With: XMLHttpRequest` on same-origin requests only; it is omitted cross-origin. `$.ajax` did the same, `fetch` does not. Preflights only happen cross-origin, so none is triggered either way, and servers that sniff `X-Requested-With` keep working. "Same-origin" is judged against `document.baseURI`, as `fetch` resolves it. A `headers` entry of your own overrides it. The server also identifies a TDI request by `_infuse=1`, which is unchanged. A POST with string or object `data` is sent as `application/x-www-form-urlencoded; charset=UTF-8`, as in v1.
 

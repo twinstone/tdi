@@ -22,9 +22,11 @@ export interface TdiRequestOptions {
 	cache?: RequestCache
 	redirect?: RequestRedirect
 	signal?: AbortSignal
-	// Set on event details: the marked URL actually requested (with _infuse and _ts)
+	// Set by TDI, read on event details: the marked URL actually requested (with _infuse and _ts).
+	// A value passed by a caller is ignored.
 	url?: string
-	// Set on event details: the trigger, its related elements and the clicked submitter
+	// Set by TDI, read on event details: the trigger, its related elements and the clicked submitter.
+	// A value passed by a caller is ignored.
 	involvedElms?: Element[]
 }
 
