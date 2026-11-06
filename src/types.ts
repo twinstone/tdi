@@ -24,6 +24,8 @@ export interface TdiRequestOptions {
 	signal?: AbortSignal
 	// Set on event details: the marked URL actually requested (with _infuse and _ts)
 	url?: string
+	// Set on event details: the trigger, its related elements and the clicked submitter
+	involvedElms?: Element[]
 }
 
 export interface UpdateDetail {

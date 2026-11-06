@@ -90,7 +90,7 @@ export function createSenders(
 			live.add(controller)
 			return await sendRequest(
 				url,
-				{ ...options, signal: controller.signal },
+				{ ...options, signal: controller.signal, involvedElms: involved }, // as in v1
 				registry,
 				involved,
 				verifyOrigin,

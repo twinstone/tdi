@@ -641,3 +641,66 @@ describe('overlapping requests (v1 parity: no refcounting)', () => {
 		expect($<HTMLButtonElement>('#g').disabled).toBe(false)
 	})
 })
+
+describe('detail.options.involvedElms', () => {
+	let ctl = new AbortController()
+	beforeEach(() => {
+		ctl = new AbortController()
+	})
+	afterEach(() => ctl.abort())
+
+	const capture = (): { start: Element[]; loading: Element[]; all: Element[][] } => {
+		const out = { start: [] as Element[], loading: [] as Element[], all: [] as Element[][] }
+		const fn = (e: Event): void => {
+			const d = (e as CustomEvent).detail.options.involvedElms
+			out.all.push(d)
+			if (e.type === 'tdi:ajax:start') {
+				out.start = d
+				out.loading = [...document.querySelectorAll('.loading')]
+			}
+		}
+		for (const n of ['tdi:ajax:start', 'tdi:ajax:end', 'tdi:ajax:done']) {
+			document.addEventListener(n, fn, { signal: ctl.signal })
+		}
+		return out
+	}
+
+	test('start carries the trigger', async () => {
+		html('<a id="a" href="/x"></a>')
+		const seen = capture()
+		await make().sendElement($('#a'))
+		expect(seen.start).toEqual([$('#a')])
+	})
+
+	test('includes data-related-element targets and matches the loading set', async () => {
+		html('<a id="a" href="/x" data-related-element="#r"></a><div id="r"></div>')
+		const seen = capture()
+		await make().sendElement($('#a'))
+		expect(seen.start).toEqual(expect.arrayContaining([$('#a'), $('#r')]))
+		expect(seen.start).toHaveLength(2)
+		expect(new Set(seen.loading)).toEqual(new Set(seen.start))
+	})
+
+	test('a form submitted by a button includes that button, in the loading set', async () => {
+		html(
+			'<form id="f" action="/x"><button id="b1" type="submit"></button><button id="b2" type="submit"></button></form>',
+		)
+		const seen = capture()
+		await make().sendForm($('#f'), { trigger: $('#b2') })
+		expect(seen.start).toContain($('#b2'))
+		expect(seen.start).not.toContain($('#b1'))
+		expect(seen.loading).toContain($('#b2'))
+		expect(new Set(seen.loading)).toEqual(new Set(seen.start))
+	})
+
+	test('every event of the request sees the set, and the caller options are not mutated', async () => {
+		html('<a id="a" href="/x"></a>')
+		const opts = {}
+		await make().send('/x', opts)
+		expect(opts).toEqual({})
+		const seen = capture()
+		await make().sendElement($('#a'))
+		expect(seen.all.length).toBeGreaterThan(1)
+		for (const d of seen.all) expect(d).toContain($('#a'))
+	})
+})
