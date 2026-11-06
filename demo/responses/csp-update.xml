@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<response>
+    <status>OK</status>
+    <update target="c-target"><![CDATA[
+        <p>Content scripts replayed:</p>
+        <script nonce="tdi-demo-nonce">window.cspLog('content script WITH the page nonce ran')</script>
+        <script>window.cspLog('content script WITHOUT a nonce ran')</script>
+    ]]></update>
+    <script src="responses/csp-script.js" id="csp-script">window.cspLog('inline body of a script instruction ran')</script>
+</response>

@@ -82,8 +82,8 @@ The new content, which is going to be used for the target HTML element update. T
 
 ## Events - Javascript API
 
-* [tdi:ajax:beforeUpdate](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:beforeUpdate)
-* [tdi:ajax:update](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:update)
+* `tdi:ajax:beforeUpdate`
+* `tdi:ajax:update`
 
 # Examples
 

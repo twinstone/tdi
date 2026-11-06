@@ -2,10 +2,11 @@
 
 Download the external Javascript or invoke the inline Javascript or both.
 
-* `<script>` tags are processed in the order they appear in the TDI XML response. If the previous `<script>` tag is external (has `src` attribute), the next one waits for the external script to be **downloaded (not executed)**<sup>*</sup>.
-* in case the `<script>` part contains both external and inline scripts, the inline script is going to be invoked after the external one is **downloaded (not executed)**<sup>*</sup>.
+* `<script>` tags are processed strictly in the order they appear in the TDI XML response. If the previous `<script>` tag is external (has `src` attribute), the next one waits until that script has **loaded and run**. A script that fails to load does not stall the chain.
+* in case the `<script>` part contains both external and inline scripts, the inline script is invoked after the external one has loaded and run.
+* `<script>` instructions run after all `update` and `insert` instructions of the response have been applied (and after any scripts embedded in their content).
 
-> \* TDI cannot guarantee that the previous script will be executed and ready for the next one (see [issue #15](https://github.com/twinstone/tdi/issues/15)). It only guarantees, that the script was downloaded before the next one is processed. When a script depends on some previous one, it should check whether it is already available itself.
+> TDI 1 only guaranteed that the previous script had been *downloaded*, not executed (see [issue #15](https://github.com/twinstone/tdi/issues/15)), so scripts had to check for their dependencies themselves. TDI 2 waits for execution. Existing defensive checks are harmless.
 
 ## Syntax
 
@@ -43,8 +44,8 @@ Inline Javascript code. It is invoked in the **window scope**!
 
 ## Events - Javascript API
 
-* [tdi:ajax:beforeScript](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:beforeScript)
-* [tdi:ajax:script](http://twinstone.github.io/tdi/docs/api/TDI.Ajax.Response.html#.event:tdi:ajax:script)
+* `tdi:ajax:beforeScript`
+* `tdi:ajax:script`
 
 # Examples
 
@@ -55,7 +56,7 @@ Inline Javascript code. It is invoked in the **window scope**!
 
 ```xml
 <script src="modules/message-panel.js">
-    // at this point, message-panel.js is guaranteed to be downloaded, but it might not have been executed yet
+    // at this point, message-panel.js has been loaded and executed
     showMessagePanel( 'An internal error occured.', 'ERROR' );
 </script>
 ```

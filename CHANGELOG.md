@@ -36,7 +36,7 @@ A rewrite: TypeScript, no runtime dependencies (jQuery is gone), `fetch` instead
 
 ### Known limitations
 
-No refcounting of the `loading` class across overlapping requests; no built-in timeout (use `AbortSignal.timeout`); `allowedOrigins` prevents a response being applied, not the request being sent; ESM consumers cannot supply a CSP nonce. Details in the migration guide.
+No refcounting of the `loading` class across overlapping requests; no built-in timeout (use `AbortSignal.timeout`); `allowedOrigins` prevents a response being applied, not the request being sent; ESM consumers cannot supply a CSP nonce, and the global build cannot be given options, so `contentScripts: 'nonce-only'` is not reachable with a nonce from any shipped entry point. Details in the migration guide.
 
 ## 1.x
 
