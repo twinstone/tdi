@@ -21,7 +21,7 @@ A rewrite: TypeScript, no runtime dependencies (jQuery is gone), `fetch` instead
 ### Added
 
 * Entry points `twinstone-tdi` (ESM), `twinstone-tdi/auto`, `twinstone-tdi/global`; `dist/tdi.global.min.js` replaces `tdi-bundle.min.js`.
-* `TDI.start()`, `TDI.stop()`, `TDI.registerInstruction()`; `createTdi({ root, contentScripts, allowedOrigins })`.
+* `TDI.start()`, `TDI.stop()`, `TDI.registerInstruction()`; `createTdi({ root, contentScripts, allowedOrigins, nonce })`. The classic-script build reads `data-content-scripts` and `data-allowed-origins` (comma-separated) from its own script tag; ESM consumers pass `nonce` explicitly.
 * `send` returns a promise that resolves when every instruction, scripts included, has been applied.
 * `data-ajax-credentials="omit|same-origin|include"`; the `signal` and other `RequestInit` options.
 * `data-trigger-group` now works (it threw a `TypeError` in v1).
@@ -36,7 +36,7 @@ A rewrite: TypeScript, no runtime dependencies (jQuery is gone), `fetch` instead
 
 ### Known limitations
 
-No refcounting of the `loading` class across overlapping requests; no built-in timeout (use `AbortSignal.timeout`); `allowedOrigins` prevents a response being applied, not the request being sent; ESM consumers cannot supply a CSP nonce, and the global build cannot be given options, so `contentScripts: 'nonce-only'` is not reachable with a nonce from any shipped entry point. Details in the migration guide.
+No refcounting of the `loading` class across overlapping requests; no built-in timeout (use `AbortSignal.timeout`); `allowedOrigins` prevents a response being applied, not the request being sent; `tdi/auto` takes no options, so ESM consumers needing `'nonce-only'` or `allowedOrigins` must use `createTdi` and pass `nonce`. Details in the migration guide.
 
 ## 1.x
 

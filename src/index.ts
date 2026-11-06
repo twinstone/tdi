@@ -31,7 +31,7 @@ function validPolicy(value: unknown): ContentScriptPolicy {
 
 export function createTdi(options: TdiOptions = {}): Tdi {
   const policy = validPolicy(options.contentScripts)
-  const registry = createDefaultRegistry({ nonce: NONCE, policy })
+  const registry = createDefaultRegistry({ nonce: options.nonce ?? NONCE, policy })
   const live = new Set<AbortController>()
   const senders = createSenders(registry, live, options.allowedOrigins)
   let unbind: (() => void) | null = null

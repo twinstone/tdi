@@ -16,8 +16,8 @@
 <h1>TDI 2 CSP demo</h1>
 <p>Page CSP: <code>script-src 'nonce-tdi-demo-nonce'</code>. Choose the content-script policy:
 <a href="?policy=all">all</a> | <a href="?policy=nonce-only">nonce-only</a> | <a href="?policy=bogus">invalid value</a>.
-The global build cannot take options, so this page patches the <code>createTdi()</code> call in <code>dist/tdi.global.js</code>
-and runs it as a nonce'd inline script. Serve the repo root over HTTP; run <code>npm run build</code> first.</p>
+The page loads the unmodified <code>dist/tdi.global.min.js</code> with <code>nonce</code> and <code>data-content-scripts</code>
+on its script tag. Serve the repo root over HTTP; run <code>npm run build</code> first.</p>
 <p><a class="tdi" href="responses/csp-update.xml" id="go">send request</a></p>
 <div id="c-target">target</div>
 <h2>Template probe (before insertion)</h2>
@@ -37,15 +37,14 @@ and runs it as a nonce'd inline script. Serve the repo root over HTTP; run <code
   document.getElementById('probe').textContent = [...tpl.content.querySelectorAll('script')].map((s) =>
     'getAttribute("nonce")=' + JSON.stringify(s.getAttribute('nonce')) + '  .nonce=' + JSON.stringify(s.nonce)).join('\n')
 
-  // Load the global build as a nonce'd inline script so document.currentScript carries the nonce
-  fetch('../dist/tdi.global.js').then((r) => r.text()).then((code) => {
-    const s = document.createElement('script')
-    s.setAttribute('nonce', NONCE)
-    s.nonce = NONCE
-    s.textContent = code.replace('createTdi();', 'createTdi({ contentScripts: ' + JSON.stringify(policy) + ' });')
-    document.head.appendChild(s)
-    window.cspLog('TDI loaded, policy requested: ' + policy)
-  })
+  // The unmodified global build, configured through its own script tag (nonce and data-* attributes)
+  const tag = document.createElement('script')
+  tag.src = '../dist/tdi.global.min.js'
+  tag.setAttribute('nonce', NONCE)
+  tag.nonce = NONCE
+  tag.setAttribute('data-content-scripts', policy)
+  tag.onload = () => window.cspLog('TDI loaded, data-content-scripts=' + policy)
+  document.head.appendChild(tag)
 </script>
 </body>
 </html>

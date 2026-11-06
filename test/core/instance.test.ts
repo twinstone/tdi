@@ -176,6 +176,114 @@ describe('nonce', () => {
   })
 })
 
+describe('nonce option', () => {
+  const withScript = (attrs: Record<string, string>, nonce?: string): (() => void) => {
+    const fake = { nonce: nonce ?? '', getAttribute: (n: string) => attrs[n] ?? null }
+    Object.defineProperty(document, 'currentScript', { configurable: true, get: () => fake })
+    return () => delete (document as unknown as Record<string, unknown>).currentScript
+  }
+  const injectedNonce = async (opts: Parameters<typeof createTdi>[0]): Promise<string | null> => {
+    vi.resetModules()
+    const mod = await import('../../src/index')
+    html('<div id="t"></div>')
+    respond('<script>window.__x = 1</script>')
+    await mod.createTdi(opts).send('/u')
+    return document.querySelector('script')!.getAttribute('nonce')
+  }
+
+  test('createTdi({ nonce }) is used for injected scripts', async () => {
+    const restore = withScript({}) // no currentScript nonce at all, like an ESM consumer
+    expect(await injectedNonce({ nonce: 'from-option' })).toBe('from-option')
+    restore()
+  })
+
+  test('the option wins over document.currentScript', async () => {
+    const restore = withScript({}, 'from-script')
+    expect(await injectedNonce({ nonce: 'from-option' })).toBe('from-option')
+    restore()
+  })
+
+  test('document.currentScript is the fallback when the option is absent', async () => {
+    const restore = withScript({}, 'from-script')
+    expect(await injectedNonce({})).toBe('from-script')
+    restore()
+  })
+
+  test('nonce-only works for an ESM consumer that passes the nonce, and refuses scripts without it', async () => {
+    vi.resetModules()
+    const mod = await import('../../src/index')
+    const t = mod.createTdi({ contentScripts: 'nonce-only', nonce: 'n' })
+    html('<div id="t"></div>')
+    respond('<update target="t"><![CDATA[<script nonce="n">document.documentElement.dataset.a = "1"</script><script>document.documentElement.dataset.b = "1"</script>]]></update>')
+    await t.send('/u')
+    expect(document.documentElement.dataset.a).toBe('1')
+    expect(document.documentElement.dataset.b).toBeUndefined()
+    delete document.documentElement.dataset.a
+  })
+})
+
+describe('global entry configuration from its script tag', () => {
+  const load = async (attrs: Record<string, string>, nonce = ''): Promise<Tdi> => {
+    const fake = { nonce, getAttribute: (n: string) => attrs[n] ?? null }
+    Object.defineProperty(document, 'currentScript', { configurable: true, get: () => fake })
+    vi.resetModules()
+    await import('../../src/global')
+    delete (document as unknown as Record<string, unknown>).currentScript
+    const tdi = (window as unknown as { TDI: Tdi }).TDI
+    started.push(tdi)
+    return tdi
+  }
+  const ranContentScript = async (tdi: Tdi): Promise<boolean> => {
+    html('<div id="t"></div>')
+    respond('<update target="t"><![CDATA[<script>document.documentElement.dataset.g = "1"</script>]]></update>')
+    await tdi.send('/u')
+    const ran = document.documentElement.dataset.g === '1'
+    delete document.documentElement.dataset.g
+    return ran
+  }
+
+  test('without data attributes the defaults apply (all scripts run, no origin check)', async () => {
+    const tdi = await load({})
+    expect(await ranContentScript(tdi)).toBe(true)
+    respond('')
+    await expect(tdi.send('https://elsewhere.example/x')).resolves.toBeDefined()
+  })
+
+  test('data-content-scripts reaches the pipeline', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const tdi = await load({ 'data-content-scripts': 'nonce-only' }, 'n')
+    expect(await ranContentScript(tdi)).toBe(false)
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  test('an invalid data-content-scripts warns and falls back to nonce-only', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const tdi = await load({ 'data-content-scripts': 'nonce_only' }, 'n')
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(String(warn.mock.calls[0]![0])).toContain('nonce_only')
+    expect(await ranContentScript(tdi)).toBe(false)
+  })
+
+  test('data-allowed-origins is a comma-separated list; same-origin always passes', async () => {
+    const tdi = await load({ 'data-allowed-origins': 'https://a.example, https://b.example' })
+    respond('')
+    await expect(tdi.send('/same-origin')).resolves.toBeDefined()
+    await expect(tdi.send('https://a.example/x')).resolves.toBeDefined()
+    await expect(tdi.send('https://c.example/x')).rejects.toThrow('not in allowedOrigins')
+  })
+
+  test('an empty data-allowed-origins means same-origin only', async () => {
+    const tdi = await load({ 'data-allowed-origins': '' })
+    await expect(tdi.send('https://a.example/x')).rejects.toThrow('not in allowedOrigins')
+  })
+
+  test('an unparseable origin entry warns', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    await load({ 'data-allowed-origins': 'api.example.com' })
+    expect(String(warn.mock.calls[0]![0])).toContain('api.example.com')
+  })
+})
+
 describe('entry points', () => {
   test('the global entry sets window.TDI and auto-starts', async () => {
     vi.resetModules()

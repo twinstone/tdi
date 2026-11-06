@@ -8,6 +8,8 @@ export interface TdiOptions {
   contentScripts?: ContentScriptPolicy
   // Undefined means no check; same-origin is always allowed
   allowedOrigins?: string[]
+  // CSP nonce for injected scripts and styles; defaults to the one on TDI's own classic script tag
+  nonce?: string
 }
 
 export interface TdiRequestOptions {

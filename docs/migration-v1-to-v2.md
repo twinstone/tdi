@@ -373,7 +373,7 @@ empties `#results`. v1's changelog (1.5.3) claims an empty update is ignored, an
 
 ## New options
 
-Both go to `createTdi`; the global build creates its instance with defaults.
+Both can be set from `createTdi({ ... })` (ESM) or, for the classic-script build, from `data-*` attributes on its own script tag. `createTdi` also takes `nonce` (see below).
 
 ### `contentScripts: 'all' | 'nonce-only'`
 
@@ -382,6 +382,25 @@ Controls which scripts found in `update`/`insert` content are replayed.
 * `'all'` (default): v1 parity.
 * `'nonce-only'`: only scripts that already carry the page nonce are replayed; others are skipped silently.
 * **Any other value logs a warning and falls back to `'nonce-only'`.** This is fail-closed on purpose: nobody types `'all'` by mistake (it is the free default), so a bad value is far more likely a typo of a restrictive setting, and widening the policy on a typo would be the unsafe way to fail.
+
+Switching it on, per entry point:
+
+```html
+<!-- Classic script: the build reads its own script tag -->
+<script src="/js/tdi.global.min.js" nonce="r4nd0m" data-content-scripts="nonce-only"></script>
+```
+
+```javascript
+// ESM: pass the nonce explicitly, a module script has no currentScript
+import { createTdi } from 'twinstone-tdi';
+const tdi = createTdi({ contentScripts: 'nonce-only', nonce: document.querySelector('meta[name=csp-nonce]').content });
+tdi.start();
+```
+
+`tdi/auto` takes no options (it always uses the defaults); use `createTdi` if you need `'nonce-only'` or `allowedOrigins` with ESM.
+
+`nonce` is the CSP nonce TDI puts on every script and style it injects. When absent, TDI falls back to the nonce on its own classic `<script>` tag (`document.currentScript`); an ESM consumer has none, so it must pass one. `'nonce-only'` replays a content script only if it already carries that nonce. This was verified in a real browser under an enforcing CSP in Chromium only; Firefox and Safari have not been tested.
+
 
 ### `allowedOrigins: string[]`
 
@@ -392,6 +411,17 @@ import { createTdi } from 'twinstone-tdi';
 const tdi = createTdi({ allowedOrigins: ['https://api.example.com'] });
 tdi.start();
 ```
+
+From the classic-script build, use a comma-separated attribute on its script tag:
+
+```html
+<script src="/js/tdi.global.min.js"
+        nonce="r4nd0m"
+        data-content-scripts="nonce-only"
+        data-allowed-origins="https://api.example.com,https://cdn.example.com"></script>
+```
+
+An empty `data-allowed-origins=""` means same-origin only. An invalid `data-content-scripts` value, or an origin entry without a scheme, logs the same warning as the programmatic option.
 
 * Entries are origins with a scheme (`https://api.example.com`). An entry that is not a valid origin warns and never matches.
 * Same-origin always passes without being listed. `[]` means same-origin only.
@@ -406,7 +436,7 @@ tdi.start();
 * **No refcounting.** If two overlapping requests share an element (the same trigger, or an overlapping related element), the first to finish removes `loading` while the second is still in flight, and a trigger-group restore can re-enable elements early. v1 behaved the same way.
 * **No timeout.** A stalled connection hangs the promise. Pass a signal: `TDI.send(url, { signal: AbortSignal.timeout(10000) })`. v1 had none either.
 * **`data-trigger-group` now works.** It was broken in v1: it threw a `TypeError` whenever its selector matched anything, so nobody could have depended on it. In v2 it disables every element matched by the selector for the duration of the request, and re-enables only those it actually changed (including on error and abort). This is new behaviour, not a regression.
-* **ESM consumers and the nonce.** TDI reads the CSP nonce from `document.currentScript` at load time. A `type="module"` script has a null `currentScript`, so the nonce is undefined and an ESM consumer cannot currently supply one. That makes `contentScripts: 'nonce-only'` unusable from the ESM entry points (nothing carries a matching nonce, so every content script is skipped). The global build does read the nonce, but it creates its instance with default options, so it always uses `'all'`. Today, therefore, no shipped entry point can run with `'nonce-only'` and a working nonce at the same time; treat the option as not yet usable.
+* **ESM consumers and the nonce.** A `type="module"` script has a null `document.currentScript`, so an ESM consumer must pass `nonce` to `createTdi` itself; without one, nothing carries a matching nonce and `contentScripts: 'nonce-only'` would skip every content script.
 * **`popup` is a plain `window.open`.** It runs from the response handler, long after the click lost user activation, so popup blockers will usually block it. This is inherent to doing it asynchronously.
 
 ---
@@ -434,6 +464,7 @@ After (jQuery only if *your own* code still uses it):
 
 ```html
 <script src="tdi.global.min.js"></script>
+<!-- optional, see "New options": nonce="..." data-content-scripts="nonce-only" data-allowed-origins="https://api.example.com" -->
 <script>
     TDI.registerInstruction('cart-badge', (d) => { /* ... */ });
 </script>

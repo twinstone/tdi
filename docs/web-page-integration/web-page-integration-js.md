@@ -6,6 +6,16 @@ In case it is not possible to use TDI elements the usual way or it is required t
 * **ESM, one line:** `import 'twinstone-tdi/auto'` creates and starts an instance. Import `{ tdi }` from it if you need the object: `import { tdi } from 'twinstone-tdi/auto'`.
 * **ESM, explicit:** `import { createTdi } from 'twinstone-tdi'`, then `const tdi = createTdi(options); tdi.start();`.
 
+The classic-script build takes its options from its own script tag: `data-content-scripts`, `data-allowed-origins` (comma-separated) and `nonce`:
+
+```html
+<script src="/js/tdi.global.min.js" nonce="r4nd0m"
+        data-content-scripts="nonce-only"
+        data-allowed-origins="https://api.example.com"></script>
+```
+
+`tdi/auto` takes no options; use `createTdi` when you need them from ESM.
+
 The examples below use `TDI`. TypeScript types ship with the package (`dist/index.d.ts`).
 
 Upgrading from v1? See the [migration guide](../migration-v1-to-v2.md).
@@ -21,6 +31,7 @@ API is separated into two parts:
 |---|---|
 | `root` | `Document` or `Element` whose clicks and submits TDI intercepts. Default `document`. It scopes **event delegation only**; instruction targets resolve against the whole document. |
 | `contentScripts` | `'all'` (default) or `'nonce-only'`: which scripts inside `update`/`insert` content are executed. An invalid value warns and falls back to `'nonce-only'`. |
+| `nonce` | CSP nonce for scripts and styles TDI injects. Default: the nonce of TDI's own classic `<script>` tag. An ESM consumer has no such tag and must pass it. |
 | `allowedOrigins` | Origins a response may come from (e.g. `['https://api.example.com']`). Undefined: no check. Same-origin always passes; `[]` means same-origin only. Checked before the request and against the final URL after redirects. It prevents the response being **applied**, not the request being **sent**. |
 
 ## API methods
