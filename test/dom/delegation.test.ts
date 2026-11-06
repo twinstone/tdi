@@ -156,7 +156,7 @@ describe('submits', () => {
 describe('fields', () => {
 	test('change on select.tdi submits its form when it has no data-ajax-url', async () => {
 		html(
-			'<form action="/f"><select class="tdi" name="s"><option value="a">a</option><option value="b" selected>b</option></select></form>',
+			'<form class="tdi" action="/f"><select class="tdi" name="s"><option value="a">a</option><option value="b" selected>b</option></select></form>',
 		)
 		const forms: unknown[] = []
 		listen('tdi:ajax:beforeFormSubmit', (e) => forms.push((e as CustomEvent).detail.form))
@@ -165,6 +165,22 @@ describe('fields', () => {
 		expect(urls()).toHaveLength(1)
 		expect(urls()[0]).toContain('/f?s=b')
 		expect(forms).toEqual([$('form')])
+	})
+
+	test('change on a field in a non-TDI form submits the form natively, with no AJAX request', async () => {
+		html(
+			'<form action="/f"><select class="tdi" name="s"><option value="b">b</option></select></form>',
+		)
+		window.removeEventListener('submit', record) // it would cancel the submit event
+		const submitted = vi.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation(() => {})
+		try {
+			change($('select'))
+			await tick()
+			expect(submitted).toHaveBeenCalledTimes(1)
+			expect(fetchMock).not.toHaveBeenCalled()
+		} finally {
+			submitted.mockRestore()
+		}
 	})
 
 	test('change on a field with data-ajax-url sends the field itself, not the form', async () => {
@@ -182,7 +198,7 @@ describe('fields', () => {
 
 	test('change on a radio.infuse is handled', async () => {
 		html(
-			'<form action="/f"><input type="radio" class="infuse" name="r" value="1" checked></form>',
+			'<form class="tdi" action="/f"><input type="radio" class="infuse" name="r" value="1" checked></form>',
 		)
 		change($('input'))
 		await tick()
@@ -190,7 +206,9 @@ describe('fields', () => {
 	})
 
 	test('Enter in input[type=text].tdi sends the form once and prevents default; other keys do nothing', async () => {
-		html('<form action="/f"><input type="text" class="tdi" name="q" value="v"></form>')
+		html(
+			'<form class="tdi" action="/f"><input type="text" class="tdi" name="q" value="v"></form>',
+		)
 		expect(keydown($('input'), 'a').defaultPrevented).toBe(false)
 		await tick()
 		expect(fetchMock).not.toHaveBeenCalled()

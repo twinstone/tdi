@@ -223,6 +223,8 @@ document.addEventListener('tdi:ajax:style', (evt) => {
 });
 ```
 
+**`<style>` with no `src`.** v1 fired nothing for it. v2 fires `tdi:ajax:style` (and `beforeStyle`) with `style_src` null and `style_node` **undefined**: there is nothing to load. The same guard as above applies.
+
 **Script deduped by id.** A `<script src id>` whose `id` is already present was a genuine v1 bug: the response **hung forever** and fired nothing at all, not even `scriptsDone` or `done`, so any later instruction was never applied. v2 skips the download, runs the inline body if there is one, and fires `tdi:ajax:script`. There is nothing to migrate; if you worked around the hang, you can remove the workaround.
 
 ### 9. Hyphenated custom instructions
@@ -276,6 +278,10 @@ Before (v1 with jQuery `.html()`, script ran where it sat):
 After: the same markup works. If your script located itself through its position (`document.currentScript.previousElementSibling`, `$('script:last').prev()`), give the element an id and look it up by id instead.
 
 ---
+
+### 11. Preventing `beforeScript` skips one script, not the rest
+
+In v1, calling `preventDefault()` on `tdi:ajax:beforeScript` ended the whole chain: every later `<script>` instruction in the response was dropped as well. In v2 it skips only that script; the others still run, in order, and `scriptsDone` and `done` still fire. If you relied on one veto to stop the rest, veto each script (or check `evt.detail.script_src`) explicitly.
 
 ## `loading-target` is gone, and nothing will tell you
 
@@ -362,6 +368,18 @@ Worked example. Server response:
 Result: `#cal` is in the page, `calendar.js` loads, then the inline script runs, in document order, after the content is in the DOM. The script elements carry the page's CSP nonce. `send()`'s promise and `tdi:ajax:scriptsDone` wait for them. They do **not** fire `tdi:ajax:script` and are **not** in the `scripts` array of the `done` payload, because those belong to `<script>` protocol instructions; content scripts are content. See also [break 10](#10-content-scripts-execute-in-head-and-the-original-node-is-removed) for where they run and what is carried across.
 
 Content scripts run before the response's own `<script>` instructions, as in v1.
+
+### A `.tdi` field in a non-TDI form submits natively
+
+A `select`, checkbox, radio or text input marked `tdi` with no `data-ajax-url` stands in for its form. In v1 that called `$(form).submit()`, so when the form itself was **not** marked `tdi` the browser navigated normally. v2 keeps that: the form's `submit` event fires, and unless it is cancelled the form is submitted natively. Only a `tdi` form is submitted by AJAX.
+
+### `sendForm` ignores `options.data`
+
+`TDI.sendForm(form, { data })` discards `data`: the form's own fields are the data. `sendElement` merges your `data`. v1 behaved the same way; v2 documents it.
+
+### A link with no URL sends nothing
+
+`<a class="tdi">` with neither `href` nor `data-ajax-url` used to resolve to an empty URL (v1 threw). v2 sends nothing, and `TDI.sendElement` resolves to `null`.
 
 ### An empty `<update>` still clears its target
 

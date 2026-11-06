@@ -10,7 +10,9 @@ function applyCommon(
 	el: HTMLScriptElement | HTMLLinkElement,
 	{ id, nonce, attrs }: AssetOptions,
 ): void {
-	for (const [k, v] of Object.entries(attrs ?? {})) el.setAttribute(k, v)
+	for (const [k, v] of Object.entries(attrs ?? {})) {
+		if (k !== 'src' && k !== 'nonce') el.setAttribute(k, v) // those have dedicated paths
+	}
 	if (id) el.id = id
 	if (nonce) {
 		el.setAttribute('nonce', nonce)

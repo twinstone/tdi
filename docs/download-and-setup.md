@@ -5,7 +5,7 @@ TDI 2 has no dependencies. Coming from TDI 1? Read the [migration guide](migrati
 ## Download
 
 * **npm:** `npm install twinstone-tdi`
-* **Classic script:** take `dist/tdi.global.min.js` from the npm package, or from the [latest release](https://github.com/twinstone/tdi/releases/latest) on GitHub. It replaces v1's `tdi-bundle.min.js`.
+* **Classic script:** take `dist/tdi.global.min.js` from the npm package, or load it from a CDN that serves npm, e.g. `https://unpkg.com/twinstone-tdi` or `https://cdn.jsdelivr.net/npm/twinstone-tdi` (both resolve to that file). It replaces v1's `tdi-bundle.min.js`.
 
 ## Setup
 

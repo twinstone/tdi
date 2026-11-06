@@ -146,8 +146,11 @@ describe('runContentScripts', () => {
 		// jsdom reports the uncaught error on window; swallow it so vitest does not flag it
 		const swallow = (e: Event) => e.preventDefault()
 		window.addEventListener('error', swallow)
-		await runContentScripts(frag)
-		window.removeEventListener('error', swallow)
+		try {
+			await runContentScripts(frag)
+		} finally {
+			window.removeEventListener('error', swallow)
+		}
 		expect(order()).toBe('after')
 	})
 

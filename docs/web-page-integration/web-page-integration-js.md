@@ -54,7 +54,7 @@ API is separated into two parts:
 | Option | Meaning |
 |---|---|
 | `method` | HTTP method. Default `GET` |
-| `data` | String, plain object or `FormData`. Query string for GET, body otherwise |
+| `data` | String, plain object or `FormData`. Query string for GET, body otherwise. Honoured by `send` and `sendElement`; `sendForm` ignores it, because the form's own fields are the data |
 | `trigger` | The DOM `Element` that is considered the source of the request |
 | `headers` | Extra headers. Merged over the defaults (`Accept`; `Content-Type` for string/object bodies) |
 | `credentials`, `mode`, `cache`, `redirect` | Passed to `fetch` unchanged. `credentials` defaults to `same-origin` |

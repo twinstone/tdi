@@ -6,9 +6,12 @@
   "type": "module",
   "sideEffects": [
     "./dist/auto.js",
-    "./dist/tdi.global.js"
+    "./dist/tdi.global.js",
+    "./dist/tdi.global.min.js"
   ],
   "main": "./dist/tdi.js",
+  "unpkg": "./dist/tdi.global.min.js",
+  "jsdelivr": "./dist/tdi.global.min.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -22,7 +25,8 @@
     "./global": "./dist/tdi.global.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE.txt"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -30,6 +34,8 @@
     "test": "vitest run",
     "build": "vite build && tsc -p tsconfig.build.json",
     "size": "size-limit",
+    "format": "prettier --write src test",
+    "format:check": "prettier --check src test",
     "prepare": "npm run build"
   },
   "repository": {

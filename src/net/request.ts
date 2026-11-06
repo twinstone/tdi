@@ -7,13 +7,15 @@ import { ajaxifyUrl } from './url'
 
 const FORM_TYPE = 'application/x-www-form-urlencoded; charset=UTF-8'
 
-const toParams = (data: Record<string, unknown> | FormData): URLSearchParams => {
+export const toParams = (data: Record<string, unknown> | FormData): URLSearchParams => {
 	const params = new URLSearchParams()
 	const entries = data instanceof FormData ? data.entries() : Object.entries(data)
 	for (const [k, v] of entries) {
 		if (v instanceof Blob)
 			throw new TypeError(`Cannot serialise a file ("${k}") into a query string; use POST`)
-		params.append(k, v == null ? '' : String(v))
+		// An array (multiple select) becomes one entry per value
+		for (const item of Array.isArray(v) ? v : [v])
+			params.append(k, item == null ? '' : String(item))
 	}
 	return params
 }
@@ -41,7 +43,7 @@ function targetsOf(involved: Element[]): EventTarget[] {
  * The internal AbortController is an implementation detail: it links `options.signal` and detects aborts during the body read.
  * Cancellation requires the caller to supply `options.signal`; without one the request cannot be cancelled.
  * No deadline by design: callers can pass `AbortSignal.timeout(ms)`.
- * Data values are stringified: nested objects/arrays are not supported, and a File in a GET FormData rejects.
+ * Data values are stringified: nested objects are not supported, and an array becomes one entry per item; a File in a GET FormData rejects.
  */
 export async function sendRequest(
 	url: string,

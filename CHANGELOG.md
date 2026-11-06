@@ -25,10 +25,13 @@ A rewrite: TypeScript, no runtime dependencies (jQuery is gone), `fetch` instead
 * `send` returns a promise that resolves when every instruction, scripts included, has been applied.
 * `data-ajax-credentials="omit|same-origin|include"`; the `signal` and other `RequestInit` options.
 * `data-trigger-group` now works (it threw a `TypeError` in v1).
-* `tdi:ajax:style` fires for a style deduped by id; `tdi:ajax:script` fires for a deduped script.
+* `tdi:ajax:style` fires for a style deduped by id and for a `<style>` with no `src`; `tdi:ajax:script` fires for a deduped script.
+* Preventing `tdi:ajax:beforeScript` skips only that script; v1 dropped the rest of the chain too.
 
 ### Fixed
 
+* `<a class="tdi">` with no URL sends nothing instead of requesting the current page.
+* A file input associated with a form through the `form` attribute is no longer sent as `[object File]` in a query string.
 * A `<script id>` already on the page no longer hangs the response forever.
 * `done` payloads no longer accumulate every earlier request's instructions.
 * No `unload`/`pagehide` handler any more, so the back/forward cache works.

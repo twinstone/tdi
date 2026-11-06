@@ -96,3 +96,16 @@ describe('injectStyle', () => {
 		await expect(promise).resolves.toBe(el)
 	})
 })
+
+describe('attrs', () => {
+	test('attrs cannot override src or nonce', () => {
+		void injectScript('/a.js', {
+			nonce: 'good',
+			attrs: { src: '/evil.js', nonce: 'bad', 'data-k': 'v' },
+		})
+		const el = document.head.querySelector('script')!
+		expect(el.getAttribute('src')).toBe('/a.js')
+		expect(el.getAttribute('nonce')).toBe('good')
+		expect(el.dataset.k).toBe('v')
+	})
+})

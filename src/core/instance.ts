@@ -1,7 +1,7 @@
 import { dispatch, TdiEvents } from '../events'
 import { disableTriggerGroup, involvedElements, setLoading } from '../dom/elements'
 import type { InstructionRegistry } from '../instructions/registry'
-import { sendRequest } from '../net/request'
+import { sendRequest, toParams } from '../net/request'
 import type { TdiRequestOptions, TdiResult } from '../types'
 import { optionsFromElement } from './options'
 
@@ -43,7 +43,9 @@ export function createSenders(
 		try {
 			verifyOrigin(url)
 		} catch (err) {
-			dispatch(target, TdiEvents.error, {
+			// A detached trigger would bubble nowhere; fall back to document
+			const at = target instanceof Node && !target.isConnected ? document : target
+			dispatch(at, TdiEvents.error, {
 				response: null,
 				status: 0,
 				message: (err as Error).message,
@@ -134,11 +136,9 @@ export function createSenders(
 				: undefined
 
 		const fd = new FormData(form, submitter) // leaves the DOM untouched
-		const hasFile = form.querySelector('input[type=file]') !== null
+		const hasFile = [...fd.values()].some((v) => v instanceof Blob) // also catches form="" file inputs
 		const method = hasFile ? 'POST' : (options.method ?? attrMethod ?? 'GET')
-		const data = hasFile
-			? fd
-			: new URLSearchParams(fd as unknown as Record<string, string>).toString()
+		const data = hasFile ? fd : toParams(fd).toString()
 
 		return run(
 			form,
@@ -160,6 +160,7 @@ export function createSenders(
 	): Promise<TdiResult | null> {
 		if (el instanceof HTMLFormElement) return sendForm(el, options)
 		const { url, confirm, suppressed, ...rest } = optionsFromElement(el)
+		if (!url) return null // nothing to request; an empty URL would fetch the current page
 		if (declined(el, url, options, { confirm, suppressed })) return null
 		return run(el, { ...rest, ...options }, url)
 	}

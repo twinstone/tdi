@@ -5,7 +5,8 @@ import type { InstructionHandler } from './instructions/registry'
 import { ajaxifyUrl } from './net/url'
 import type { ContentScriptPolicy, TdiOptions, TdiRequestOptions, TdiResult } from './types'
 
-export type { TdiOptions }
+export type * from './types'
+export type { InstructionHandler }
 
 export interface Tdi {
 	version: string

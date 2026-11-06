@@ -253,6 +253,11 @@ v1's silent reliance on jQuery's XML handling.
 `ajaxifyUrl` is rebuilt on `URL` + `URLSearchParams`, replacing v1's four-case
 `indexOf`/`replace` string surgery.
 
+> **Deliberate deviation (builder, ratified in final review).** `ajaxifyUrl` shipped as
+> byte-preserving string surgery, not `URL` + `URLSearchParams`. `URLSearchParams` re-encodes
+> the whole query, which would alter bytes the server produced; appending `_infuse`/`_ts` to the original string leaves them untouched. The outcome
+> is better than D5 specified, so it stands. `fetch` itself, cancellation and `DOMParser` are as written.
+
 ### D6 — Dropped from v1
 
 - **Synchronous XHR.** The `sync` option is gone.

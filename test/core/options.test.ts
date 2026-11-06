@@ -45,6 +45,15 @@ describe('optionsFromElement', () => {
 		expect(optionsFromElement(mount('<input value="v" href="/u">')).data).toEqual({})
 	})
 
+	test('a multiple select sends every selected value, none when nothing is selected', () => {
+		const sel = mount(
+			'<select multiple name="m"><option value="a" selected>a</option><option value="b">b</option><option value="c" selected>c</option></select>',
+		) as HTMLSelectElement
+		expect(optionsFromElement(sel).data).toEqual({ m: ['a', 'c'] })
+		sel.selectedIndex = -1
+		expect(optionsFromElement(sel).data).toEqual({})
+	})
+
 	test('an element with no url falls back to its value', () => {
 		const sel = mount(
 			'<select><option value="/one">1</option><option value="/two" selected>2</option></select>',

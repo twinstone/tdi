@@ -546,6 +546,46 @@ describe('allowedOrigins', () => {
 	})
 })
 
+describe('element edge cases', () => {
+	test('a link with neither href nor data-ajax-url sends nothing and resolves to null', async () => {
+		html('<a id="a" class="tdi">x</a>')
+		expect(await make().sendElement($('#a'))).toBeNull()
+		expect(fetchMock).not.toHaveBeenCalled()
+	})
+
+	test('a multiple select sends every selected option under its name', async () => {
+		html(
+			'<select id="s" multiple name="m" data-ajax-url="/s"><option value="a" selected>a</option><option value="b">b</option><option value="c" selected>c</option></select>',
+		)
+		await make().sendElement($('#s'))
+		expect(String(fetchMock.mock.calls[0]![0])).toContain('/s?m=a&m=c')
+	})
+
+	test('a pre-flight origin error for a detached element reaches document', async () => {
+		const seen: unknown[] = []
+		const fn = (e: Event): void => void seen.push(e.target)
+		document.addEventListener('tdi:ajax:error', fn)
+		try {
+			const el = document.createElement('a')
+			el.href = 'https://evil.example/x'
+			await expect(make({ allowedOrigins: [] }).sendElement(el)).rejects.toThrow()
+			expect(seen).toEqual([document])
+		} finally {
+			document.removeEventListener('tdi:ajax:error', fn)
+		}
+	})
+
+	test('a form-associated file input (form="") is detected and the form goes out as multipart POST', async () => {
+		html('<form id="f" action="/up"></form><input type="file" name="up" form="f">')
+		// An unselected file input still yields an empty File entry, which querySelector('input[type=file]') on the form misses
+		await make().sendForm($('#f'))
+		const init = fetchMock.mock.calls[0]![1] as RequestInit
+		expect(init.method).toBe('POST')
+		expect(init.body).toBeInstanceOf(FormData)
+		expect(String(fetchMock.mock.calls[0]![0])).not.toContain('object')
+	})
+})
+
 describe('overlapping requests (v1 parity: no refcounting)', () => {
 	const pending = (): (() => void)[] => {
 		const releases: (() => void)[] = []

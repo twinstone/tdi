@@ -1,7 +1,8 @@
 name: CI
 on:
   push:
-    branches: [master]
+    # tdi2 is the v2 integration branch; other branches are covered by their pull request
+    branches: [master, tdi2]
   pull_request:
 jobs:
   ci:
@@ -15,6 +16,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      - run: npm run format:check
       - run: npm run build
       - run: npm test
       - run: npm run size

@@ -34,10 +34,15 @@ export function bindDelegation(
 		sendForm(form, submitter ? { trigger: submitter } : {}).catch(report)
 	}
 
-	// A field with its own URL sends itself; otherwise it stands in for its form
+	// A field with its own URL sends itself; otherwise it stands in for its form.
+	// A form that is not TDI-enabled submits natively, as in v1 (its submit event still fires first).
 	function sendField(field: Element): void {
-		if (field.getAttribute('data-ajax-url')) sendElement(field).catch(report)
-		else if ((field as HTMLInputElement).form) submitForm((field as HTMLInputElement).form!)
+		if (field.getAttribute('data-ajax-url')) return void sendElement(field).catch(report)
+		const form = (field as HTMLInputElement).form
+		if (!form) return
+		if (form.matches(FORM)) submitForm(form)
+		else if (form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })))
+			form.submit()
 	}
 
 	const onClick = (evt: Event): void => {

@@ -18,7 +18,14 @@ export function optionsFromElement(el: Element): ElementOptions {
 	const method = attr('data-ajax-method') || attr('method') || undefined
 
 	const data: Record<string, unknown> = {}
-	if (name && value) {
+	// v1 $.val(): a multiple select yields every selected value
+	const picked =
+		el instanceof HTMLSelectElement && el.multiple
+			? [...el.selectedOptions].map((o) => o.value)
+			: null
+	if (name && picked) {
+		if (picked.length) data[name] = picked
+	} else if (name && value) {
 		// v1 quirk: an unchecked checkbox sends 0
 		data[name] =
 			el instanceof HTMLInputElement && el.type === 'checkbox' && !el.checked ? 0 : value
