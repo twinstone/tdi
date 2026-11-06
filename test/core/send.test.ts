@@ -70,14 +70,29 @@ describe('sendElement', () => {
   test('honours data-confirm and sends nothing when declined', async () => {
     html('<a id="t" href="/x" data-confirm="Sure?"></a>')
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false)
+    const ctl = new AbortController()
     const events: string[] = []
-    document.addEventListener('tdi:ajax:start', () => events.push('start'))
-    document.addEventListener('tdi:ajax:end', () => events.push('end'))
+    for (const n of ['start', 'end']) document.addEventListener(`tdi:ajax:${n}`, () => events.push(n), { signal: ctl.signal })
     expect(await s.sendElement($('#t'))).toBeNull()
     expect(confirmSpy).toHaveBeenCalledWith('Sure?')
     expect(fetchMock).not.toHaveBeenCalled()
     expect(events).toEqual([])
     expect($('#t').classList.contains('loading')).toBe(false)
+    // positive control: the same listeners do fire once the user accepts
+    confirmSpy.mockReturnValue(true)
+    await s.sendElement($('#t'))
+    expect(events).toEqual(['start', 'end'])
+    ctl.abort()
+  })
+
+  test('an already-aborted caller signal sends nothing and changes nothing', async () => {
+    html('<a id="t" href="/x" data-trigger-group="button"></a><button id="b"></button>')
+    const ctl = new AbortController()
+    ctl.abort()
+    await expect(s.sendElement($('#t'), { signal: ctl.signal })).rejects.toBeDefined()
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(live.size).toBe(0)
+    expect($<HTMLButtonElement>('#b').disabled).toBe(false)
   })
 
   test('sends when data-confirm is accepted', async () => {
@@ -151,13 +166,13 @@ describe('sendElement', () => {
     expect($<HTMLButtonElement>('#b').disabled).toBe(false)
     expect(live.size).toBe(0)
   })
-})
 
-test('a malformed trigger-group selector leaves no loading class behind', async () => {
-  html('<a id="t" href="/x" data-trigger-group="["></a>')
-  await expect(s.sendElement($('#t'))).rejects.toMatchObject({ name: 'SyntaxError' })
-  expect(fetchMock).not.toHaveBeenCalled()
-  expect($('#t').classList.contains('loading')).toBe(false)
+  test('a malformed trigger-group selector leaves no loading class behind', async () => {
+    html('<a id="t" href="/x" data-trigger-group="["></a>')
+    await expect(s.sendElement($('#t'))).rejects.toMatchObject({ name: 'SyntaxError' })
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect($('#t').classList.contains('loading')).toBe(false)
+  })
 })
 
 describe('sendForm', () => {
@@ -210,7 +225,13 @@ describe('sendForm', () => {
   test('includes the clicked submit button name and value and leaves the DOM untouched', async () => {
     html('<form id="f" action="/s" method="post"><input name="a" value="1"><button id="ok" name="go" value="yes"></button><button name="other" value="no"></button></form>')
     const count = document.querySelectorAll('*').length
+    const records: MutationRecord[] = []
+    const observer = new MutationObserver((r) => records.push(...r))
+    observer.observe(document.body, { childList: true, subtree: true })
     await s.sendForm($('#f'), { trigger: $('#ok') })
+    records.push(...observer.takeRecords()) // callbacks run at microtask checkpoints, so collect both
+    expect(records).toEqual([]) // v1 injected then removed a hidden input; end state alone cannot tell
+    observer.disconnect()
     expect(lastCall().init.body).toBe('a=1&go=yes')
     expect(document.querySelectorAll('*').length).toBe(count)
     expect($('input.submit-action')).toBeNull()

@@ -18,6 +18,7 @@ export function createSenders(registry: InstructionRegistry, live: Set<AbortCont
     url: string,
     extra: Element[] = [],
   ): Promise<TdiResult> {
+    options.signal?.throwIfAborted() // an already-aborted signal sends nothing
     // Selector lookups may throw SyntaxError; all of them run before any state changes, so a throw leaves nothing behind
     const involved = [...new Set([...involvedElements(el), ...extra])]
     const restore = disableTriggerGroup(el)
@@ -25,11 +26,10 @@ export function createSenders(registry: InstructionRegistry, live: Set<AbortCont
     const controller = new AbortController()
     const { signal } = options
     const onAbort = (): void => controller.abort(signal!.reason)
-    if (signal?.aborted) onAbort()
-    else signal?.addEventListener('abort', onAbort, { once: true })
-    live.add(controller)
-    setLoading(involved, true)
     try {
+      signal?.addEventListener('abort', onAbort, { once: true })
+      live.add(controller)
+      setLoading(involved, true)
       return await sendRequest(url, { ...options, signal: controller.signal }, registry, involved)
     } finally {
       live.delete(controller)
@@ -39,13 +39,13 @@ export function createSenders(registry: InstructionRegistry, live: Set<AbortCont
     }
   }
 
-  function declined(base: ReturnType<typeof optionsFromElement>): boolean {
-    return base.suppressed || (base.confirm !== undefined && !window.confirm(base.confirm))
+  function declined({ suppressed, confirm }: { suppressed: boolean; confirm?: string }): boolean {
+    return suppressed || (confirm !== undefined && !window.confirm(confirm))
   }
 
   async function sendForm(form: HTMLFormElement, options: TdiRequestOptions = {}): Promise<TdiResult | null> {
-    const { url, confirm, suppressed, data: _data, trigger: _trigger, ...base } = optionsFromElement(form)
-    if (declined({ url, confirm, suppressed, ...base })) return null
+    const { url, method: attrMethod, ...base } = optionsFromElement(form)
+    if (declined(base)) return null
 
     // The trigger counts as the submitter only when it is a submit control of this form
     const t = options.trigger
@@ -57,17 +57,17 @@ export function createSenders(registry: InstructionRegistry, live: Set<AbortCont
 
     const fd = new FormData(form, submitter) // leaves the DOM untouched
     const hasFile = form.querySelector('input[type=file]') !== null
-    const method = hasFile ? 'POST' : (options.method ?? base.method ?? 'GET')
+    const method = hasFile ? 'POST' : (options.method ?? attrMethod ?? 'GET')
     const data = hasFile ? fd : new URLSearchParams(fd as unknown as Record<string, string>).toString()
 
-    return run(form, { ...base, ...options, method, data, trigger: options.trigger ?? form }, url, submitter ? [submitter] : [])
+    return run(form, { ...options, credentials: options.credentials ?? base.credentials, method, data, trigger: options.trigger ?? form }, url, submitter ? [submitter] : [])
   }
 
   async function sendElement(el: Element, options: TdiRequestOptions = {}): Promise<TdiResult | null> {
     if (el instanceof HTMLFormElement) return sendForm(el, options)
-    const { url, confirm, suppressed, ...base } = optionsFromElement(el)
-    if (declined({ url, confirm, suppressed, ...base })) return null
-    return run(el, { ...base, ...options }, url)
+    const { url, confirm, suppressed, ...rest } = optionsFromElement(el)
+    if (declined({ confirm, suppressed })) return null
+    return run(el, { ...rest, ...options }, url)
   }
 
   return { sendElement, sendForm }
