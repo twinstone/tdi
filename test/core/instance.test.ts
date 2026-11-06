@@ -558,7 +558,15 @@ describe('element edge cases', () => {
 			'<select id="s" multiple name="m" data-ajax-url="/s"><option value="a" selected>a</option><option value="b">b</option><option value="c" selected>c</option></select>',
 		)
 		await make().sendElement($('#s'))
-		expect(String(fetchMock.mock.calls[0]![0])).toContain('/s?m=a&m=c')
+		expect(String(fetchMock.mock.calls[0]![0])).toContain('/s?m%5B%5D=a&m%5B%5D=c&')
+	})
+
+	test('a multiple select inside a form sends repeated names without brackets', async () => {
+		html(
+			'<form id="f" action="/f"><select multiple name="m"><option value="a" selected>a</option><option value="b">b</option><option value="c" selected>c</option></select></form>',
+		)
+		await make().sendForm($('#f'))
+		expect(String(fetchMock.mock.calls[0]![0])).toContain('/f?m=a&m=c&')
 	})
 
 	test('a pre-flight origin error for a detached element reaches document', async () => {

@@ -373,6 +373,10 @@ Content scripts run before the response's own `<script>` instructions, as in v1.
 
 A `select`, checkbox, radio or text input marked `tdi` with no `data-ajax-url` stands in for its form. In v1 that called `$(form).submit()`, so when the form itself was **not** marked `tdi` the browser navigated normally. v2 keeps that: the form's `submit` event fires, and unless it is cancelled the form is submitted natively. Only a `tdi` form is submitted by AJAX.
 
+### A multiple select serialises differently on the element and form paths
+
+A `<select multiple>` with its own `data-ajax-url` sends `m[]=a&m[]=c` (jQuery's array encoding); inside a `tdi` form it sends `m=a&m=c` (the native form encoding). Any array in a `data` object gets the `[]` suffix. v1 behaved exactly this way; v2 reproduces both deliberately, because servers were built against each. It is inherited inconsistency, not design.
+
 ### `sendForm` ignores `options.data`
 
 `TDI.sendForm(form, { data })` discards `data`: the form's own fields are the data. `sendElement` merges your `data`. v1 behaved the same way; v2 documents it.
